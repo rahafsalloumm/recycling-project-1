@@ -1,6 +1,11 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { FaSignInAlt, FaUserPlus, FaTimes } from "react-icons/fa";
 
 export default function HeroSection() {
+  // State للتحكم بظهور المنبثقة التوجيهية الذكية
+  const [showChoiceModal, setShowChoiceModal] = useState(false);
+
   return (
     <section id="hero" className="relative bg-[#F8FBF6] overflow-hidden">
 
@@ -45,13 +50,14 @@ export default function HeroSection() {
             نجمع النفايات من المنازل، ونراقب الحاويات الذكية لحظياً، ونحسن مسارات
             الشاحنات لرفع كفاءة الجمع وتقليل التلوث ودعم الاستدامة البيئية.
           </p>
-
           <div className="flex justify-end gap-4 mt-10">
 
-            <button className="relative overflow-hidden bg-green-600 text-white px-10 py-4 rounded-2xl font-semibold transition-all duration-300 hover:bg-green-700 hover:scale-105 active:scale-95 shadow-lg hover:shadow-2xl group">
-              <Link to="/pickup-request" className="text-white">
-                اطلب الجمع الآن
-              </Link>
+            {/* زر اطلب الجمع الذي يفتح المنبثقة التوجيهية */}
+            <button 
+              onClick={() => setShowChoiceModal(true)}
+              className="relative overflow-hidden bg-green-600 text-white px-10 py-4 rounded-2xl font-semibold transition-all duration-300 hover:bg-green-700 hover:scale-105 active:scale-95 shadow-lg hover:shadow-2xl group"
+            >
+              اطلب الجمع الآن
 
               {/* حركة اللمعة */}
               <span className="absolute inset-0 bg-white opacity-10 translate-x-[-120%] group-hover:translate-x-[120%] transition-transform duration-700"></span>
@@ -60,9 +66,12 @@ export default function HeroSection() {
               <span className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-20 bg-white blur-xl transition"></span>
             </button>
 
+            {/* زر كيف نعمل الأصلي الخاص بكِ بدون أي تغيير */}
             <button className="relative overflow-hidden text-green-600 bg-white px-10 py-4 rounded-2xl font-semibold transition-all duration-300 hover:bg-white hover:scale-105 active:scale-95 shadow-lg hover:shadow-2xl group">
-
-              <span className="relative z-10">كيف نعمل؟</span>
+              
+              <Link to="/how-it-works" className="text-green-600 relative z-10 w-full h-full block">
+                كيف نعمل؟
+              </Link>
 
               {/* حركة اللمعة */}
               <span className="absolute inset-0 bg-white opacity-10 translate-x-[-120%] group-hover:translate-x-[120%] transition-transform duration-700"></span>
@@ -77,6 +86,61 @@ export default function HeroSection() {
         </div>
 
       </div>
+
+      {/* ======================================================== */}
+      {/* ===== النافذة المنبثقة التوجيهية المحدثة بخطوط واضحة وكبيرة ===== */}
+      {/* ======================================================== */}
+      {showChoiceModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-2xl text-center relative border border-green-50 animate-fade-in">
+            
+            {/* زر الإغلاق الجانبي */}
+            <button 
+              onClick={() => setShowChoiceModal(false)}
+              className="absolute top-5 left-5 text-gray-400 hover:text-gray-600 transition p-1"
+            >
+              <FaTimes size={16} />
+            </button>
+
+            {/* أيقونة المنصة الهادئة */}
+            <div className="mx-auto w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-sm">
+              ♻️
+            </div>
+
+            {/* تم تكبير العنوان هنا إلى text-lg و font-black */}
+            <h3 className="text-lg font-black text-gray-800">مرحباً بك في EcoCycle</h3>
+            
+            {/* تم تكبير نص الوصف إلى text-sm بدلاً من القراءة الصعبة */}
+            <p className="text-gray-500 text-sm mt-3 px-2 leading-relaxed font-medium">
+              لإرسال شاحنة الجمع للمنازل أو إدارة حسابات الشركات والسائقين بشكل صحيح، يرجى إخبارنا:
+            </p>
+
+            {/* خيارات التوجيه بأزرار كبيرة ونصوص واضحة جداً وسهلة النقر */}
+            <div className="mt-8 space-y-4">
+              
+              {/* خيار: لدي حساب بالفعل */}
+              <Link
+                to="/login"
+                className="w-full border-2 border-green-200 text-green-700 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 text-sm transition duration-300 hover:bg-green-50 shadow-sm"
+              >
+                <FaSignInAlt size={14} /> لدي حساب بالفعل (تسجيل الدخول)
+              </Link>
+
+              {/* خيار: أنا مستخدم جديد */}
+              <Link
+                to="/register"
+                className="w-full bg-[#1b5e20] hover:bg-[#123f16] text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 text-sm transition duration-300 shadow-md shadow-green-900/10 hover:scale-[1.01]"
+              >
+                <FaUserPlus size={14} /> أنا مستخدم جديد (إنشاء حساب)
+              </Link>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </section>
   );
 }
+

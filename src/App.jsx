@@ -6,6 +6,8 @@ import Home from "./Home";
 import Login from "./Login";
 import Register from "./Register";
 import RequestPickup from "./RequestPickup";
+import Contact from "./Contact"; // 👈 تم إضافة استيراد صفحة تواصل معنا هنا
+import HowItWorks from "./HowItWorks";
 
 // 🔹 2. استيراد صفحات الإدارة (Admin)
 import AdminLayout from "./admin/layout/AdminLayout";
@@ -37,6 +39,8 @@ function App() {
       <Route path="/request-pickup" element={<RequestPickup />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/contact" element={<Contact />} /> {/* 👈 تم إضافة المسار الخاص بالصفحة هنا */}
+      <Route path="/how-it-works" element={<HowItWorks />} />
 
       {/* 🔴 أحمر: مسارات صفحات الأدمن المتداخلة تحت تخطيط AdminLayout */}
       <Route path="/admin" element={<AdminLayout />}>
@@ -71,6 +75,3 @@ function App() {
 }
 
 export default App;
-
-
-

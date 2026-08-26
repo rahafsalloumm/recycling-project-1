@@ -154,39 +154,7 @@ export default function Login() {
     <p className="text-red-500 text-sm mt-1">{errors.password}</p>
   )}
 </div>
-{/* ROLE */}
-<div>
-  <label className="block mb-2 font-semibold text-gray-700 text-right">
-    نوع الحساب
-  </label>
 
-  <div className="grid grid-cols-3 gap-2 text-sm">
-
-    <button
-      type="button"
-      className="p-3 rounded-xl border bg-white hover:bg-green-50"
-    >
-      مستخدم
-    </button>
-
-    <button
-      type="button"
-      className="p-3 rounded-xl border bg-white hover:bg-green-50"
-    >
-      شركة
-    </button>
-
-    <button
-      type="button"
-      className="p-3 rounded-xl border bg-white hover:bg-green-50"
-    >
-      سائق
-    </button>
-
-  </div>
-
- 
-</div>
           {/* BUTTON */}
           <button
             ref={submitBtnRef}

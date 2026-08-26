@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"; // 👈 تم إضافة استيراد الـ Link هنا
+
 export default function CTASection() {
   return (
     <section id='cta' className="relative py-24 bg-[#F8FBF6] overflow-hidden">
@@ -29,13 +31,16 @@ export default function CTASection() {
               ومراقبة الحاويات الذكية، ودعم إعادة التدوير بشكل أكثر كفاءة.
             </p>
 
+            {/* 🟢 تم تعديل الزر هنا ليرتبط بصفحة تسجيل الدخول بشكل مباشر وصحيح */}
             <button className="
               mt-8 bg-white text-green-700 px-10 py-4 rounded-2xl font-bold
               shadow-lg hover:shadow-2xl
               hover:scale-105 active:scale-95
               transition-all duration-300
             ">
-              ابدأ الاستخدام
+              <Link to="/login" className="text-green-700 block w-full h-full">
+                ابدأ الاستخدام
+              </Link>
             </button>
 
           </div>

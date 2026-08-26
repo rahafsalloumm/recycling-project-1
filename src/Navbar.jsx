@@ -23,7 +23,7 @@ export default function Navbar() {
           </Link>
 
           {/* Menu */}
-          <nav className="hidden md:flex items-center gap-8 font-medium text-gray-700">
+          <nav className="hidden md:flex items-center gap-8 font-medium text-gray-700 text-sm">
 
             <Link to="/" className="hover:text-green-600 transition">
               الرئيسية
@@ -32,16 +32,15 @@ export default function Navbar() {
             <a href="#features" className="hover:text-green-600 transition">
               خدماتنا
             </a>
+            
             <Link to="/rewards" className="hover:text-green-600 transition">
              المكافاّت
             </Link>
         
-
-            <a href="#contact" className="hover:text-green-600 transition">
+            {/* التوجيه متطابق تماماً مع الحروف الصغيرة لنظام المسارات */}
+            <Link to="/contact" className="hover:text-green-600 transition">
              تواصل معنا
-            </a>
-
-           
+            </Link>
 
           </nav>
 
