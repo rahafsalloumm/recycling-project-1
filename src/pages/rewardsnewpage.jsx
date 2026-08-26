@@ -1,9 +1,9 @@
  import { useState } from 'react'
-import { FaBars, FaBell, FaUserCircle, FaLeaf } from 'react-icons/fa'
-import Sidebar from '../cycle/componentes/sidebar/sidebar'
-import RewardsNewStats from '../rewardsnew/componentes/rewardsnewstats/rewardsnewstats'
-import RewardsNewFilter from '../rewardsnew/componentes/rewardsnewfilter/rewardsnewfilter'
-import RewardsNewCard from '../rewardsnew/componentes/rewardsnewcard/rewardsnewcard'
+import { FaBell, FaUserCircle, FaLeaf } from 'react-icons/fa'
+import Sidebar from '../user/components/cycle/sidebar/sidebar'
+import RewardsNewStats from '../user/components/rewardsnew/rewardsnewstats/rewardsnewstats'
+import RewardsNewFilter from '../user/components/rewardsnew/rewardsnewfilter/rewardsnewfilter'
+import RewardsNewCard from '../user/components/rewardsnew/rewardsnewcard/rewardsnewcard'
 
 const allRewards = [
   { title: 'قسيمة شراء', subtitle: 'سوبر ماركت أحمد', points: '1,000', available: 15, badge: 'جديد', category: 'قسائم شراء' },
@@ -17,7 +17,6 @@ const allRewards = [
 ]
 
 export default function RewardsNewPage() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [activePage, setActivePage] = useState('rewards')
   const [category, setCategory] = useState('الكل')
   const [sort, setSort] = useState('الأحدث')
@@ -35,14 +34,13 @@ export default function RewardsNewPage() {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', direction: 'rtl' }}>
 
-      <Sidebar isOpen={sidebarOpen} activePage={activePage} onNavigate={(page) => { setActivePage(page); setSidebarOpen(false) }} />
+      <Sidebar activePage={activePage} onNavigate={(page) => setActivePage(page)} />
 
-      <div style={{ marginRight: sidebarOpen ? '260px' : '0', transition: 'margin-right 0.3s ease' }}>
+      <div style={{ marginRight: '260px' }}>
 
         {/* الهيدر */}
         <div style={{ backgroundColor: 'white', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <FaBars onClick={() => setSidebarOpen(!sidebarOpen)} style={{ fontSize: '22px', color: '#555', cursor: 'pointer' }} />
             <div style={{ position: 'relative' }}>
               <FaBell style={{ fontSize: '20px', color: '#555' }} />
               <span style={{ position: 'absolute', top: '-6px', right: '-6px', backgroundColor: '#e53e3e', color: 'white', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>2</span>
@@ -57,15 +55,14 @@ export default function RewardsNewPage() {
 
         {/* المحتوى */}
         <div style={{ width: '100%', padding: '32px 24px', boxSizing: 'border-box' }}>
- <h1 style={{ fontSize: '26px', fontWeight: '900', color: '#1a1a1a', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: '900', color: '#1a1a1a', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
             🎁 المكافآت
           </h1>
           <p style={{ fontSize: '14px', color: '#888', marginBottom: '24px', textAlign: 'center' }}>استبدل نقاطك بمكافآت رائعة وشارك في حماية البيئة</p>
 
           <RewardsNewStats />
           <RewardsNewFilter onCategoryChange={setCategory} onSortChange={setSort} />
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+ <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
             {sorted.map((reward, i) => (
               <RewardsNewCard key={i} {...reward} />
             ))}

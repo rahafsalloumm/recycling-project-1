@@ -1,15 +1,14 @@
 import { useState } from 'react'
-import { FaBars, FaBell, FaUserCircle, FaLeaf, FaTruck } from 'react-icons/fa'
-import Sidebar from '../cycle/componentes/sidebar/sidebar'
-import WasteTypeSelector from '../cycle/componentes/wastepickup/wastetypeselector'
-import LocationPicker from '../cycle/componentes/wastepickup/locationpicker'
-import DateTimePicker from '../cycle/componentes/wastepickup/datetimepicker'
-import WeightInput from '../cycle/componentes/wastepickup/weightinput'
-import ImageUpload from '../cycle/componentes/wastepickup/imageupload'
-import NotesInput from '../cycle/componentes/wastepickup/notesinput'
+import { FaBell, FaUserCircle, FaLeaf, FaTruck } from 'react-icons/fa'
+import Sidebar from '../user/components/cycle/sidebar/sidebar'
+import WasteTypeSelector from '../user/components/wastepickup/wastetypeselector'
+import LocationPicker from '../user/components/wastepickup/locationpicker'
+import DateTimePicker from '../user/components/wastepickup/datetimepicker'
+import WeightInput from '../user/components/wastepickup/weightinput'
+import ImageUpload from '../user/components/wastepickup/imageupload'
+import NotesInput from '../user/components/wastepickup/notesinput'
 
 export default function WastePickupPage() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [activePage, setActivePage] = useState('wastepickup')
   const [selectedWaste, setSelectedWaste] = useState(null)
   const [location, setLocation] = useState({ lat: 36.2021, lng: 37.1343, address: 'سوريا , حلب , الاسماعلية' })
@@ -31,19 +30,15 @@ export default function WastePickupPage() {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', direction: 'rtl' }}>
 
-      <Sidebar isOpen={sidebarOpen} activePage={activePage} onNavigate={(page) => { setActivePage(page); setSidebarOpen(false) }} />
+      <Sidebar activePage={activePage} onNavigate={(page) => setActivePage(page)} />
 
-      <div style={{
-        marginRight: sidebarOpen ? '260px' : '0',
-        transition: 'margin-right 0.3s ease',
-      }}>
+      <div style={{ marginRight: '260px' }}>
 
         {/* الهيدر */}
         <div style={{ backgroundColor: 'white', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
 
-          {/* يسار - الهامبرغر والأيقونات */}
+          {/* يسار - الأيقونات */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <FaBars onClick={() => setSidebarOpen(!sidebarOpen)} style={{ fontSize: '22px', color: '#555', cursor: 'pointer' }} />
             <div style={{ position: 'relative' }}>
               <FaBell style={{ fontSize: '20px', color: '#555' }} />
               <span style={{ position: 'absolute', top: '-6px', right: '-6px', backgroundColor: '#e53e3e', color: 'white', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>2</span>
@@ -72,10 +67,10 @@ export default function WastePickupPage() {
 
           <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '20px', marginBottom: '16px' }}>
             <h3 style={{ fontWeight: '700', fontSize: '16px', marginBottom: '16px', color: '#1a1a1a' }}>تفاصيل الطلب</h3>
-<LocationPicker onChange={setLocation} />
+            <LocationPicker onChange={setLocation} />
             <div style={{ height: '1px', backgroundColor: '#f0f0f0', margin: '16px 0' }} />
             <DateTimePicker date={date} time={time} onDateChange={setDate} onTimeChange={setTime} />
-            <div style={{ height: '1px', backgroundColor: '#f0f0f0', margin: '16px 0' }} />
+ <div style={{ height: '1px', backgroundColor: '#f0f0f0', margin: '16px 0' }} />
             <div style={{ display: 'flex', gap: '16px' }}>
               <div style={{ flex: 1 }}>
                 <WeightInput value={weight} onChange={setWeight} />

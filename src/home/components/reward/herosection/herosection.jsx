@@ -1,5 +1,5 @@
 import { FaLeaf } from 'react-icons/fa'
-import hero from '../../../assets/images/hero.jpg'
+import hero from '../../../../assets/images/hero.jpg'
 
 export default function HeroSection() {
   return (

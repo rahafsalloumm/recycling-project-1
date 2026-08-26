@@ -5,6 +5,9 @@ import RewardsNewPage from './pages/rewardsnewpage'
 import RecyclingPage from './pages/recyclingpage'
 import RewardsPage from './pages/rewardspage'
 import ProfilePage from './pages/profilepages'
+import SettingsPage from './pages/settingspage'
+import TrackingPage from './pages/trackingpage'
+import ServicesPage from './pages/servicespage'
 
 function App() {
   return (
@@ -16,6 +19,9 @@ function App() {
         <Route path="/oldrewards" element={<RewardsPage />} />
         <Route path="/recycling" element={<RecyclingPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/tracking" element={<TrackingPage />} />
+        <Route path="/services" element={<ServicesPage />} />
       </Routes>
     </div>
   )

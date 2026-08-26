@@ -1,27 +1,25 @@
 import { useState } from 'react'
-import { FaBars, FaBell, FaUserCircle, FaLeaf } from 'react-icons/fa'
-import Sidebar from '../cycle/componentes/sidebar/sidebar'
-import StatsCard from '../dashboard/componentes/statscard/statscard'
-import RecentOrders from '../dashboard/componentes/recentorders/recentorders'
-import PointsChart from '../dashboard/componentes/pointschart/pointschart'
-import EcoTip from '../dashboard/componentes/ecotip/ecotip'
-import ImpactCard from '../dashboard/componentes/impactcard/impactcard'
+import { FaBell, FaUserCircle, FaLeaf } from 'react-icons/fa'
+import Sidebar from '../user/components/cycle/sidebar/sidebar'
+import StatsCard from '../user/components/dashboard/statscard/statscard'
+import RecentOrders from '../user/components/dashboard/recentorders/recentorders'
+import PointsChart from '../user/components/dashboard/pointschart/pointschart'
+import EcoTip from '../user/components/dashboard/ecotip/ecotip'
+import ImpactCard from '../user/components/dashboard/impactcard/impactcard'
 
 export default function DashboardPage() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [activePage, setActivePage] = useState('dashboard')
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', direction: 'rtl' }}>
 
-      <Sidebar isOpen={sidebarOpen} activePage={activePage} onNavigate={(page) => { setActivePage(page); setSidebarOpen(false) }} />
+      <Sidebar activePage={activePage} onNavigate={(page) => setActivePage(page)} />
 
-      <div style={{ marginRight: sidebarOpen ? '260px' : '0', transition: 'margin-right 0.3s ease' }}>
+      <div style={{ marginRight: '260px' }}>
 
         {/* الهيدر */}
         <div style={{ backgroundColor: 'white', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <FaBars onClick={() => setSidebarOpen(!sidebarOpen)} style={{ fontSize: '22px', color: '#555', cursor: 'pointer' }} />
             <div style={{ position: 'relative' }}>
               <FaBell style={{ fontSize: '20px', color: '#555' }} />
               <span style={{ position: 'absolute', top: '-6px', right: '-6px', backgroundColor: '#e53e3e', color: 'white', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>2</span>
@@ -51,7 +49,7 @@ export default function DashboardPage() {
             <StatsCard icon="📋" value="8" label="إجمالي الطلبات" link="عرض الكل" linkRoute="/wastepickup" />
             <StatsCard icon="🔄" value="5" label="طلبات مكتملة" link="عرض الكل" linkRoute="/wastepickup" />
             <StatsCard icon="♻️" value="23.6 كغ" label="إجمالي النفايات المعاد تدويرها" link="عرض التفاصيل" linkRoute="/wastepickup" />
-            <StatsCard icon="⭐" value="2,450" label="إجمالي النقاط" link="عرض المكافآت" linkRoute="/rewards" />
+            <StatsCard icon="⭐️" value="2,450" label="إجمالي النقاط" link="عرض المكافآت" linkRoute="/rewards" />
           </div>
 
           {/* الطلبات الأخيرة والنقاط */}
