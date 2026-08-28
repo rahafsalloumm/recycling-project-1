@@ -3,7 +3,6 @@ import Sidebar from '../components/driverLayout/Sidebar';
 import DriverNavbar from '../components/driverLayout/DriverNavbar';
 import ProfileHeader from '../components/driverProfile/ProfileHeader';
 import ProfileCard from '../components/driverProfile/ProfileCard';
-import ProfileAchievements from '../components/driverProfile/ProfileAchievements';
 import InfoPersonal from '../components/driverProfile/InfoPersonal';
 import InfoGrids from '../components/driverProfile/InfoGrids';
 
@@ -23,19 +22,22 @@ const DriverProfile = () => {
             {/* رأس الصفحة */}
             <ProfileHeader />
 
-            {/* 📊 توزيع الـ Grid المزدوج: الكروت الجانبية (يسار ثلث المساحة) وجداول البيانات والأجهزة (يمين ثلثي المساحة) */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+            {/* 📊 التوزيع المحدث: جعل الكروت العلوية في شبكة متناسقة والكروت الثلاثة بالأسفل ممتدة بالكامل */}
+            <div className="space-y-6">
               
-              {/* العمود الأيمن العريض للجداول التفصيلية والإعدادات */}
-              <div className="lg:col-span-2 space-y-6">
-                <InfoPersonal />
-                <InfoGrids />
+              {/* القسم العلوي: كرت البيانات الشخصية وبجانبه كرت الإحصائيات (ProfileCard) */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                <div className="lg:col-span-2">
+                  <InfoPersonal />
+                </div>
+                <div className="lg:col-span-1">
+                  <ProfileCard />
+                </div>
               </div>
 
-              {/* العمود الأيسر لكروت الإحصائيات والأوسمة الشخصية لأحمد أحمد */}
-              <div className="lg:col-span-1 space-y-6">
-                <ProfileCard />
-                <ProfileAchievements />
+              {/* القسم السفلي: الكروت الثلاثة ممتدة بكامل العرض لتملأ الفراغ بشكل ممتاز */}
+              <div className="w-full">
+                <InfoGrids />
               </div>
 
             </div>
