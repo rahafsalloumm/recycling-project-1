@@ -29,9 +29,10 @@ export default function Navbar() {
               الرئيسية
             </Link>
 
-            <a href="#features" className="hover:text-green-600 transition">
+            {/* تم التعديل هنا ليوجه المستخدم إلى صفحة الخدمات بدلاً من النزول في الصفحة */}
+            <Link to="/services" className="hover:text-green-600 transition">
               خدماتنا
-            </a>
+            </Link>
             
             <Link to="/rewards" className="hover:text-green-600 transition">
              المكافاّت
@@ -70,3 +71,4 @@ export default function Navbar() {
     </header>
   );
 }
+

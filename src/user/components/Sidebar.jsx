@@ -1,14 +1,15 @@
 import { FaHome, FaTruck, FaMapMarkerAlt, FaRecycle, FaGift, FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 
+// تم تعديل المسارات هنا لتطابق الـ Routes المعرفة في App.jsx مباشرة
 const menuItems = [
-  { icon: <FaHome />, label: 'لوحة المستخدم', path: '/user' },
-  { icon: <FaTruck />, label: 'طلب استلام النفايات', path: '/user/request' },
-  { icon: <FaMapMarkerAlt />, label: 'تتبع الطلبات', path: '/user/tracking' },
-  { icon: <FaRecycle />, label: 'سجل إعادة التدوير', path: '/user/history' },
-  { icon: <FaGift />, label: 'المكافآت', path: '/user/rewards' },
-  { icon: <FaUser />, label: 'الملف الشخصي', path: '/user/profile' },
-  { icon: <FaCog />, label: 'الإعدادات', path: '/user/settings' },
+  { icon: <FaHome />, label: 'لوحة المستخدم', path: '/dashboard' },
+  { icon: <FaTruck />, label: 'طلب استلام النفايات', path: '/wastepickup' },
+  { icon: <FaMapMarkerAlt />, label: 'تتبع الطلبات', path: '/tracking' },
+  { icon: <FaRecycle />, label: 'سجل إعادة التدوير', path: '/history' },
+  { icon: <FaGift />, label: 'المكافآت', path: '/rewards' },
+  { icon: <FaUser />, label: 'الملف الشخصي', path: '/profile' },
+  { icon: <FaCog />, label: 'الإعدادات', path: '/settings' },
 ]
 
 function Sidebar({ activePage }) {
@@ -36,7 +37,7 @@ function Sidebar({ activePage }) {
               <button
                 onClick={() => navigate(item.path)}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-right transition-colors ${
-                  activePage === item.path.split('/user/')[1] || (activePage === 'dashboard' && item.path === '/user')
+                  activePage === item.path.replace('/', '')
                     ? 'bg-[#e8f5e8] text-[#2d8a2d] font-bold'
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}

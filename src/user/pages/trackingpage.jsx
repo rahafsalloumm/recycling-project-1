@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { FaBell, FaUserCircle, FaLeaf, FaMapMarkerAlt } from 'react-icons/fa'
-import Sidebar from '../user/components/cycle/sidebar/sidebar'
-import TrackingStats from '../user/components/tracking/trackingstats/trackingstats'
-import OrderCard from '../user/components/tracking/ordercard/ordercard'
+
+// تم تصحيح المسارات هنا لتشير إلى مجلد المكونات الجديد مباشرة للأعلى
+import Sidebar from '../components/cycle/sidebar/sidebar'
+import TrackingStats from '../components/tracking/trackingstats/trackingstats'
+import OrderCard from '../components/tracking/ordercard/ordercard'
 
 const orders = [
   {
@@ -79,11 +81,11 @@ export default function TrackingPage() {
       <div style={{ marginRight: '260px' }}>
 
         {/* الهيدر */}
-        <div style={{ backgroundColor: 'white', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
+        <div style={{ backgroundColor: 'white', padding: '12px 24px', display: 'flex', alignItems: 'center', justifycontent: 'space-between', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div style={{ position: 'relative' }}>
               <FaBell style={{ fontSize: '20px', color: '#555' }} />
-              <span style={{ position: 'absolute', top: '-6px', right: '-6px', backgroundColor: '#e53e3e', color: 'white', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>2</span>
+              <span style={{ position: 'absolute', top: '-6px', right: '-6px', backgroundColor: '#e53e3e', color: 'white', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px', display: 'flex', alignItems: 'center', justifycontent: 'center' }}>2</span>
             </div>
             <FaUserCircle style={{ fontSize: '28px', color: '#555' }} />
           </div>
@@ -97,7 +99,7 @@ export default function TrackingPage() {
         <div style={{ width: '100%', padding: '32px 24px', boxSizing: 'border-box' }}>
 
           <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-            <h1 style={{ fontSize: '26px', fontWeight: '900', color: '#1a1a1a', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+            <h1 style={{ fontSize: '26px', fontWeight: '900', color: '#1a1a1a', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px', justifycontent: 'center' }}>
               تتبع الطلبات
               <FaMapMarkerAlt style={{ color: '#2d6a2d' }} />
             </h1>
@@ -106,22 +108,22 @@ export default function TrackingPage() {
 
           <TrackingStats total={total} underReview={underReview} inProgress={inProgress} completed={completed} />
 
-        {orders.map((order) => (
-  <OrderCard
-    key={order.id}
-    orderNumber={order.id}
-    status={order.status}
-    date={order.date}
-    location={order.location}
-    lat={order.lat}
-    lng={order.lng}
-    wasteType={order.wasteType}
-    weight={order.weight}
-    timelineStep={order.timelineStep}
-    expanded={expandedId === order.id}
-    onToggle={() => setExpandedId(expandedId === order.id ? null : order.id)}
-  />
-))}
+          {orders.map((order) => (
+            <OrderCard
+              key={order.id}
+              orderNumber={order.id}
+              status={order.status}
+              date={order.date}
+              location={order.location}
+              lat={order.lat}
+              lng={order.lng}
+              wasteType={order.wasteType}
+              weight={order.weight}
+              timelineStep={order.timelineStep}
+              expanded={expandedId === order.id}
+              onToggle={() => setExpandedId(expandedId === order.id ? null : order.id)}
+            />
+          ))}
         </div>
       </div>
     </div>

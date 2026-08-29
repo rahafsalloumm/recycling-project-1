@@ -1,15 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 
-import DashboardPage from './pages/dashboardpage'
-import WastePickupPage from './pages/wastepickuppage'
-import RewardsNewPage from './pages/rewardsnewpage'
-import RecyclingPage from './pages/recyclingpage'
-import RewardsPage from './pages/rewardspage'
-import ProfilePage from './pages/profilepages'
-import SettingsPage from './pages/settingspage'
-import TrackingPage from './pages/trackingpage'
-import ServicesPage from './pages/servicespage'
-
+// استيراد الصفحات الأساسية العامة من مجلد src الرئيسي
+import ServicesPage from './ServicesPage' 
 import Home from './Home'
 import Login from './Login'
 import Register from './Register'
@@ -17,6 +9,11 @@ import RequestPickup from './RequestPickup'
 import Contact from './Contact'
 import HowItWorks from './HowItWorks'
 
+//  تم تصحيح المسارات هنا لتشير إلى مجلد المستخدم الجديد الموحد
+import SettingsPage from './user/pages/settingspage'
+import TrackingPage from './user/pages/trackingpage'
+
+// صفحات لوحة تحكم المسؤول (Admin)
 import AdminLayout from './admin/layout/AdminLayout'
 import Dashboard from './admin/pages/Dashboard'
 import AdminUsers from './admin/pages/AdminUsers'
@@ -28,6 +25,7 @@ import AdminReports from './admin/pages/AdminReports'
 import AdminRewards from './admin/pages/AdminRewards'
 import AdminSettings from './admin/pages/AdminSettings'
 
+// صفحات لوحة تحكم السائق (Driver)
 import DriverDashboard from './driver/pages/DriverDashboard'
 import DriverTasks from './driver/pages/DriverTasks'
 import DriverRoute from './driver/pages/DriverRoute'
@@ -36,20 +34,17 @@ import DriverHomes from './driver/pages/DriverHomes'
 import DriverHistory from './driver/pages/DriverHistory'
 import DriverProfile from './driver/pages/DriverProfile'
 import DriverHelp from './driver/pages/DriverHelp'
-
 function App() {
   return (
     <Routes>
-      <Route path="/dashboard" element={<DashboardPage />} />
-      <Route path="/wastepickup" element={<WastePickupPage />} />
-      <Route path="/rewards" element={<RewardsNewPage />} />
-      <Route path="/oldrewards" element={<RewardsPage />} />
-      <Route path="/recycling" element={<RecyclingPage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/settings" element={<SettingsPage />} />
-      <Route path="/tracking" element={<TrackingPage />} />
+      {/* روابط لوحة تحكم المستخدم وصفحة الخدمات */}
+      <Route path="/dashboard" element={<TrackingPage />} />
+      <Route path="/wastepickup" element={<ServicesPage />} />
       <Route path="/services" element={<ServicesPage />} />
+      <Route path="/tracking" element={<TrackingPage />} />
+      <Route path="/settings" element={<SettingsPage />} />
 
+      {/* المسارات العامة */}
       <Route path="/" element={<Home />} />
       <Route path="/request-pickup" element={<RequestPickup />} />
       <Route path="/login" element={<Login />} />
@@ -57,6 +52,7 @@ function App() {
       <Route path="/contact" element={<Contact />} />
       <Route path="/how-it-works" element={<HowItWorks />} />
 
+      {/* لوحة تحكم الـ Admin */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
@@ -70,6 +66,7 @@ function App() {
         <Route path="settings" element={<AdminSettings />} />
       </Route>
 
+      {/* لوحة تحكم الـ Driver */}
       <Route path="/driver/dashboard" element={<DriverDashboard />} />
       <Route path="/driver/tasks" element={<DriverTasks />} />
       <Route path="/driver/route" element={<DriverRoute />} />
@@ -84,4 +81,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

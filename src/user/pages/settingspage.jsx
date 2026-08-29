@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { FaBell, FaUserCircle, FaLeaf } from 'react-icons/fa'
-import Sidebar from '../user/components/cycle/sidebar/sidebar'
-import AccountInfoSettings from '../user/components/settings/accountinfosettings/accountinfosettings'
-import PasswordSettings from '../user/components/settings/passwordsettings/passwordsettings'
-import NotificationSettings from '../user/components/settings/notificationsettings/notificationsettings'
-import AboutSettings from '../user/components/settings/aboutsettings/aboutsettings'
-import ContactSettings from '../user/components/settings/contactsettings/contactsettings'
-import LogoutSettings from '../user/components/settings/logoutsettings/logoutsettings'
+
+//  تم تصحيح المسارات بدقة هنا لتشير إلى مجلد المكونات القريب مباشرة
+import Sidebar from '../components/cycle/sidebar/sidebar'
+import AccountInfoSettings from '../components/settings/accountinfosettings/accountinfosettings'
+import PasswordSettings from '../components/settings/passwordsettings/passwordsettings'
+import NotificationSettings from '../components/settings/notificationsettings/notificationsettings'
+import AboutSettings from '../components/settings/aboutsettings/aboutsettings'
+import ContactSettings from '../components/settings/contactsettings/contactsettings'
+import LogoutSettings from '../components/settings/logoutsettings/logoutsettings'
 
 export default function SettingsPage() {
   const [activePage, setActivePage] = useState('settings')
@@ -43,7 +45,6 @@ export default function SettingsPage() {
   const handleLogout = () => {
     console.log('تسجيل الخروج')
   }
-
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', direction: 'rtl' }}>
 
@@ -51,7 +52,7 @@ export default function SettingsPage() {
 
       <div style={{ marginRight: '260px' }}>
 
-        {/* الهيدر */}
+        {/* الهيدر العلوي لوحة التحكم */}
         <div style={{ backgroundColor: 'white', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div style={{ position: 'relative' }}>
@@ -66,7 +67,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* المحتوى */}
+        {/* محتوى الإعدادات والبطاقات الفردية */}
         <div style={{ width: '100%', padding: '32px 24px', boxSizing: 'border-box' }}>
 
           <div style={{ textAlign: 'center', marginBottom: '24px' }}>
@@ -80,7 +81,7 @@ export default function SettingsPage() {
           <PasswordSettings onSubmit={handlePasswordSubmit} />
           <NotificationSettings
             orderNotifications={orderNotifications}
-offerNotifications={offerNotifications}
+            offerNotifications={offerNotifications}
             onOrderNotificationsChange={setOrderNotifications}
             onOfferNotificationsChange={setOfferNotifications}
           />
