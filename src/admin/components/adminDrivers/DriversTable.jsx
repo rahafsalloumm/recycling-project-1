@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaEdit, FaTrash, FaEye, FaTimes, FaSave, FaUser, FaPhone, FaMapMarkerAlt, FaToggleOn, FaTruck, FaFileAlt, FaClock, FaStar, FaHistory, FaClipboardList, FaTasks, FaIdCard, FaBrain, FaRoute, FaCalendarAlt } from "react-icons/fa";
+import { FaEdit, FaTrash, FaEye, FaTimes, FaSave, FaUser, FaPhone, FaMapMarkerAlt, FaToggleOn, FaTruck, FaFileAlt, FaClock, FaStar, FaHistory, FaClipboardList, FaTasks, FaIdCard, FaBrain, FaRoute, FaCalendarAlt, FaBuilding } from "react-icons/fa";
 
 export default function DriversTable({ drivers }) {
   // صور افتراضية عالية الجودة للسائقين
@@ -28,6 +28,10 @@ export default function DriversTable({ drivers }) {
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [selectedTasks, setSelectedTasks] = useState([]);
 
+  // الـ States الجديدة لتحديد موقع الانطلاق والموقع المخصص
+  const [startPointType, setStartPointType] = useState("company"); // company أو custom
+  const [customLocationName, setCustomLocationName] = useState("");
+
   // ربط وقراءة البيانات الشاملة الموحدة لـ 4 حقول رخصة وحقل ساعات العمل
   const prepareSelectedDriver = (driver) => {
     return {
@@ -45,7 +49,13 @@ export default function DriversTable({ drivers }) {
 
   const handleEditClick = (driver) => { setSelectedDriver(prepareSelectedDriver(driver)); setIsEditModalOpen(true); };
   const handleDetailsClick = (driver) => { setSelectedDriver(prepareSelectedDriver(driver)); setIsDetailsModalOpen(true); };
-  const handleAssignClick = (driver) => { setSelectedDriver(prepareSelectedDriver(driver)); setSelectedTasks([]); setIsAssignModalOpen(true); };
+  const handleAssignClick = (driver) => { 
+    setSelectedDriver(prepareSelectedDriver(driver)); 
+    setSelectedTasks([]); 
+    setStartPointType("company"); // تصفير الاختيار الافتراضي للشركة
+    setCustomLocationName("");
+    setIsAssignModalOpen(true); 
+  };
 
   const handleToggleTask = (taskId) => {
     if (selectedTasks.includes(taskId)) {
@@ -60,10 +70,10 @@ export default function DriversTable({ drivers }) {
     console.log("تم تحديث البيانات الشاملة بنجاح مع ساعات العمل:", selectedDriver); 
     setIsEditModalOpen(false); 
   };
-  
   const handleAssignTaskSubmit = (e) => { 
     e.preventDefault(); 
-    console.log(`🧠 مسار الـ AI الميداني لسائق حلب ${selectedDriver.name}:`, selectedTasks); 
+    console.log(`🧠 نقطة انطلاق مسار ${selectedDriver.name}:`, startPointType === "company" ? "مقر الشركة" : `موقع مخصص: ${customLocationName}`);
+    console.log(`🛣️ نقاط التجمع المرتبطة بمسار الـ AI:`, selectedTasks); 
     setIsAssignModalOpen(false); 
   };
 
@@ -122,28 +132,65 @@ export default function DriversTable({ drivers }) {
       {/* 📋 شاشة تخطيط وتحديد المسار المتعدد الموحدة بألوان EcoCycle الخضراء */}
       {isAssignModalOpen && selectedDriver && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-gray-100 flex flex-col space-y-4 max-h-[85vh] overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-gray-100 flex flex-col space-y-4 max-h-[92vh] overflow-y-auto">
             <button type="button" onClick={() => setIsAssignModalOpen(false)} className="absolute top-5 left-5 p-2 rounded-xl text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors"><FaTimes className="text-base" /></button>
             
-            <div className="flex items-center gap-2.5 border-b border-gray-50 pb-3">
+            <div className="flex items-center gap-2.5 border-b border-gray-50 pb-2">
               <div className="bg-emerald-50 p-2.5 rounded-xl text-emerald-600">
                 <FaBrain className="text-base animate-pulse" />
               </div>
               <div>
                 <h3 className="text-sm font-black text-gray-800">تخطيط المسار الميداني بالذكاء الاصطناعي</h3>
-                <p className="text-[11px] text-gray-400 mt-0.5">حدد نقاط التجمع ليرسم الـ AI خط السير الموفر للوقود</p>
+                <p className="text-[11px] text-gray-400 mt-0.5">حدد نقطة الانطلاق والمهام لحساب المسار الأمثل</p>
               </div>
             </div>
-            
-            <div className="bg-gray-50/70 p-3 rounded-xl border border-gray-100/50 flex justify-between items-center text-xs font-bold">
-              <span className="text-gray-400">السائق الموجه للمسار:</span>
-              <span className="text-gray-800">{selectedDriver.name} (<span className="font-mono text-[11px] text-emerald-600">{selectedDriver.idCode}</span>)</span>
+
+            {/* قِسم خيارات نقطة انطلاق المسار المطور تلبية لطلبكم الفخم */}
+            <div className="space-y-2.5 bg-gray-50/60 p-4 rounded-2xl border border-gray-100 text-right">
+              <label className="text-xs font-black text-gray-700 block mb-1">📍 تحديد نقطة انطلاق المسار:</label>
+              <div className="grid grid-cols-2 gap-3">
+                
+                {/* الخيار الأول: الشركة */}
+                <label className={`flex items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition-all bg-white select-none ${startPointType === "company" ? "border-emerald-500 bg-emerald-50/20 text-emerald-800 font-bold" : "border-gray-100 text-gray-500"}`}>
+                  <input type="radio" name="startPoint" value="company" checked={startPointType === "company"} onChange={() => setStartPointType("company")} className="text-emerald-600 focus:ring-emerald-500" />
+                  <span className="text-xs flex items-center gap-1.5 w-full justify-end pr-2">مقر الشركة الرئيسي <FaBuilding className="text-[11px]" /></span>
+                </label>
+
+                {/* الخيار الثاني: موقع آخر مخصص */}
+                <label className={`flex items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition-all bg-white select-none ${startPointType === "custom" ? "border-emerald-500 bg-emerald-50/20 text-emerald-800 font-bold" : "border-gray-100 text-gray-500"}`}>
+                  <input type="radio" name="startPoint" value="custom" checked={startPointType === "custom"} onChange={() => setStartPointType("custom")} className="text-emerald-600 focus:ring-emerald-500" />
+                  <span className="text-xs flex items-center gap-1.5 w-full justify-end pr-2">موقع آخر مخصص <FaMapMarkerAlt className="text-[11px]" /></span>
+                </label>
+
+              </div>
+
+              {/* إذا تم اختيار موقع مخصص، يفتح له حقل الإدخال الجغرافي النشط مع الخريطة المصغرة */}
+              {startPointType === "custom" && (
+                <div className="mt-2.5 space-y-2 animate-fadeIn duration-200">
+                  <input 
+                    type="text" 
+                    placeholder="اكتب اسم نقطة الانطلاق المخصصة (مثال: مستودع باب الفرج)..." 
+                    value={customLocationName}
+                    onChange={(e) => setCustomLocationName(e.target.value)}
+                    className="w-full text-right text-xs p-3 bg-white border border-gray-200 rounded-xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 font-semibold"
+                  />
+                  <div className="w-full h-28 bg-slate-100 rounded-xl border border-gray-200 relative overflow-hidden flex items-center justify-center cursor-crosshair">
+                    <div className="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:10px_10px] opacity-60"></div>
+                    <span className="text-[10px] text-gray-400 bg-white/90 px-3 py-1.5 rounded-lg border border-gray-200 font-bold shadow-xs absolute">🎯 انقر على الخريطة لتحديد الإحداثيات بدقة</span>
+                    {customLocationName && (
+                      <div className="absolute top-4 right-4 bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-md shadow-sm">
+                        تم رصد الموقع الجغرافي بنجاح
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             <form onSubmit={handleAssignTaskSubmit} className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 block mb-1">حدد الحاويات والطلبات المتاحة بحلب:</label>
-                <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+                <label className="text-xs font-bold text-gray-500 block mb-1">حدد الحاويات والطلبات المتاحة بـ ({selectedDriver.region}):</label>
+                <div className="space-y-2 max-h-[140px] overflow-y-auto pr-1">
                   {availableTasks.map((task) => {
                     const isChecked = selectedTasks.includes(task.id);
                     return (
@@ -163,11 +210,11 @@ export default function DriversTable({ drivers }) {
               {selectedTasks.length > 0 && (
                 <div className="bg-emerald-600 text-white p-3 rounded-xl flex items-center gap-2 text-xs font-bold shadow-md shadow-emerald-600/10">
                   <FaRoute className="text-sm animate-bounce" />
-                  <span>تم ربط ({selectedTasks.length}) نقاط تجمع بحلب. جاري احتساب خط السير الأمثل.</span>
+                  <span>انطلاقاً من ({startPointType === "company" ? "مقر الشركة" : customLocationName || "موقع مخصص"}). جاري حساب خط السير الميداني.</span>
                 </div>
               )}
 
-              <div className="flex items-center gap-3 pt-3 border-t border-gray-50 mt-4">
+              <div className="flex items-center gap-3 pt-2 border-t border-gray-50 mt-3">
                 <button type="submit" disabled={selectedTasks.length === 0} className={`flex-1 rounded-xl py-2.5 text-xs font-black flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer ${selectedTasks.length === 0 ? "bg-gray-100 text-gray-400 shadow-none cursor-not-allowed" : "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/10"}`}><FaBrain /> معالجة وإرسال المسار الذكي</button>
                 <button type="button" onClick={() => setIsAssignModalOpen(false)} className="bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-xl px-4 py-2.5 text-xs font-bold active:scale-95 transition-all cursor-pointer">إلغاء</button>
               </div>
@@ -232,7 +279,7 @@ export default function DriversTable({ drivers }) {
           </div>
         </div>
       )}
-      {/* 🔮 شاشة تعديل معلومات السائق الكاملة (مضاف إليها حقل ساعات العمل تلبية لطلبك) */}
+      {/* 🔮 شاشة تعديل معلومات السائق الكاملة */}
       {isEditModalOpen && selectedDriver && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl relative border border-gray-100 flex flex-col space-y-4 max-h-[92vh] overflow-y-auto">
@@ -245,7 +292,6 @@ export default function DriversTable({ drivers }) {
               </div>
             </div>
             <form onSubmit={handleSaveChanges} className="space-y-3.5">
-              {/* قسم 1: البيانات الشخصية وحالة العمل وساعات العمل */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-gray-500 flex items-center gap-1.5"><FaUser className="text-[10px]" /> اسم السائق</label>
@@ -259,7 +305,7 @@ export default function DriversTable({ drivers }) {
 
               <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-1 col-span-1">
-                  <label className="text-xs font-bold text-gray-500 flex items-center gap-1.5"><FaMapMarkerAlt className="text-[10px]" /> النطاق بحلب</label>
+                  <label className="text-xs font-bold text-gray-500 flex items-center gap-1.5"><FaMapMarkerAlt className="text-[10px]" /> النطاق الميداني</label>
                   <input type="text" value={selectedDriver.region} onChange={(e) => { setSelectedDriver({ ...selectedDriver, region: e.target.value }); }} className="w-full bg-gray-50 border border-gray-100 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all" required />
                 </div>
                 <div className="space-y-1 col-span-1">
@@ -270,14 +316,12 @@ export default function DriversTable({ drivers }) {
                     <option value="غير نشط">غير نشط</option>
                   </select>
                 </div>
-                {/* حقل ساعات العمل المضاف حديثاً */}
                 <div className="space-y-1 col-span-1">
                   <label className="text-xs font-bold text-gray-500 flex items-center gap-1.5"><FaClock className="text-[10px]" /> ساعات العمل</label>
                   <input type="text" value={selectedDriver.workHours} onChange={(e) => { setSelectedDriver({ ...selectedDriver, workHours: e.target.value }); }} className="w-full bg-gray-50 border border-gray-100 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all font-mono" required />
                 </div>
               </div>
 
-              {/* قسم 2: معلومات الرخصة الفنية المتطابقة بـ 4 حقول كاملة */}
               <div className="border-t border-gray-100 pt-3">
                 <h4 className="text-[11px] font-black text-emerald-700 mb-2 flex items-center gap-1"><FaIdCard /> وثيقة رخصة القيادة الشاملة</h4>
                 <div className="grid grid-cols-2 gap-3">
@@ -300,7 +344,6 @@ export default function DriversTable({ drivers }) {
                 </div>
               </div>
 
-              {/* قسم 3: معلومات المركبة المخصصة المتطابقة */}
               <div className="border-t border-gray-100 pt-3">
                 <h4 className="text-[11px] font-black text-emerald-700 mb-2 flex items-center gap-1"><FaTruck /> الشاحنة الميدانية المخصصة</h4>
                 <div className="grid grid-cols-2 gap-3">
@@ -316,8 +359,8 @@ export default function DriversTable({ drivers }) {
               </div>
 
               <div className="flex items-center gap-3 pt-2 border-t border-gray-50 mt-4">
-                <button type="submit" className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-2.5 text-xs font-black flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/10 active:scale-95 transition-all cursor-pointer"><FaSave /> حفظ التغييرات الشاملة</button>
-                <button type="button" onClick={() => setIsEditModalOpen(false)} className="bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-xl px-4 py-2.5 text-xs font-bold active:scale-95 transition-all cursor-pointer">إلغاء</button>
+                <button type="submit" className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-2.5 text-xs font-black flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/10 active:scale-[0.98] transition-all cursor-pointer"><FaSave /> حفظ التغييرات الشاملة</button>
+                <button type="button" onClick={() => setIsEditModalOpen(false)} className="bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-xl px-4 py-2.5 text-xs font-bold active:scale-[0.98] transition-all cursor-pointer">إلغاء</button>
               </div>
             </form>
           </div>
@@ -327,4 +370,3 @@ export default function DriversTable({ drivers }) {
     </div>
   );
 }
-

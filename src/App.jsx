@@ -8,6 +8,9 @@ import Register from './Register'
 import RequestPickup from './RequestPickup'
 import Contact from './Contact'
 import HowItWorks from './HowItWorks'
+import ForgotPassword from './ForgotPassword'
+import RewardsPage from './RewardsPage' // تأكدي أن اسم الملف يطابق حالتكِ
+
 
 //  تم تصحيح المسارات هنا لتشير إلى مجلد المستخدم الجديد الموحد
 import SettingsPage from './user/pages/settingspage'
@@ -51,6 +54,9 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/how-it-works" element={<HowItWorks />} />
+<Route path="/forgot-password" element={<ForgotPassword />} />
+<Route path="/rewards" element={<RewardsPage />} />
+
 
       {/* لوحة تحكم الـ Admin */}
       <Route path="/admin" element={<AdminLayout />}>
