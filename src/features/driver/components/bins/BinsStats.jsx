@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiTrash2, FiUnlock, FiAlertTriangle, FiActivity, FiPercent } from 'react-icons/fi';
+﻿import { FiTrash2, FiUnlock, FiAlertTriangle, FiActivity, FiPercent } from 'react-icons/fi';
 import StatCard from '../../../../shared/components/StatCard';
 
 const BinsStats = () => {

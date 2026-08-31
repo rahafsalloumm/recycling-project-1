@@ -1,5 +1,4 @@
-import React from 'react';
-
+﻿
 const StatCard = ({ title, value, subtext, icon, colorClass }) => {
   return (
     <div className="bg-white p-6 rounded-2xl border border-gray-100 flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.01)] transition-all duration-300 hover:shadow-[0_12px_24px_rgba(0,0,0,0.03)] hover:-translate-y-2 cursor-pointer group" dir="rtl">

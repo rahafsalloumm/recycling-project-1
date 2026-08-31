@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiHome, FiCalendar } from 'react-icons/fi';
+﻿import { FiHome, FiCalendar } from 'react-icons/fi';
 
 const HomesHeader = () => {
   return (

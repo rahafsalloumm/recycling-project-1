@@ -1,5 +1,4 @@
-import React from 'react';
-import Sidebar from '../layout/Sidebar';
+﻿import Sidebar from '../layout/Sidebar';
 import DriverNavbar from '../layout/DriverNavbar';
 import HistoryHeader from '../components/history/HistoryHeader';
 import HistoryStats from '../components/history/HistoryStats';

@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiTrash2 } from 'react-icons/fi';
+﻿import { FiTrash2 } from 'react-icons/fi';
 
 const BinsHeader = () => {
   return (

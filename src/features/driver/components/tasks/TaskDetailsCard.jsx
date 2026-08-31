@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiMap, FiPlay, FiInfo, FiMapPin, FiBriefcase } from 'react-icons/fi';
+﻿import { FiMap, FiPlay, FiInfo, FiMapPin, FiBriefcase } from 'react-icons/fi';
 
 const TaskDetailsCard = () => {
   return (

@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiSmartphone, FiMapPin, FiChevronRight, FiChevronLeft } from 'react-icons/fi';
+﻿import { FiSmartphone, FiMapPin, FiChevronRight, FiChevronLeft } from 'react-icons/fi';
 
 const HomesTable = () => {
   const requests = [

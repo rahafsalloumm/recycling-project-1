@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiList, FiHome, FiTrash2 } from 'react-icons/fi';
+﻿import { FiList, FiHome, FiTrash2 } from 'react-icons/fi';
 
 const TasksList = () => {
   const tasks = [

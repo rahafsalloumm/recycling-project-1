@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiHome, FiTrash2, FiChevronRight, FiChevronLeft, FiMapPin } from 'react-icons/fi';
+﻿import { FiHome, FiTrash2, FiChevronRight, FiChevronLeft, FiMapPin } from 'react-icons/fi';
 
 const HistoryTable = () => {
   const historyData = [

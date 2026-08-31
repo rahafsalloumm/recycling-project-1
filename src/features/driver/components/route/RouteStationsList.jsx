@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiCheckCircle, FiLoader, FiClock, FiMapPin } from 'react-icons/fi';
+﻿import { FiCheckCircle, FiLoader, FiClock } from 'react-icons/fi';
 
 const RouteStationsList = () => {
   const stations = [

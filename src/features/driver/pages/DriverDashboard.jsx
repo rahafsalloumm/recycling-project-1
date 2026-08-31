@@ -1,5 +1,4 @@
-import React from 'react';
-import Sidebar from '../layout/Sidebar';
+﻿import Sidebar from '../layout/Sidebar';
 import DriverNavbar from '../layout/DriverNavbar';
 import StatCard from '../../../shared/components/StatCard';
 import MapSection from '../components/home/MapSection';

@@ -1,7 +1,4 @@
-import React from "react";
-import { FaMapMarkerAlt, FaCircle } from "react-icons/fa";
-
-export default function ReportsBottomSection() {
+﻿export default function ReportsBottomSection() {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start" dir="rtl">
       

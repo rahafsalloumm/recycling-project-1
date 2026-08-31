@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiSliders, FiSearch, FiChevronDown } from 'react-icons/fi';
+﻿import { FiSliders, FiSearch, FiChevronDown } from 'react-icons/fi';
 
 const HomesFilter = () => {
   return (

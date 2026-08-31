@@ -1,5 +1,4 @@
-import React from 'react';
-import Sidebar from '../layout/Sidebar';
+﻿import Sidebar from '../layout/Sidebar';
 import DriverNavbar from '../layout/DriverNavbar';
 import RouteHeader from '../components/route/RouteHeader';
 import LiveMapSection from '../components/route/LiveMapSection';

@@ -1,5 +1,4 @@
-import React from "react";
-import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
+﻿import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
 
 export default function RewardsTable({ rewards, onToggleStatus }) {
   return (

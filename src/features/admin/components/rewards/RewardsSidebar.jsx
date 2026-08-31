@@ -1,5 +1,4 @@
-import React from "react";
-import { FaBoxes, FaHistory } from "react-icons/fa";
+﻿import { FaBoxes, FaHistory } from "react-icons/fa";
 
 export default function RewardsSidebar() {
   const usersAvatars = {

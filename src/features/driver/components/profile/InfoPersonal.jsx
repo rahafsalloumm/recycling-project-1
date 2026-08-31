@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import {  useState  } from 'react';
 import { FiUser, FiMail, FiPhone, FiCalendar, FiMapPin, FiCreditCard, FiEdit3, FiX, FiCheck } from 'react-icons/fi';
 
 const InfoPersonal = () => {

@@ -1,5 +1,4 @@
-import React from "react";
-import { FaMapMarkerAlt, FaChartPie, FaInfoCircle } from "react-icons/fa";
+﻿import { FaMapMarkerAlt, FaChartPie, FaInfoCircle } from "react-icons/fa";
 
 export default function BinsInsights() {
   return (

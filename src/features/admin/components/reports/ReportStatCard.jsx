@@ -1,5 +1,4 @@
-import React from "react";
-
+﻿
 export default function ReportStatCard({ title, value, desc, icon, bgIcon }) {
   return (
     <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex items-center justify-between text-right transition-all duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 cursor-pointer group">

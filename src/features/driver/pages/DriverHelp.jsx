@@ -1,5 +1,4 @@
-import React from 'react';
-import Sidebar from '../layout/Sidebar';
+﻿import Sidebar from '../layout/Sidebar';
 import DriverNavbar from '../layout/DriverNavbar';
 import HelpAccordion from '../components/help/HelpAccordion';
 import { FiHelpCircle, FiShield } from 'react-icons/fi';

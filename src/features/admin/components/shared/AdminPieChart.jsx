@@ -1,5 +1,4 @@
-import React from "react";
-
+﻿
 export default function AdminPieChart() {
   return (
     <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between h-full">

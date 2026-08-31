@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiHelpCircle, FiSearch } from 'react-icons/fi';
+﻿import { FiHelpCircle, FiSearch } from 'react-icons/fi';
 
 const HelpHeader = () => {
   return (

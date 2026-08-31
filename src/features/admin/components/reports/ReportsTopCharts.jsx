@@ -1,5 +1,4 @@
-import React from "react";
-
+﻿
 export default function ReportsTopCharts() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" dir="rtl">

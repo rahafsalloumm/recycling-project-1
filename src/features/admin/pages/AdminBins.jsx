@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FaTrash, FaPlus, FaSearch, FaCheckCircle, FaExclamationTriangle, FaTimesCircle, FaChartPie, FaMapMarkerAlt } from "react-icons/fa";
+﻿import {  useState  } from 'react';
+import { FaTrash, FaPlus, FaSearch, FaCheckCircle, FaExclamationTriangle, FaTimesCircle } from "react-icons/fa";
 
 import BinStatCard from "../components/bins/BinStatCard";
 import BinsTable from "../components/bins/BinsTable";

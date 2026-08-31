@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiFileText, FiCheckCircle, FiLoader, FiClock, FiNavigation } from 'react-icons/fi';
+﻿import { FiFileText, FiCheckCircle, FiLoader, FiClock, FiNavigation } from 'react-icons/fi';
 import StatCard from '../../../../shared/components/StatCard';
 
 const TasksStats = () => {

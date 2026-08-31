@@ -1,5 +1,4 @@
-import React from 'react';
-import Sidebar from '../layout/Sidebar';
+﻿import Sidebar from '../layout/Sidebar';
 import DriverNavbar from '../layout/DriverNavbar';
 import HomesHeader from '../components/homes/HomesHeader';
 import HomesStats from '../components/homes/HomesStats';

@@ -1,5 +1,4 @@
-import React from 'react';
-import Sidebar from '../layout/Sidebar';
+﻿import Sidebar from '../layout/Sidebar';
 import DriverNavbar from '../layout/DriverNavbar';
 import ProfileHeader from '../components/profile/ProfileHeader';
 import ProfileCard from '../components/profile/ProfileCard';

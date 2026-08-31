@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiMap, FiFlag, FiTrendingUp, FiClock } from 'react-icons/fi';
+﻿import { FiMap, FiFlag, FiTrendingUp, FiClock } from 'react-icons/fi';
 
 const MapSection = () => {
   return (

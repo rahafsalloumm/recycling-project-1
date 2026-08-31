@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import {  useState  } from 'react';
 import { FaPlus, FaSearch, FaStar, FaUsers, FaCoins, FaBoxes, FaGift } from "react-icons/fa";
 
 import RewardStatCard from "../components/rewards/RewardStatCard";

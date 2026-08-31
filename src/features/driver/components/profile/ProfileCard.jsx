@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiCheckCircle, FiClock, FiStar, FiCamera } from 'react-icons/fi';
+﻿import { FiCheckCircle, FiClock, FiStar, FiCamera } from 'react-icons/fi';
 
 const ProfileCard = () => {
   return (

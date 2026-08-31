@@ -1,5 +1,4 @@
-import React from 'react';
-
+﻿
 const BinsChartSection = () => {
   const chartData = [
     { label: 'فارغة (18)', percentage: '37%', color: 'bg-emerald-500' },

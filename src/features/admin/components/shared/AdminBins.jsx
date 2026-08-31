@@ -1,5 +1,4 @@
-import React from "react";
-
+﻿
 export default function AdminBins() {
   var bins = [
     { id: "BIN-001", name: "الجامعة - الرئيسية", fill: "30%", color: "bg-green-500", textColor: "text-green-600 bg-green-50", type: "طبيعية" },

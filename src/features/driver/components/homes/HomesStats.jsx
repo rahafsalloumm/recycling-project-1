@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiFileText, FiClock, FiTruck, FiCheckCircle, FiXCircle } from 'react-icons/fi';
+﻿import { FiFileText, FiClock, FiTruck, FiCheckCircle, FiXCircle } from 'react-icons/fi';
 import StatCard from '../../../../shared/components/StatCard';
 
 const HomesStats = () => {

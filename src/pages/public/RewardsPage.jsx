@@ -1,5 +1,4 @@
-import React from "react";
-import { FaLeaf, FaCalendarCheck, FaRecycle, FaTruck, FaShoppingBag, FaTint, FaSeedling, FaShoppingCart, FaBolt, FaHeart } from "react-icons/fa";
+﻿import { FaLeaf, FaCalendarCheck, FaRecycle, FaTruck, FaShoppingBag, FaTint, FaSeedling, FaShoppingCart, FaBolt, FaHeart } from "react-icons/fa";
 import Navbar from "../../components/layout/Navbar"; 
 import heroImg from "../../assets/images/rewards-hero.png"; 
 

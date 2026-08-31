@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiAward } from 'react-icons/fi';
+﻿import { FiAward } from 'react-icons/fi';
 
 const ProfileAchievements = () => {
   const badges = [

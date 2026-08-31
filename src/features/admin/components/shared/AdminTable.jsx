@@ -1,5 +1,4 @@
-import React from "react";
-import { FaCheck, FaXmark } from "react-icons/fa6";
+﻿import { FaCheck, FaXmark } from "react-icons/fa6";
 
 export default function AdminTable(props) {
   return (

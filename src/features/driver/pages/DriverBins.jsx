@@ -1,5 +1,4 @@
-import React from 'react';
-import Sidebar from '../layout/Sidebar';
+﻿import Sidebar from '../layout/Sidebar';
 import DriverNavbar from '../layout/DriverNavbar';
 import BinsHeader from '../components/bins/BinsHeader';
 import BinsStats from '../components/bins/BinsStats';

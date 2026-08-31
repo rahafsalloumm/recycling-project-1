@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiSliders, FiSearch } from 'react-icons/fi';
+﻿import { FiSliders, FiSearch } from 'react-icons/fi';
 
 const BinsTableSection = () => {
   const binsData = [

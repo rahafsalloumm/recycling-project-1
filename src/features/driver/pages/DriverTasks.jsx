@@ -1,5 +1,4 @@
-import React from 'react';
-import Sidebar from '../layout/Sidebar';
+﻿import Sidebar from '../layout/Sidebar';
 import DriverNavbar from '../layout/DriverNavbar';
 import TasksHeader from '../components/tasks/TasksHeader';
 import TasksStats from '../components/tasks/TasksStats';

@@ -1,7 +1,4 @@
-import React from 'react';
-import { FiTrendingUp } from 'react-icons/fi';
-
-const RouteProgressCard = () => {
+﻿const RouteProgressCard = () => {
   return (
     <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_2px_12px_rgba(0,0,0,0.01)] flex flex-col justify-center min-h-[120px] group hover:shadow-[0_8px_24px_rgba(0,0,0,0.02)] transition-shadow duration-300" dir="rtl">
       <div className="flex justify-between items-center mb-4">

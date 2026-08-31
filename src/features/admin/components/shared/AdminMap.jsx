@@ -1,5 +1,4 @@
-import React from "react";
-import { FaMapMarkerAlt } from "react-icons/fa";
+﻿import { FaMapMarkerAlt } from "react-icons/fa";
 
 export default function AdminMap() {
   return (

@@ -1,5 +1,4 @@
-import React from 'react';
-
+﻿
 const BinsMapSection = () => {
   const pins = [
     { id: 1, top: '25%', left: '20%', color: 'bg-emerald-500 ring-emerald-500/20' },

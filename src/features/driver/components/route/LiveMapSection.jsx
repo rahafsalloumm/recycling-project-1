@@ -1,5 +1,4 @@
-import React from 'react';
-import { FiFlag, FiClock, FiList, FiNavigation } from 'react-icons/fi';
+﻿import { FiFlag, FiClock, FiList, FiNavigation } from 'react-icons/fi';
 
 const LiveMapSection = () => {
   return (
