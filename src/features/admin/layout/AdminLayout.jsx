@@ -10,7 +10,8 @@ import {
   FaChartLine, 
   FaGift, 
   FaCog, 
-  FaSignOutAlt 
+  FaSignOutAlt,
+  FaEnvelopeOpenText
 } from "react-icons/fa";
 
 export default function AdminLayout() {
@@ -22,10 +23,11 @@ export default function AdminLayout() {
     { icon: <FaTrash />, label: "الحاويات الذكية", path: "/admin/bins" },
     { icon: <FaRoute />, label: "إدارة المسارات", path: "/admin/routes" },
     { icon: <FaChartLine />, label: "التقارير والإحصائيات", path: "/admin/reports" },
+    /* 📌 الخيار الجديد المضاف ليظهر فوراً على اليمين في السايد بار الحقيقي للمشروع */
+    { icon: <FaEnvelopeOpenText />, label: "رسائل الدعم الفني", path: "/admin/support" },
     { icon: <FaGift />, label: "نظام المكافآت", path: "/admin/rewards" },
     { icon: <FaCog />, label: "الإعدادات", path: "/admin/settings" },
   ];
-
   return (
     // 💡 نظام flex مع h-screen يمنع التداخل نهائياً ويجعل السايد بار واللوحة يقفان جنباً إلى جنب كأعمدة حقيقية
     <div className="bg-[#f4f7f6] h-screen w-full flex overflow-hidden font-sans antialiased text-slate-800" dir="rtl">

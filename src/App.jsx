@@ -18,16 +18,17 @@ import OrderTracking from '@/features/user/pages/OrderTracking'
 import SettingsPage from '@/features/user/pages/Settings'
 
 // لوحة تحكم المسؤول (Admin)
-import AdminLayout from '@/features/admin/layout/AdminLayout'
-import Dashboard from '@/features/admin/pages/Dashboard'
-import AdminUsers from '@/features/admin/pages/AdminUsers'
-import AdminDrivers from '@/features/admin/pages/AdminDrivers'
-import AdminOrders from '@/features/admin/pages/AdminOrders'
-import AdminBins from '@/features/admin/pages/AdminBins'
-import AdminRoutes from '@/features/admin/pages/AdminRoutes'
-import AdminReports from '@/features/admin/pages/AdminReports'
-import AdminRewards from '@/features/admin/pages/AdminRewards'
-import AdminSettings from '@/features/admin/pages/AdminSettings'
+import AdminLayout from './features/admin/layout/AdminLayout'
+import Dashboard from './features/admin/pages/Dashboard'
+import AdminUsers from './features/admin/pages/AdminUsers'
+import AdminDrivers from './features/admin/pages/AdminDrivers'
+import AdminOrders from './features/admin/pages/AdminOrders'
+import AdminBins from './features/admin/pages/AdminBins'
+import AdminRoutes from './features/admin/pages/AdminRoutes'
+import AdminReports from './features/admin/pages/AdminReports'
+import AdminRewards from './features/admin/pages/AdminRewards'
+import AdminSettings from './features/admin/pages/AdminSettings'
+import AdminSupport from "./features/admin/pages/AdminSupport"; 
 
 // لوحة تحكم السائق (Driver)
 import DriverDashboard from '@/features/driver/pages/DriverDashboard'
@@ -71,6 +72,8 @@ function App() {
         <Route path="reports" element={<AdminReports />} />
         <Route path="rewards" element={<AdminRewards />} />
         <Route path="settings" element={<AdminSettings />} />
+        <Route path="/admin/support" element={<AdminSupport />} />
+
       </Route>
 
       {/* لوحة تحكم الـ Driver */}
