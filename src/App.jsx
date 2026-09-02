@@ -28,6 +28,7 @@ import AdminRoutes from './features/admin/pages/AdminRoutes'
 import AdminReports from './features/admin/pages/AdminReports'
 import AdminRewards from './features/admin/pages/AdminRewards'
 import AdminSettings from './features/admin/pages/AdminSettings'
+import AdminSupport from "./features/admin/pages/AdminSupport"; 
 
 // لوحة تحكم السائق (Driver)
 import DriverDashboard from './features/driver/pages/DriverDashboard'
@@ -71,6 +72,8 @@ function App() {
         <Route path="reports" element={<AdminReports />} />
         <Route path="rewards" element={<AdminRewards />} />
         <Route path="settings" element={<AdminSettings />} />
+        <Route path="/admin/support" element={<AdminSupport />} />
+
       </Route>
 
       {/* لوحة تحكم الـ Driver */}
