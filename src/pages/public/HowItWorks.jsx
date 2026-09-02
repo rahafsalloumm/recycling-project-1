@@ -105,16 +105,7 @@ export default function HowItWorks() {
             <FaUser size={10} /> مستخدم
           </button>
           
-          <button
-            type="button"
-            onClick={() => setActiveTab("company")}
-            className={`py-2.5 rounded-xl font-bold flex items-center justify-center gap-1.5 text-xs transition duration-300 ${
-              activeTab === "company" ? "bg-[#1b5e20] text-white shadow-sm shadow-green-900/10" : "text-gray-400 hover:bg-green-50/40 hover:text-green-700"
-            }`}
-          >
-            <FaBuilding size={10} /> شركة
-          </button>
-          
+         
           <button
             type="button"
             onClick={() => setActiveTab("driver")}
