@@ -2,9 +2,9 @@
 
 export default function RewardsSidebar() {
   const usersAvatars = {
-    1: "https://unsplash.com",
-    2: "https://unsplash.com",
-    3: "https://unsplash.com"
+    1: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    2: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    3: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
   };
 
   return (

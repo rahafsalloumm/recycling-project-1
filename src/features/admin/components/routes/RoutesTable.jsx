@@ -4,11 +4,11 @@ import { FaEdit, FaTrash, FaEye, FaTimes, FaRoute, FaUser, FaMapMarkerAlt, FaSav
 export default function RoutesTable({ routes, onSelectRoute }) {
   // صور افتراضية للسائقين
   const driverAvatars = {
-    "DRV-001": "https://unsplash.com",
-    "DRV-002": "https://unsplash.com",
-    "DRV-003": "https://unsplash.com",
-    "DRV-004": "https://unsplash.com",
-    "DRV-005": "https://unsplash.com"
+    "DRV-001": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    "DRV-002": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    "DRV-003": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    "DRV-004": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    "DRV-005": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
   };
 
   // قائمة السائقين المتاحين الميدانيين لاستخدامها في منبثقة التعديل
@@ -73,7 +73,7 @@ export default function RoutesTable({ routes, onSelectRoute }) {
                 <td className="py-4 px-6">
                   <div className="flex items-center gap-2.5">
                     <img 
-                      src={driverAvatars[route.driverId] || "https://unsplash.com"} 
+                      src={driverAvatars[route.driverId] || "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"} 
                       alt={route.driverName}
                       className="w-9 h-9 rounded-full object-cover ring-2 ring-gray-100 shadow-sm flex-shrink-0"
                     />

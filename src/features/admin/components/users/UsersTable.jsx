@@ -3,11 +3,11 @@
 export default function UsersTable({ users }) {
   // صور شخصية افتراضية متنوعة للمستخدمين لمنح الجدول واقعية كاملة
   const userAvatars = {
-    1: "https://unsplash.com",
-    2: "https://unsplash.com",
-    3: "https://unsplash.com",
-    4: "https://unsplash.com",
-    5: "https://unsplash.com"
+    1: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    2: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    3: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    4: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    5: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
   };
 
   return (
@@ -39,7 +39,7 @@ export default function UsersTable({ users }) {
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
                       <img 
-                        src={userAvatars[user.id] || "https://unsplash.com"} 
+                        src={userAvatars[user.id] || "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"} 
                         alt={user.name}
                         className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-100 shadow-sm"
                       />

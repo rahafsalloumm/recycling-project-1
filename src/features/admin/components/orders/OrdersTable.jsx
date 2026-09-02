@@ -2,14 +2,14 @@
 
 export default function OrdersTable({ orders }) {
   const userAvatars = {
-    1: "https://unsplash.com",
-    2: "https://unsplash.com",
-    3: "https://unsplash.com",
-    4: "https://unsplash.com",
-    5: "https://unsplash.com",
-    6: "https://unsplash.com",
-    7: "https://unsplash.com",
-    8: "https://unsplash.com"
+    1: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    2: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    3: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    4: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    5: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    6: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    7: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    8: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
   };
 
   return (

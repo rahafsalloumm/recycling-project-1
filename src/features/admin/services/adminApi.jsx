@@ -1,4 +1,6 @@
+import api from '@/services/api'
+
 export const getDashboardData = async () => {
-  const res = await fetch("https://your-backend.com/api/admin/dashboard");
-  return await res.json();
+  const res = await api.get('/api/admin/dashboard');
+  return res.data;
 };

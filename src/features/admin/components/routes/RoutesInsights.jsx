@@ -7,9 +7,9 @@ import L from 'leaflet';
 // إصلاح مشكلة اختفاء أيقونات الخريطة الافتراضية في Leaflet مع React
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cloudflare.com',
-  iconUrl: 'https://cloudflare.com',
-  shadowUrl: 'https://cloudflare.com',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
 export default function RoutesInsights({ selectedRoute }) {
@@ -59,7 +59,7 @@ export default function RoutesInsights({ selectedRoute }) {
             {/* 💡 تم تصحيح الرابط هنا وحمايته كلياً ليعمل بدون مشاكل */}
             <TileLayer
               attribution='&copy; OpenStreetMap contributors'
-              url="https://openstreetmap.org{z}/{x}/{y}.png"
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             
             {/* وضع علامات ومؤشرات تفاعلية على محطات الخريطة */}

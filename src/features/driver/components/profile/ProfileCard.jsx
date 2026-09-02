@@ -7,7 +7,7 @@ const ProfileCard = () => {
       {/* الصورة الشخصية مع أيقونة الكاميرا التفاعلية للهوفر */}
       <div className="relative w-28 h-28 mb-4">
         <img 
-          src="https://unsplash.com" 
+          src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" 
           alt="Driver Avatar" 
           className="w-full h-full rounded-full object-cover ring-4 ring-emerald-500/10 shadow-md group-hover:scale-105 transition-transform duration-300"
         />

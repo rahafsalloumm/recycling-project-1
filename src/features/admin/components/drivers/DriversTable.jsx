@@ -23,8 +23,8 @@ export default function DriversTable({ onUpdateStatus }) {
       truckType: "ضاغطة نفايات ذكية",
       licenseNo: "5463210",
       licenseType: "درجة أولى ثقيل",
-      idCardUrl: "https://unsplash.com",
-      driverLicenseUrl: "https://unsplash.com"
+      idCardUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+      driverLicenseUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
     },
     {
       id: "2",
@@ -40,8 +40,8 @@ export default function DriversTable({ onUpdateStatus }) {
       truckType: "لم تعين بعد",
       licenseNo: "8877665",
       licenseType: "قيادة مركبات شحن",
-      idCardUrl: "https://unsplash.com", 
-      driverLicenseUrl: "https://unsplash.com" 
+      idCardUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop", 
+      driverLicenseUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" 
     },
     {
       id: "3",
@@ -57,8 +57,8 @@ export default function DriversTable({ onUpdateStatus }) {
       truckType: "شاحنة نقل عادية",
       licenseNo: "4455221",
       licenseType: "عمومي درجة ب",
-      idCardUrl: "https://unsplash.com",
-      driverLicenseUrl: "https://unsplash.com"
+      idCardUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+      driverLicenseUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
     },
     {
       id: "4",
@@ -74,16 +74,16 @@ export default function DriversTable({ onUpdateStatus }) {
       truckType: "لم تعين بعد",
       licenseNo: "9988776",
       licenseType: "ثقيل مقطورات",
-      idCardUrl: "https://unsplash.com",
-      driverLicenseUrl: "https://unsplash.com"
+      idCardUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+      driverLicenseUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
     }
   ];
 
   const driverAvatars = {
-    "DVR-001": "https://unsplash.com",
-    "DVR-002": "https://unsplash.com",
-    "DVR-003": "https://unsplash.com",
-    "DVR-004": "https://unsplash.com"
+    "DVR-001": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    "DVR-002": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    "DVR-003": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    "DVR-004": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
   };
 
   const availableTasks = [
@@ -217,7 +217,7 @@ export default function DriversTable({ onUpdateStatus }) {
                   <td className="py-4 px-6 text-center font-bold text-gray-400 text-base">{index + 1}</td>
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
-                      <img src={driverAvatars[driver.idCode] || "https://unsplash.com"} alt={driver.name} className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-100 shadow-sm" />
+                      <img src={driverAvatars[driver.idCode] || "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"} alt={driver.name} className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-100 shadow-sm" />
                       <div className="flex flex-col">
                         <span className="font-bold text-gray-900 group-hover:text-emerald-700 transition-colors duration-150 text-[15px]">{driver.name}</span>
                         <span className="text-xs text-gray-400 font-mono mt-0.5">{driver.idCode}</span>
@@ -389,7 +389,7 @@ export default function DriversTable({ onUpdateStatus }) {
             </div>
 
             <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100 text-right">
-              <img src={driverAvatars[selectedDriver.idCode] || "https://unsplash.com"} alt={selectedDriver.name} className="w-14 h-14 rounded-full object-cover ring-2 ring-white shadow" />
+              <img src={driverAvatars[selectedDriver.idCode] || "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"} alt={selectedDriver.name} className="w-14 h-14 rounded-full object-cover ring-2 ring-white shadow" />
               <div className="flex-1">
                 <h4 className="text-base font-black text-gray-900">{selectedDriver.name}</h4>
                 <div className="flex items-center gap-4 text-xs font-bold text-gray-400 mt-1">
