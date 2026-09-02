@@ -1,9 +1,9 @@
-﻿import Sidebar from '../layout/Sidebar';
-import DriverNavbar from '../layout/DriverNavbar';
-import RouteHeader from '../components/route/RouteHeader';
-import LiveMapSection from '../components/route/LiveMapSection';
-import RouteProgressCard from '../components/route/RouteProgressCard';
-import RouteStationsList from '../components/route/RouteStationsList';
+﻿import Sidebar from '@/features/driver/layout/Sidebar';
+import DriverNavbar from '@/features/driver/layout/DriverNavbar';
+import RouteHeader from '@/features/driver/components/route/RouteHeader';
+import LiveMapSection from '@/features/driver/components/route/LiveMapSection';
+import RouteProgressCard from '@/features/driver/components/route/RouteProgressCard';
+import RouteStationsList from '@/features/driver/components/route/RouteStationsList';
 
 const DriverRoute = () => {
   return (

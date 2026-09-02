@@ -1,9 +1,9 @@
-﻿import Sidebar from '../layout/Sidebar';
-import DriverNavbar from '../layout/DriverNavbar';
-import HomesHeader from '../components/homes/HomesHeader';
-import HomesStats from '../components/homes/HomesStats';
-import HomesFilter from '../components/homes/HomesFilter';
-import HomesTable from '../components/homes/HomesTable';
+﻿import Sidebar from '@/features/driver/layout/Sidebar';
+import DriverNavbar from '@/features/driver/layout/DriverNavbar';
+import HomesHeader from '@/features/driver/components/homes/HomesHeader';
+import HomesStats from '@/features/driver/components/homes/HomesStats';
+import HomesFilter from '@/features/driver/components/homes/HomesFilter';
+import HomesTable from '@/features/driver/components/homes/HomesTable';
 
 const DriverHomes = () => {
   return (

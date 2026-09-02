@@ -1,5 +1,5 @@
 ﻿import { FiFileText, FiCheckCircle, FiXCircle, FiActivity, FiClock } from 'react-icons/fi';
-import StatCard from '../../../../shared/components/StatCard';
+import StatCard from '@/shared/components/StatCard';
 
 const HistoryStats = () => {
   return (

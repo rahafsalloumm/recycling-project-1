@@ -1,10 +1,10 @@
 import { FaUsers, FaTruck, FaClipboardList, FaTrash, FaRoute, FaBoxes, FaPlus, FaFileAlt } from "react-icons/fa";
 
-import AdminStatCard from "../components/shared/AdminStatCard";
-import AdminTable from "../components/shared/AdminTable";
-import AdminBins from "../components/shared/AdminBins";
-import AdminCharts from "../components/shared/AdminCharts";
-import AdminMap from "../components/shared/AdminMap";
+import AdminStatCard from "@/features/admin/components/shared/AdminStatCard";
+import AdminTable from "@/features/admin/components/shared/AdminTable";
+import AdminBins from "@/features/admin/components/shared/AdminBins";
+import AdminCharts from "@/features/admin/components/shared/AdminCharts";
+import AdminMap from "@/features/admin/components/shared/AdminMap";
 
 export default function Dashboard() {
   var ordersData = [

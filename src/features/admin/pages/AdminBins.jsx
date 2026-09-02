@@ -1,9 +1,9 @@
 ﻿import {  useState  } from 'react';
 import { FaTrash, FaPlus, FaSearch, FaCheckCircle, FaExclamationTriangle, FaTimesCircle } from "react-icons/fa";
 
-import BinStatCard from "../components/bins/BinStatCard";
-import BinsTable from "../components/bins/BinsTable";
-import BinsInsights from "../components/bins/BinsInsights";
+import BinStatCard from "@/features/admin/components/bins/BinStatCard";
+import BinsTable from "@/features/admin/components/bins/BinsTable";
+import BinsInsights from "@/features/admin/components/bins/BinsInsights";
 
 export default function AdminBins() {
   const [searchTerm, setSearchTerm] = useState("");

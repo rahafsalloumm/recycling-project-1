@@ -50,7 +50,7 @@ function Settings() {
           <div className="grid grid-cols-3 gap-4 mb-4 text-center">
             <div>
               <p className="text-xs text-gray-400 mb-1">رقم الهاتف</p>
-              <p className="text-sm text-gray-700">+962 79 123 4567</p>
+              <p className="text-sm text-gray-700">+963 91 123 4567</p>
             </div>
             <div>
               <p className="text-xs text-gray-400 mb-1">البريد الإلكتروني</p>

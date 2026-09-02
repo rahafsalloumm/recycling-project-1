@@ -1,10 +1,10 @@
-﻿import Sidebar from '../layout/Sidebar';
-import DriverNavbar from '../layout/DriverNavbar';
-import BinsHeader from '../components/bins/BinsHeader';
-import BinsStats from '../components/bins/BinsStats';
-import BinsMapSection from '../components/bins/BinsMapSection';
-import BinsChartSection from '../components/bins/BinsChartSection';
-import BinsTableSection from '../components/bins/BinsTableSection';
+﻿import Sidebar from '@/features/driver/layout/Sidebar';
+import DriverNavbar from '@/features/driver/layout/DriverNavbar';
+import BinsHeader from '@/features/driver/components/bins/BinsHeader';
+import BinsStats from '@/features/driver/components/bins/BinsStats';
+import BinsMapSection from '@/features/driver/components/bins/BinsMapSection';
+import BinsChartSection from '@/features/driver/components/bins/BinsChartSection';
+import BinsTableSection from '@/features/driver/components/bins/BinsTableSection';
 
 const DriverBins = () => {
   return (

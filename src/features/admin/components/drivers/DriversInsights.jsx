@@ -28,7 +28,7 @@ export default function DriversInsights() {
         <div className="space-y-4">
           <div className="flex justify-between items-center border-b border-gray-50 pb-3">
             <div className="space-y-0.5">
-              <p className="text-xs font-bold text-gray-800">جمع النفايات - رام الله</p>
+              <p className="text-xs font-bold text-gray-800">جمع النفايات - حلب</p>
               <p className="text-[10px] text-gray-400">السائق: أحمد محمود</p>
             </div>
             <span className="px-2 py-0.5 bg-green-50 text-green-700 text-[10px] font-bold rounded">جاري التنفيذ</span>
@@ -36,7 +36,7 @@ export default function DriversInsights() {
 
           <div className="flex justify-between items-center border-b border-gray-50 pb-3">
             <div className="space-y-0.5">
-              <p className="text-xs font-bold text-gray-800">جمع البلاستيك - البيرة</p>
+              <p className="text-xs font-bold text-gray-800">جمع البلاستيك - الشهباء</p>
               <p className="text-[10px] text-gray-400">السائق: خالد ناصر</p>
             </div>
             <span className="px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-bold rounded">بانتظار التفريغ</span>

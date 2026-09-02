@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUser, FaBuilding, FaTruck, FaMobileAlt, FaGift, FaRoute, FaCheckCircle, FaArrowLeft } from "react-icons/fa";
-import Navbar from "../../components/layout/Navbar";
+import Navbar from "@/components/layout/Navbar";
 
 export default function HowItWorks() {
   const [activeTab, setActiveTab] = useState("user");

@@ -1,6 +1,6 @@
 ﻿import { FaLeaf, FaCalendarCheck, FaRecycle, FaTruck, FaShoppingBag, FaTint, FaSeedling, FaShoppingCart, FaBolt, FaHeart } from "react-icons/fa";
-import Navbar from "../../components/layout/Navbar"; 
-import heroImg from "../../assets/images/rewards-hero.png"; 
+import Navbar from "@/components/layout/Navbar"; 
+import heroImg from "@/assets/images/rewards-hero.png"; 
 
 export default function RewardsPage() {
   const points = 2450;

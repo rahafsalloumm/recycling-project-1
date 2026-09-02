@@ -1,9 +1,9 @@
-﻿import Sidebar from '../layout/Sidebar';
-import DriverNavbar from '../layout/DriverNavbar';
-import ProfileHeader from '../components/profile/ProfileHeader';
-import ProfileCard from '../components/profile/ProfileCard';
-import InfoPersonal from '../components/profile/InfoPersonal';
-import InfoGrids from '../components/profile/InfoGrids';
+﻿import Sidebar from '@/features/driver/layout/Sidebar';
+import DriverNavbar from '@/features/driver/layout/DriverNavbar';
+import ProfileHeader from '@/features/driver/components/profile/ProfileHeader';
+import ProfileCard from '@/features/driver/components/profile/ProfileCard';
+import InfoPersonal from '@/features/driver/components/profile/InfoPersonal';
+import InfoGrids from '@/features/driver/components/profile/InfoGrids';
 
 const DriverProfile = () => {
   return (
