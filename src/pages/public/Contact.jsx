@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { FaUser, FaEnvelope, FaPhone, FaHeading, FaPaperPlane, FaClock, FaMapMarkerAlt } from "react-icons/fa";
-import Navbar from "../../components/layout/Navbar"; 
+import Navbar from "@/components/layout/Navbar"; 
 
 export default function Contact() {
   const submitBtnRef = useRef(null);
@@ -97,7 +97,7 @@ export default function Contact() {
                 <div className="flex items-center gap-4 justify-end text-right group">
                   <div>
                     <h4 className="font-bold text-gray-700 text-xs">رقم الهاتف</h4>
-                    <p className="text-gray-600 text-xs font-semibold mt-0.5" style={{ direction: 'ltr' }}>+962 79 123 4567</p>
+                    <p className="text-gray-600 text-xs font-semibold mt-0.5" style={{ direction: 'ltr' }}>+963 91 123 4567</p>
                   </div>
                   <div className="w-8 h-8 bg-green-50 text-[#2E7D32] rounded-xl flex items-center justify-center flex-shrink-0">
                     <FaPhone size={12} />
@@ -107,7 +107,7 @@ export default function Contact() {
                 <div className="flex items-start gap-4 justify-end text-right group">
                   <div>
                     <h4 className="font-bold text-gray-700 text-xs">العنوان</h4>
-                    <p className="text-gray-400 text-xs mt-0.5 leading-relaxed">عمان، شارع الجامعة الأردنية، مبنى رقم 52</p>
+                    <p className="text-gray-400 text-xs mt-0.5 leading-relaxed">حلب، شارع الجامعة، مبنى رقم 52</p>
                   </div>
                   <div className="w-8 h-8 bg-green-50 text-[#2E7D32] rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
                     <FaMapMarkerAlt size={12} />

@@ -1,9 +1,9 @@
-﻿import Sidebar from '../layout/Sidebar';
-import DriverNavbar from '../layout/DriverNavbar';
-import TasksHeader from '../components/tasks/TasksHeader';
-import TasksStats from '../components/tasks/TasksStats';
-import DetailedTasksList from '../components/tasks/DetailedTasksList';
-import TaskDetailsCard from '../components/tasks/TaskDetailsCard';
+﻿import Sidebar from '@/features/driver/layout/Sidebar';
+import DriverNavbar from '@/features/driver/layout/DriverNavbar';
+import TasksHeader from '@/features/driver/components/tasks/TasksHeader';
+import TasksStats from '@/features/driver/components/tasks/TasksStats';
+import DetailedTasksList from '@/features/driver/components/tasks/DetailedTasksList';
+import TaskDetailsCard from '@/features/driver/components/tasks/TaskDetailsCard';
 
 const DriverTasks = () => {
   return (

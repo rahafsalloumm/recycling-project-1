@@ -1,27 +1,27 @@
  import { Routes, Route, Navigate } from 'react-router-dom'
 
 // الصفحات العامة
-import Home from './pages/public/Home'
-import ServicesPage from './pages/public/ServicesPage'
-import RequestPickup from './pages/public/RequestPickup'
-import Contact from './pages/public/Contact'
-import HowItWorks from './pages/public/HowItWorks'
-import RewardsPage from './pages/public/RewardsPage'
+import Home from '@/pages/public/Home'
+import ServicesPage from '@/pages/public/ServicesPage'
+import RequestPickup from '@/pages/public/RequestPickup'
+import Contact from '@/pages/public/Contact'
+import HowItWorks from '@/pages/public/HowItWorks'
+import RewardsPage from '@/pages/public/RewardsPage'
 
 // صفحات تسجيل الدخول والمصادقة
-import Login from './pages/auth/Login'
-import Register from './pages/auth/Register'
-import ForgotPassword from './pages/auth/ForgotPassword'
+import Login from '@/pages/auth/Login'
+import Register from '@/pages/auth/Register'
+import ForgotPassword from '@/pages/auth/ForgotPassword'
 
 // صفحات المستخدم
-import DashboardPage from './features/user/pages/dashboardpage'
-import ProfilePage from './features/user/pages/profilepage'
-import RecyclingPage from './features/user/pages/recyclingpage'
-import RewardsNewPage from './features/user/pages/rewardsnewpage'
-import SettingsPage from './features/user/pages/settingspage'
-import TrackingPage from './features/user/pages/trackingpage'
-import WastePickupPage from './features/user/pages/wastepickuppage'
-import MyRewards from './features/user/pages/myrewards'
+import DashboardPage from '@/features/user/pages/dashboardpage'
+import ProfilePage from '@/features/user/pages/profilepage'
+import RecyclingPage from '@/features/user/pages/recyclingpage'
+import RewardsNewPage from '@/features/user/pages/rewardsnewpage'
+import SettingsPage from '@/features/user/pages/settingspage'
+import TrackingPage from '@/features/user/pages/trackingpage'
+import WastePickupPage from '@/features/user/pages/wastepickuppage'
+import MyRewards from '@/features/user/pages/myrewards'
 // لوحة تحكم المسؤول (Admin)
 import AdminLayout from './features/admin/layout/AdminLayout'
 import Dashboard from './features/admin/pages/Dashboard'
@@ -33,17 +33,18 @@ import AdminRoutes from './features/admin/pages/AdminRoutes'
 import AdminReports from './features/admin/pages/AdminReports'
 import AdminRewards from './features/admin/pages/AdminRewards'
 import AdminSettings from './features/admin/pages/AdminSettings'
+import AdminSupport from "./features/admin/pages/AdminSupport"; 
 
 // لوحة تحكم السائق (Driver)
-import DriverDashboard from './features/driver/pages/DriverDashboard'
-import DriverTasks from './features/driver/pages/DriverTasks'
-import DriverRoute from './features/driver/pages/DriverRoute'
-import DriverBins from './features/driver/pages/DriverBins'
-import DriverHomes from './features/driver/pages/DriverHomes'
-import DriverHistory from './features/driver/pages/DriverHistory'
-import DriverProfile from './features/driver/pages/DriverProfile'
-import DriverHelp from './features/driver/pages/DriverHelp'
-import Sidebar from './features/driver/layout/Sidebar'
+import DriverDashboard from '@/features/driver/pages/DriverDashboard'
+import DriverTasks from '@/features/driver/pages/DriverTasks'
+import DriverRoute from '@/features/driver/pages/DriverRoute'
+import DriverBins from '@/features/driver/pages/DriverBins'
+import DriverHomes from '@/features/driver/pages/DriverHomes'
+import DriverHistory from '@/features/driver/pages/DriverHistory'
+import DriverProfile from '@/features/driver/pages/DriverProfile'
+import DriverHelp from '@/features/driver/pages/DriverHelp'
+import Sidebar from '@/features/driver/layout/Sidebar'
 
 function App() {
   return (
@@ -81,6 +82,8 @@ function App() {
         <Route path="reports" element={<AdminReports />} />
         <Route path="rewards" element={<AdminRewards />} />
         <Route path="settings" element={<AdminSettings />} />
+        <Route path="/admin/support" element={<AdminSupport />} />
+
       </Route>
 
 {/* لوحة تحكم الـ Driver */}

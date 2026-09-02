@@ -1,20 +1,21 @@
 ﻿import { NavLink } from 'react-router-dom';
 import { FaRecycle } from 'react-icons/fa'; // شعار التدوير الثلاثي الموحد للمشروع
-import { FaHome, FaUsers, FaTruck, FaChartPie, FaGift, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaUsers, FaTruck, FaChartPie, FaGift, FaCog, FaSignOutAlt, FaEnvelopeOpenText } from "react-icons/fa";
 
 export default function AdminSidebar() {
-  // الحفاظ على أزرار ومسارات الأدمن الحالية الخاصة بك بدقة
+  // القائمة الكاملة والمحدثة لتظهر مباشرة على الشاشة
   const menu = [
     { icon: <FaHome />, label: "لوحة التحكم", path: "/admin/dashboard" },
     { icon: <FaUsers />, label: "إدارة المستخدمين", path: "/admin/users" },
     { icon: <FaTruck />, label: "إدارة الطلبات", path: "/admin/orders" },
     { icon: <FaChartPie />, label: "التقارير والإحصائيات", path: "/admin/reports" },
+    /* 📌 الخيار الجديد المضاف ليظهر فوراً في السايد بار */
+    { icon: <FaEnvelopeOpenText />, label: "رسائل الدعم الفني", path: "/admin/support" },
     { icon: <FaGift />, label: "نظام المكافآت", path: "/admin/rewards" },
     { icon: <FaCog />, label: "الإعدادات", path: "/admin/settings" },
   ];
 
   return (
-    // 🎨 التوحيد: العرض ثابت w-64، اللون زيتي فخم [#0d2a1d]، وملء الطول بالكامل h-screen fixed
     <aside className="w-64 bg-[#0d2a1d] text-white flex flex-col justify-between h-screen fixed right-0 top-0 bottom-0 z-30 shadow-2xl border-l border-[#1b4332]/40 select-none" dir="rtl">
       <div>
         {/* الهيدر الموحد بشعار التدوير وعنوان مشروعك عريض ونظيف */}
@@ -28,7 +29,7 @@ export default function AdminSidebar() {
           </div>
         </div>
         
-        {/* 📋 القائمة بتباعد فسيح ونظيف وستايل التحديد الأبيض الشفاف الفاخر المتطابق مع السائق */}
+        {/* القائمة بتباعد فسيح ونظيف وستايل التحديد الأبيض الشفاف الفاخر */}
         <nav className="flex flex-col gap-2.5 p-5 w-full">
           {menu.map((item, i) => (
             <NavLink 

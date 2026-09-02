@@ -1,5 +1,8 @@
-﻿ import { useNavigate } from "react-router-dom";
-import { FaLeaf, FaCalendarCheck, FaRecycle, FaTruck, FaShoppingBag, FaTint, FaSeedling, FaShoppingCart, FaBolt, FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { 
+  FaLeaf, FaCalendarCheck, FaRecycle, FaTruck, FaShoppingBag, 
+  FaTint, FaSeedling, FaBoxOpen, FaCoffee, FaTrashRestore, FaSolarPanel 
+} from "react-icons/fa";
 import Navbar from "../../components/layout/Navbar"; 
 import heroImg from "../../assets/images/rewards-hero.png"; 
 
@@ -15,16 +18,17 @@ export default function RewardsPage() {
   ];
 
   const rewards = [
-    { icon: <FaShoppingBag size={38} className="text-pink-600" />, title: "شنطة قماش", subtitle: "صديقة للبيئة", cost: "900 نقطة" },
-    { icon: <FaTint size={38} className="text-blue-500" />, title: "زجاجة مياه", subtitle: "قابلة لإعادة الاستخدام", cost: "800 نقطة" },
-    { icon: <FaSeedling size={38} className="text-emerald-600" />, title: "نبتة داخلية", subtitle: "صديقة للبيئة", cost: "1,200 نقطة" },
-    { icon: <FaShoppingCart size={38} className="text-emerald-600" />, title: "قسيمة شراء", subtitle: "سوبر ماركت أخضر", cost: "1,000 نقطة" },
-    { icon: <FaBolt size={38} className="text-amber-500" />, title: "قسيمة شراء", subtitle: "50 ريال", cost: "1,000 نقطة" },
-    { icon: <FaHeart size={38} className="text-red-500" />, title: "تبرع لجمعية", subtitle: "بيئة", cost: "700 نقطة" },
-    { icon: <FaLeaf size={38} className="text-emerald-600" />, title: "طقم زراعة", subtitle: "للمبتدئين", cost: "1,300 نقطة" },
-    { icon: <FaTruck size={38} className="text-blue-500" />, title: "غسيل سيارة", subtitle: "خارجي", cost: "1,500 نقطة" },
+    { icon: <FaShoppingBag size={38} className="text-pink-600" />, title: "شنطة قماش", subtitle: "صديقة للبيئة وخفيفة للتوصيل", cost: "900 نقطة" },
+    { icon: <FaTint size={38} className="text-blue-500" />, title: "زجاجة مياه مخصصة", subtitle: "مقاومة للصدأ وقابلة لإعادة الاستخدام", cost: "800 نقطة" },
+    { icon: <FaSeedling size={38} className="text-emerald-600" />, title: "نبتة داخلية صغيرة", subtitle: "في أصيص بلاستيكي آمن للنقل", cost: "1,200 نقطة" },
+    { icon: <FaLeaf size={38} className="text-emerald-500" />, title: "طقم بذور زراعية", subtitle: "مجموعة بذور سريعة النمو في الميدان", cost: "1,100 نقطة" },
+    { icon: <FaBoxOpen size={38} className="text-amber-600" />, title: "صندوق سماد عضوي", subtitle: "عبوة مغلفة مخصصة للحدائق المنزلية", cost: "1,400 نقطة" },
+    { icon: <FaCoffee size={38} className="text-yellow-700" />, title: "كوب حراري حافظ", subtitle: "مصنوع من مواد معاد تدويرها", cost: "1,000 نقطة" },
+    /* 📌 الجائزة الجديدة الأولى */
+    { icon: <FaTrashRestore size={38} className="text-teal-600" />, title: "أكياس فرز منزلية", subtitle: "طقم أكياس ملونة وقابلة لإعادة الاستخدام", cost: "600 نقطة" },
+    /* 📌 الجائزة الجديدة الثانية */
+    { icon: <FaSolarPanel size={38} className="text-cyan-500" />, title: "شاحن طاقة شمسي", subtitle: "شاحن محمول للأجهزة الذكية عبر الشمس", cost: "3,500 نقطة" }
   ];
-
   return (
     /* تلوين الخلفية العامة بالأخضر المريمي الناعم جداً لراحة العين وحمايتها */
     <div dir="rtl" className="min-h-screen bg-[#EBF1EB] font-sans antialiased text-gray-700 pb-20">
@@ -52,7 +56,7 @@ export default function RewardsPage() {
           {/* نصوص الترحيب المركزية فوق بياض الصورة الممتدة */}
           <div className="text-center flex-1 space-y-2.5 mt-4 md:mt-0 z-10">
             <h1 className="text-3xl md:text-4xl font-black text-[#1b3a2b] flex items-center justify-center gap-2">
-              <FaLeaf className="text-green-700" /> كافئ نفسك
+              <FaLeaf className="text-green-700 text-2xl md:text-3xl" /> كافئ نفسك
             </h1>
             <p className="text-gray-800 text-sm md:text-base font-extrabold leading-relaxed max-w-xl mx-auto">
               اجمع النقاط مع كل خطوة تخطوها نحو بيئة أنظف
@@ -74,7 +78,7 @@ export default function RewardsPage() {
       <div className="max-w-6xl mx-auto px-6 mt-12">
         
         {/* ===== كيف تكسب النقاط ===== */}
-        <div>
+        <div className="text-right">
           <h2 className="text-lg md:text-xl font-black text-[#1b3a2b] flex items-center justify-center gap-2 mb-6">
             <FaLeaf className="text-green-600 text-sm" /> كيف تكسب النقاط؟
           </h2>
@@ -94,8 +98,9 @@ export default function RewardsPage() {
             ))}
           </div>
         </div>
-        {/* ===== استبدل نقاطك بمكافآت رائعة ===== */}
-        <div className="mt-14">
+
+        {/* ===== استبدل نقاطك بمكافآت رائعة للتوصيل الميداني ===== */}
+        <div className="mt-14 text-right">
           <h2 className="text-lg md:text-xl font-black text-[#1b3a2b] flex items-center justify-center gap-2 mb-8">
             <FaLeaf className="text-green-600 text-sm" /> استبدل نقاطك بمكافآت رائعة
           </h2>
@@ -111,7 +116,7 @@ export default function RewardsPage() {
                     {reward.icon}
                   </div>
                   <h3 className="font-black text-gray-800 text-sm md:text-base">{reward.title}</h3>
-                  <p className="text-gray-400 text-xs font-medium mt-1 mb-2.5">{reward.subtitle}</p>
+                  <p className="text-gray-400 text-xs font-medium mt-1 mb-2.5 leading-tight">{reward.subtitle}</p>
                   <p className="text-green-800 font-black text-xs font-mono mb-4 bg-green-50 border border-green-100/60 px-3 py-0.5 rounded-xl inline-block shadow-inner">{reward.cost}</p>
                 </div>
                 
@@ -131,3 +136,4 @@ export default function RewardsPage() {
     </div>
   );
 }
+

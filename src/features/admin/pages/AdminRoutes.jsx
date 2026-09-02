@@ -1,10 +1,10 @@
 ﻿import {  useState  } from 'react';
 import { FaRoute, FaPlus, FaSearch, FaCheckCircle, FaSpinner, FaClock, FaRoad } from "react-icons/fa";
 
-import RouteStatCard from "../components/routes/RouteStatCard";
-import RoutesTable from "../components/routes/RoutesTable";
-import RoutesInsights from "../components/routes/RoutesInsights";
-import RoutesBottomCharts from "../components/routes/RoutesBottomCharts";
+import RouteStatCard from "@/features/admin/components/routes/RouteStatCard";
+import RoutesTable from "@/features/admin/components/routes/RoutesTable";
+import RoutesInsights from "@/features/admin/components/routes/RoutesInsights";
+import RoutesBottomCharts from "@/features/admin/components/routes/RoutesBottomCharts";
 
 export default function AdminRoutes() {
   const [searchTerm, setSearchTerm] = useState("");

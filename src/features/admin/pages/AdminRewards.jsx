@@ -1,22 +1,23 @@
-﻿import {  useState  } from 'react';
+﻿import { useState } from 'react';
 import { FaPlus, FaSearch, FaStar, FaUsers, FaCoins, FaBoxes, FaGift } from "react-icons/fa";
 
-import RewardStatCard from "../components/rewards/RewardStatCard";
-import RewardsTable from "../components/rewards/RewardsTable";
+import RewardStatCard from "@/features/admin/components/rewards/RewardStatCard";
+import RewardsTable from "@/features/admin/components/rewards/RewardsTable";
 
 export default function AdminRewards() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("الكل");
 
-  // مصفوفة الحوافز المحدثة بناءً على طلبك بدقة
+  // 💡 استبدال المكافآت القديمة بالمنتجات العينية الثمانية المخصصة للتوصيل الفوري مع السائق
   const [rewardsData, setRewardsData] = useState([
-    { id: 1, name: "قسيمة حسم 50% من فاتورة الكهرباء المنزلية الرسمية", category: "خدمات عامة وإعفاءات", points: 1500, stock: "مفتوح", claimed: 1420, icon: "⚡", status: true },
-    { id: 2, name: "قسيمة شراء مواد غذائية أساسية من الجمعيات التعاونية الاستهلاكية", category: "قسائم استهلاكية ومدفوعات", points: 1200, stock: 150, claimed: 2450, icon: "🛒", status: true },
-    { id: 3, name: "تحويل رصيد مالي مباشر عبر خدمة (شام كاش)", category: "قسائم استهلاكية ومدفوعات", points: 1000, stock: "مفتوح", claimed: 1680, icon: "📱", status: true },
-    { id: 4, name: "نبتة منزلية طبيعية أنيقة لتنقية الهواء الداخلي", category: "منتجات بيئية بديلة", points: 400, stock: 120, claimed: 340, icon: "🪴", status: true },
-    { id: 5, name: "كوب (ماج) حراري حافظ للحرارة والبرودة", category: "منتجات بيئية بديلة", points: 500, stock: 200, claimed: 510, icon: "☕", status: true },
-    { id: 6, name: "حقيبة ظهر متينة ومقاومة للماء مصنوعة من قماش معاد تدويره", category: "منتجات بيئية بديلة", points: 2500, stock: 45, claimed: 115, icon: "🎒", status: true },
-    { id: 7, name: "زجاجة مياه حرارية (ستانلس ستيل) تحفظ برودة السوائل", category: "منتجات بيئية بديلة", points: 1200, stock: 80, claimed: 290, icon: "🧪", status: true }
+    { id: 1, name: "شنطة قماش صديقة للبيئة وخفيفة للتوصيل", category: "منتجات بيئية بديلة", points: 900, stock: 145, claimed: 1420, icon: "🛍️", status: true },
+    { id: 2, name: "زجاجة مياه مخصصة مقاومة للصدأ وقابلة لإعادة الاستخدام", category: "منتجات بيئية بديلة", points: 800, stock: 80, claimed: 298, icon: "🧪", status: true },
+    { id: 3, name: "نبتة داخلية صغيرة في أصيص بلاستيكي آمن للنقل", category: "منتجات بيئية بديلة", points: 1200, stock: 120, claimed: 340, icon: "🪴", status: true },
+    { id: 4, name: "طقم بذور زراعية سريعة النمو في الميدان", category: "منتجات بيئية بديلة", points: 1100, stock: 45, claimed: 115, icon: "🌱", status: true },
+    { id: 5, name: "صندوق سماد عضوي مغلف مخصص للحدائق المنزلية", category: "منتجات بيئية بديلة", points: 1400, stock: 150, claimed: 2450, icon: "📦", status: true },
+    { id: 6, name: "كوب (ماج) حراري حافظ مصنوع من مواد معاد تدويرها", category: "منتجات بيئية بديلة", points: 1000, stock: 200, claimed: 510, icon: "☕", status: true },
+    { id: 7, name: "طقم أكياس فرز منزلية ملونة وقابلة لإعادة الاستخدام", category: "منتجات بيئية بديلة", points: 600, stock: 310, claimed: 840, icon: "♻️", status: true },
+    { id: 8, name: "شاحن طاقة شمسي محمول للأجهزة الذكية عبر الشمس", category: "منتجات بيئية بديلة", points: 3500, stock: 15, claimed: 42, icon: "☀️", status: true }
   ]);
 
   // دالة تشغيل وتغيير حالة الإتاحة (Toggle Switch) الحية
@@ -28,11 +29,9 @@ export default function AdminRewards() {
     );
   };
 
-  // توليد فئات المكافآت الجانبية المحدثة
+  // 📋 تحديث الفئات الجانبية المتاحة لتطابق التصنيف العيني الجديد
   const categories = [
     { name: "الكل", icon: "🌿", count: rewardsData.length },
-    { name: "خدمات عامة وإعفاءات", icon: "⚡", count: rewardsData.filter(r => r.category === "خدمات عامة وإعفاءات").length },
-    { name: "قسائم استهلاكية ومدفوعات", icon: "🛒", count: rewardsData.filter(r => r.category === "قسائم استهلاكية ومدفوعات").length },
     { name: "منتجات بيئية بديلة", icon: "🎒", count: rewardsData.filter(r => r.category === "منتجات بيئية بديلة").length }
   ];
 
@@ -42,7 +41,6 @@ export default function AdminRewards() {
     const matchesCategory = activeCategory === "الكل" || reward.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
-
   return (
     <div className="w-full space-y-6 text-right font-sans p-1 animate-fadeIn duration-300" dir="rtl">
       
@@ -53,8 +51,9 @@ export default function AdminRewards() {
             <span className="w-1.5 h-6 bg-emerald-600 rounded-full block"></span>
             نظام الحوافز والمكافآت الخدمية
           </h1>
-          <p className="text-sm text-gray-400 mt-1.5 font-medium">تحفيز المشاركة المجتمعية عبر ربط نقاط التدوير بإعفاءات خدمية وحوافز عصرية مرغوبة</p>
+          <p className="text-sm text-gray-400 mt-1.5 font-medium">تحفيز المشاركة المجتمعية عبر ربط نقاط التدوير بمنتجات بيئية وحوافز عصرية مرغوبة وعينية</p>
         </div>
+        
         <button className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl text-sm font-bold shadow-md hover:bg-emerald-700 transition-all duration-300 cursor-pointer active:scale-98">
           <FaPlus className="text-xs" /> 
           <span>إضافة حافز جديد</span>

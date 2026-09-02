@@ -6,10 +6,10 @@ const InfoPersonal = () => {
   const [personalData, setPersonalData] = useState({
     name: 'أحمد محمد السائق',
     email: 'ahmed.driver@ecocycle.com',
-    phone: '+962 79 123 4567',
+    phone: '+963 91 123 4567',
     birthday: '1992-05-15',
-    address: 'عمان، الأردن',
-    nationalId: '9621051234',
+    address: 'حلب، سوريا',
+    nationalId: '9631051234',
     joinDate: '2023-02-10'
   });
 

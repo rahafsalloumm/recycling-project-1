@@ -1,23 +1,23 @@
 ﻿import {  useState  } from 'react';
 import { FaClipboardList, FaCheckCircle, FaSpinner, FaClock, FaTimesCircle, FaPlus, FaSearch } from "react-icons/fa";
 
-import OrderStatCard from "../components/orders/OrderStatCard";
-import OrdersTable from "../components/orders/OrdersTable";
-import OrdersInsights from "../components/orders/OrdersInsights";
+import OrderStatCard from "@/features/admin/components/orders/OrderStatCard";
+import OrdersTable from "@/features/admin/components/orders/OrdersTable";
+import OrdersInsights from "@/features/admin/components/orders/OrdersInsights";
 
 export default function AdminOrders() {
   const [searchTerm, setSearchTerm] = useState("");
 
   // مصفوفة البيانات الأساسية للطلبات المتطابقة مع الصورة
   const ordersData = [
-    { id: 1, reqCode: "#REQ-2401", name: "أحمد محمد", email: "ahmad.m@gmail.com", type: "بلاستيك", qty: "5 كغ", address: "رام الله - شارع الإرسال", date: "2024-05-20 10:30 AM", status: "قيد المراجعة" },
-    { id: 2, reqCode: "#REQ-2402", name: "سارة خالد", email: "sara.k@gmail.com", type: "ورق", qty: "8 كغ", address: "البيرة - حي البالوع", date: "2024-05-20 09:15 AM", status: "قيد التنفيذ" },
-    { id: 3, reqCode: "#REQ-2403", name: "محمد علي", email: "mohamed.a@gmail.com", type: "زجاج", qty: "3 كغ", address: "رام الله - عين منجد", date: "2024-05-19 04:45 PM", status: "تم الاستلام" },
-    { id: 4, reqCode: "#REQ-2404", name: "ليلى حسن", email: "laila.h@gmail.com", type: "معدن", qty: "10 كغ", address: "بيت لحم - شارع المهد", date: "2024-05-19 11:20 AM", status: "قيد المراجعة" },
-    { id: 5, reqCode: "#REQ-2405", name: "يوسف سامي", email: "yousef.s@gmail.com", type: "بلاستيك", qty: "6 كغ", address: "الخليل - دوار التحرير", date: "2024-05-18 03:10 PM", status: "ملغاة" },
-    { id: 6, reqCode: "#REQ-2406", name: "نور إياد", email: "noor.e@gmail.com", type: "ورق", qty: "4 كغ", address: "نابلس - رفيديا", date: "2024-05-18 10:05 AM", status: "تم الاستلام" },
-    { id: 7, reqCode: "#REQ-2407", name: "خالد ناصر", email: "khaled.n@gmail.com", type: "زجاج", qty: "7 كغ", address: "أريحا - شارع السلالم", date: "2024-05-17 02:30 PM", status: "قيد التنفيذ" },
-    { id: 8, reqCode: "#REQ-2408", name: "رنا أيمن", email: "rana.a@gmail.com", type: "معدن", qty: "2 كغ", address: "رام الله - الماصيون", date: "2024-05-17 09:45 AM", status: "قيد المراجعة" }
+    { id: 1, reqCode: "#REQ-2401", name: "أحمد محمد", email: "ahmad.m@gmail.com", type: "بلاستيك", qty: "5 كغ", address: "الجميلية - شارع النيل", date: "2024-05-20 10:30 AM", status: "قيد المراجعة" },
+    { id: 2, reqCode: "#REQ-2402", name: "سارة خالد", email: "sara.k@gmail.com", type: "ورق", qty: "8 كغ", address: "الشهباء - حي الفيلات", date: "2024-05-20 09:15 AM", status: "قيد التنفيذ" },
+    { id: 3, reqCode: "#REQ-2403", name: "محمد علي", email: "mohamed.a@gmail.com", type: "زجاج", qty: "3 كغ", address: "حلب الجديدة - شارع السلام", date: "2024-05-19 04:45 PM", status: "تم الاستلام" },
+    { id: 4, reqCode: "#REQ-2404", name: "ليلى حسن", email: "laila.h@gmail.com", type: "معدن", qty: "10 كغ", address: "الميدان - شارع قسطل", date: "2024-05-19 11:20 AM", status: "قيد المراجعة" },
+    { id: 5, reqCode: "#REQ-2405", name: "يوسف سامي", email: "yousef.s@gmail.com", type: "بلاستيك", qty: "6 كغ", address: "العزيزية - شارع المنشية", date: "2024-05-18 03:10 PM", status: "ملغاة" },
+    { id: 6, reqCode: "#REQ-2406", name: "نور إياد", email: "noor.e@gmail.com", type: "ورق", qty: "4 كغ", address: "الشيخ مقصود - شارع النهضة", date: "2024-05-18 10:05 AM", status: "تم الاستلام" },
+    { id: 7, reqCode: "#REQ-2407", name: "خالد ناصر", email: "khaled.n@gmail.com", type: "زجاج", qty: "7 كغ", address: "الحمدانية - شارع الفردوس", date: "2024-05-17 02:30 PM", status: "قيد التنفيذ" },
+    { id: 8, reqCode: "#REQ-2408", name: "رنا أيمن", email: "rana.a@gmail.com", type: "معدن", qty: "2 كغ", address: "الجميلية - شارع البستان", date: "2024-05-17 09:45 AM", status: "قيد المراجعة" }
   ];
 
   const filteredOrders = ordersData.filter(order =>

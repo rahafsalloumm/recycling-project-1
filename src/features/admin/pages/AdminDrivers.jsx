@@ -1,20 +1,20 @@
 ﻿import {  useState  } from 'react';
 import { FaTruck, FaUserCheck, FaClock, FaExclamationTriangle, FaSearch, FaPlus, FaCheckCircle, FaChartLine, FaTrophy } from "react-icons/fa";
 
-import DriverStatCard from "../components/drivers/DriverStatCard";
-import DriversTable from "../components/drivers/DriversTable";
-import DriversInsights from "../components/drivers/DriversInsights";
+import DriverStatCard from "@/features/admin/components/drivers/DriverStatCard";
+import DriversTable from "@/features/admin/components/drivers/DriversTable";
+import DriversInsights from "@/features/admin/components/drivers/DriversInsights";
 
 export default function AdminDrivers() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const driversData = [
-    { id: 1, name: "أحمد محمود", idCode: "DVR-001", phone: "+970 59 123 4567", region: "رام الله", status: "متاح", tasks: 45, date: "2024-01-10" },
-    { id: 2, name: "خالد ناصر", idCode: "DVR-002", phone: "+970 59 234 5678", region: "البيرة", status: "في مهمة", tasks: 32, date: "2024-01-15" },
-    { id: 3, name: "محمد علي", idCode: "DVR-003", phone: "+970 59 345 6789", region: "رام الله", status: "في مهمة", tasks: 28, date: "2024-01-20" },
-    { id: 4, name: "يوسف سامي", idCode: "DVR-004", phone: "+970 59 456 7890", region: "القدس", status: "متاح", tasks: 50, date: "2024-02-01" },
-    { id: 5, name: "سامي حسن", idCode: "DVR-005", phone: "+970 59 567 8901", region: "نابلس", status: "في مهمة", tasks: 21, date: "2024-02-05" },
-    { id: 6, name: "محمود عادل", idCode: "DVR-006", phone: "+970 59 678 9012", region: "الخليل", status: "غير نشط", tasks: 10, date: "2024-02-18" }
+    { id: 1, name: "أحمد محمود", idCode: "DVR-001", phone: "+963 91 123 4567", region: "الجميلية", status: "متاح", tasks: 45, date: "2024-01-10" },
+    { id: 2, name: "خالد ناصر", idCode: "DVR-002", phone: "+963 91 234 5678", region: "الشهباء", status: "في مهمة", tasks: 32, date: "2024-01-15" },
+    { id: 3, name: "محمد علي", idCode: "DVR-003", phone: "+963 91 345 6789", region: "حلب الجديدة", status: "في مهمة", tasks: 28, date: "2024-01-20" },
+    { id: 4, name: "يوسف سامي", idCode: "DVR-004", phone: "+963 91 456 7890", region: "الميدان", status: "متاح", tasks: 50, date: "2024-02-01" },
+    { id: 5, name: "سامي حسن", idCode: "DVR-005", phone: "+963 91 567 8901", region: "العزيزية", status: "في مهمة", tasks: 21, date: "2024-02-05" },
+    { id: 6, name: "محمود عادل", idCode: "DVR-006", phone: "+963 91 678 9012", region: "الشيخ مقصود", status: "غير نشط", tasks: 10, date: "2024-02-18" }
   ];
 
   const filteredDrivers = driversData.filter(driver =>

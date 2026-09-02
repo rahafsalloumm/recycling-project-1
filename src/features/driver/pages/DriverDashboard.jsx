@@ -1,9 +1,9 @@
-﻿import Sidebar from '../layout/Sidebar';
-import DriverNavbar from '../layout/DriverNavbar';
-import StatCard from '../../../shared/components/StatCard';
-import MapSection from '../components/home/MapSection';
-import TasksList from '../components/home/TasksList';
-import DashboardGrid from '../components/home/DashboardGrid';
+﻿import Sidebar from '@/features/driver/layout/Sidebar';
+import DriverNavbar from '@/features/driver/layout/DriverNavbar';
+import StatCard from '@/shared/components/StatCard';
+import MapSection from '@/features/driver/components/home/MapSection';
+import TasksList from '@/features/driver/components/home/TasksList';
+import DashboardGrid from '@/features/driver/components/home/DashboardGrid';
 
 import { FiBattery, FiNavigation, FiClock, FiCheckCircle, FiFileText } from 'react-icons/fi';
 

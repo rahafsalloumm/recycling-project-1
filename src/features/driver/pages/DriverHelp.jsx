@@ -1,6 +1,6 @@
-﻿import Sidebar from '../layout/Sidebar';
-import DriverNavbar from '../layout/DriverNavbar';
-import HelpAccordion from '../components/help/HelpAccordion';
+﻿import Sidebar from '@/features/driver/layout/Sidebar';
+import DriverNavbar from '@/features/driver/layout/DriverNavbar';
+import HelpAccordion from '@/features/driver/components/help/HelpAccordion';
 import { FiHelpCircle, FiShield } from 'react-icons/fi';
 
 const DriverHelp = () => {

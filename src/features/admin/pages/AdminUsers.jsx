@@ -1,8 +1,8 @@
 ﻿import {  useState  } from 'react';
 import { FaUsers, FaUserPlus, FaUserCheck, FaStar, FaPlus, FaSearch } from "react-icons/fa";
 
-import UserStatCard from "../components/users/UserStatCard";
-import UsersTable from "../components/users/UsersTable";
+import UserStatCard from "@/features/admin/components/users/UserStatCard";
+import UsersTable from "@/features/admin/components/users/UsersTable";
 
 export default function AdminUsers() {
   const [searchTerm, setSearchTerm] = useState("");
