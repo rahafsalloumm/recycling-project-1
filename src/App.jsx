@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+ import { Routes, Route, Navigate } from 'react-router-dom'
 
 // الصفحات العامة
 import Home from './pages/public/Home'
@@ -14,9 +14,14 @@ import Register from './pages/auth/Register'
 import ForgotPassword from './pages/auth/ForgotPassword'
 
 // صفحات المستخدم
-import OrderTracking from './features/user/pages/OrderTracking'
-import SettingsPage from './features/user/pages/Settings'
-
+import DashboardPage from './features/user/pages/dashboardpage'
+import ProfilePage from './features/user/pages/profilepage'
+import RecyclingPage from './features/user/pages/recyclingpage'
+import RewardsNewPage from './features/user/pages/rewardsnewpage'
+import SettingsPage from './features/user/pages/settingspage'
+import TrackingPage from './features/user/pages/trackingpage'
+import WastePickupPage from './features/user/pages/wastepickuppage'
+import MyRewards from './features/user/pages/myrewards'
 // لوحة تحكم المسؤول (Admin)
 import AdminLayout from './features/admin/layout/AdminLayout'
 import Dashboard from './features/admin/pages/Dashboard'
@@ -38,17 +43,22 @@ import DriverHomes from './features/driver/pages/DriverHomes'
 import DriverHistory from './features/driver/pages/DriverHistory'
 import DriverProfile from './features/driver/pages/DriverProfile'
 import DriverHelp from './features/driver/pages/DriverHelp'
+import Sidebar from './features/driver/layout/Sidebar'
 
 function App() {
   return (
     <Routes>
       {/* صفحات المستخدم */}
-      <Route path="/dashboard" element={<OrderTracking />} />
-      <Route path="/wastepickup" element={<ServicesPage />} />
+      <Route path="/user" element={< DashboardPage/>}></Route>
+      <Route path="/dashboard" element={<DashboardPage />} />
+      <Route path="/wastepickup" element={<WastePickupPage />} />
       <Route path="/services" element={<ServicesPage />} />
-      <Route path="/tracking" element={<OrderTracking />} />
+      <Route path="/tracking" element={< TrackingPage />} />
       <Route path="/settings" element={<SettingsPage />} />
-
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/recycling" element={<RecyclingPage />} />
+      <Route path="/rewardsnew" element={<RewardsNewPage />} />
+      <Route path="/myrewards" element={<MyRewards />} />
       {/* الصفحات العامة */}
       <Route path="/" element={<Home />} />
       <Route path="/request-pickup" element={<RequestPickup />} />
@@ -65,7 +75,7 @@ function App() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="drivers" element={<AdminDrivers />} />
-        <Route path="orders" element={<AdminOrders />} />
+ <Route path="orders" element={<AdminOrders />} />
         <Route path="bins" element={<AdminBins />} />
         <Route path="routes" element={<AdminRoutes />} />
         <Route path="reports" element={<AdminReports />} />
@@ -73,7 +83,8 @@ function App() {
         <Route path="settings" element={<AdminSettings />} />
       </Route>
 
-      {/* لوحة تحكم الـ Driver */}
+{/* لوحة تحكم الـ Driver */}
+      <Route path="/driver" element={<DriverDashboard />}></Route>
       <Route path="/driver/dashboard" element={<DriverDashboard />} />
       <Route path="/driver/tasks" element={<DriverTasks />} />
       <Route path="/driver/route" element={<DriverRoute />} />

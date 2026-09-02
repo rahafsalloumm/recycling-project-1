@@ -253,16 +253,6 @@ export default function Register() {
 
               <button
                 type="button"
-                onClick={() => setRole("company")}
-                className={`p-3 rounded-xl border transition ${
-                  role === "company" ? "bg-green-500 text-white border-green-500" : "bg-white hover:bg-green-50 text-gray-700"
-                }`}
-              >
-                شركة
-              </button>
-
-              <button
-                type="button"
                 onClick={() => setRole("driver")}
                 className={`p-3 rounded-xl border transition ${
                   role === "driver" ? "bg-green-500 text-white border-green-500" : "bg-white hover:bg-green-50 text-gray-700"

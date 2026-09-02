@@ -1,8 +1,10 @@
-﻿import { FaLeaf, FaCalendarCheck, FaRecycle, FaTruck, FaShoppingBag, FaTint, FaSeedling, FaShoppingCart, FaBolt, FaHeart } from "react-icons/fa";
+﻿ import { useNavigate } from "react-router-dom";
+import { FaLeaf, FaCalendarCheck, FaRecycle, FaTruck, FaShoppingBag, FaTint, FaSeedling, FaShoppingCart, FaBolt, FaHeart } from "react-icons/fa";
 import Navbar from "../../components/layout/Navbar"; 
 import heroImg from "../../assets/images/rewards-hero.png"; 
 
 export default function RewardsPage() {
+  const navigate = useNavigate();
   const points = 2450;
 
   const earnMethods = [
@@ -58,8 +60,7 @@ export default function RewardsPage() {
               استبدل نقاطك بمكافآت صديقة للبيئة وحضرية
             </p>
           </div>
-
-          {/* موازن هندسي متناسق */}
+ {/* موازن هندسي متناسق */}
           <div className="hidden md:block w-28 h-28 flex-shrink-0 relative">
             {/* الدائرة المعلقة المتموضعة بدقة متناهية فوق الحافة السفلية للهيدر العريض */}
             <div className="absolute bottom-[-56px] left-0 bg-white rounded-full w-24 h-24 flex items-center justify-center text-center text-[11px] font-black text-green-800 shadow-md border border-green-200/50 z-20 leading-tight">
@@ -116,6 +117,7 @@ export default function RewardsPage() {
                 
                 <button
                   type="button"
+                  onClick={() => navigate("/myrewards")}
                   className="w-full bg-green-700 hover:bg-green-800 text-white border-none rounded-xl py-3 text-xs font-black shadow-xs transition duration-300 cursor-pointer active:scale-98"
                 >
                   استبدل الآن
@@ -129,4 +131,3 @@ export default function RewardsPage() {
     </div>
   );
 }
-
