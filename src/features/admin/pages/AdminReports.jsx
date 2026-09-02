@@ -1,9 +1,9 @@
 ﻿import {  useState  } from 'react';
 import { FaDownload, FaCalendarAlt, FaTruck, FaUsers, FaRecycle, FaClipboardList, FaBoxes } from "react-icons/fa";
 
-import ReportStatCard from "../components/reports/ReportStatCard";
-import ReportsTopCharts from "../components/reports/ReportsTopCharts";
-import ReportsBottomSection from "../components/reports/ReportsBottomSection";
+import ReportStatCard from "@/features/admin/components/reports/ReportStatCard";
+import ReportsTopCharts from "@/features/admin/components/reports/ReportsTopCharts";
+import ReportsBottomSection from "@/features/admin/components/reports/ReportsBottomSection";
 
 export default function AdminReports() {
   // حالة التحكم بالفلترة الزمنية النشطة (اليوم، الأسبوع، الشهر، السنة)

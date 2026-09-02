@@ -1,9 +1,9 @@
-﻿import Sidebar from '../layout/Sidebar';
-import DriverNavbar from '../layout/DriverNavbar';
-import HistoryHeader from '../components/history/HistoryHeader';
-import HistoryStats from '../components/history/HistoryStats';
-import HistoryFilter from '../components/history/HistoryFilter';
-import HistoryTable from '../components/history/HistoryTable';
+﻿import Sidebar from '@/features/driver/layout/Sidebar';
+import DriverNavbar from '@/features/driver/layout/DriverNavbar';
+import HistoryHeader from '@/features/driver/components/history/HistoryHeader';
+import HistoryStats from '@/features/driver/components/history/HistoryStats';
+import HistoryFilter from '@/features/driver/components/history/HistoryFilter';
+import HistoryTable from '@/features/driver/components/history/HistoryTable';
 
 const DriverHistory = () => {
   return (

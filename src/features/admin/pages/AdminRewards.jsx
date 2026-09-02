@@ -1,8 +1,8 @@
 ﻿import { useState } from 'react';
 import { FaPlus, FaSearch, FaStar, FaUsers, FaCoins, FaBoxes, FaGift } from "react-icons/fa";
 
-import RewardStatCard from "../components/rewards/RewardStatCard";
-import RewardsTable from "../components/rewards/RewardsTable";
+import RewardStatCard from "@/features/admin/components/rewards/RewardStatCard";
+import RewardsTable from "@/features/admin/components/rewards/RewardsTable";
 
 export default function AdminRewards() {
   const [searchTerm, setSearchTerm] = useState("");
