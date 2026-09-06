@@ -34,7 +34,7 @@ export default function PointsChart({ points = 650, target = 1000 }) {
       </div>
 
       <button
-        onClick={() => navigate('/rewards-new')}
+        onClick={() => navigate('/rewardsnew')}
         style={{ width: '100%', backgroundColor: '#2d6a2d', color: 'white', border: 'none', borderRadius: '10px', padding: '10px', fontSize: '14px', fontWeight: '700', cursor: 'pointer', marginTop: '12px' }}>
         عرض المكافآت
       </button>

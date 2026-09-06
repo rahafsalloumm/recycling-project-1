@@ -1,11 +1,16 @@
  import { useState } from 'react'
-import { FaLock, FaChevronLeft } from 'react-icons/fa'
+import { FaLock, FaChevronLeft, FaEye, FaEyeSlash } from 'react-icons/fa'
 
-export default function PasswordSettings({ onSubmit }) {
-  const [expanded, setExpanded] = useState(false)
+export default function PasswordSettings({ onSubmit, initiallyExpanded = false }) {
+  const [expanded, setExpanded] = useState(initiallyExpanded)
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [visibleFields, setVisibleFields] = useState({ current: false, new: false, confirm: false })
+
+  const toggleVisibility = (field) => {
+    setVisibleFields((current) => ({ ...current, [field]: !current[field] }))
+  }
 
   const inputStyle = {
     width: '100%',
@@ -88,30 +93,45 @@ export default function PasswordSettings({ onSubmit }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <div>
               <p style={{ fontSize: '12px', color: '#888', marginBottom: '6px' }}>كلمة المرور الحالية</p>
-              <input
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                style={inputStyle}
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={visibleFields.current ? 'text' : 'password'}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  style={{ ...inputStyle, paddingLeft: '40px' }}
+                />
+                <button type="button" onClick={() => toggleVisibility('current')} aria-label="إظهار كلمة المرور الحالية" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'transparent', color: '#888', cursor: 'pointer' }}>
+                  {visibleFields.current ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
             <div>
               <p style={{ fontSize: '12px', color: '#888', marginBottom: '6px' }}>كلمة المرور الجديدة</p>
-              <input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                style={inputStyle}
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={visibleFields.new ? 'text' : 'password'}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  style={{ ...inputStyle, paddingLeft: '40px' }}
+                />
+                <button type="button" onClick={() => toggleVisibility('new')} aria-label="إظهار كلمة المرور الجديدة" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'transparent', color: '#888', cursor: 'pointer' }}>
+                  {visibleFields.new ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
             <div>
               <p style={{ fontSize: '12px', color: '#888', marginBottom: '6px' }}>تأكيد كلمة المرور الجديدة</p>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                style={inputStyle}
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={visibleFields.confirm ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  style={{ ...inputStyle, paddingLeft: '40px' }}
+                />
+                <button type="button" onClick={() => toggleVisibility('confirm')} aria-label="إظهار تأكيد كلمة المرور" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'transparent', color: '#888', cursor: 'pointer' }}>
+                  {visibleFields.confirm ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
           </div>
  <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '16px' }}>

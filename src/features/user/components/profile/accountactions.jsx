@@ -1,4 +1,4 @@
-import { FaLock, FaBell } from 'react-icons/fa';
+import { FaLock } from 'react-icons/fa';
 
 const styles = {
   row: {
@@ -26,7 +26,7 @@ const styles = {
   },
 };
 
-export default function AccountActions({ onChangePassword, onNotificationSettings }) {
+export default function AccountActions({ onChangePassword }) {
   return (
     <div style={styles.row}>
       <button
@@ -39,15 +39,6 @@ export default function AccountActions({ onChangePassword, onNotificationSetting
         تغيير كلمة المرور
       </button>
 
-      <button
-        style={styles.btn}
-        onClick={onNotificationSettings}
-        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f9fafb')}
-        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#fff')}
-      >
-        <FaBell color="#6b7280" />
-        تفضيلات الإشعارات
-      </button>
     </div>
   );
 }

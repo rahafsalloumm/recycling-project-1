@@ -1,6 +1,12 @@
-﻿import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
+﻿import { useState } from "react";
+import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
 
-export default function OrdersTable({ orders }) {
+export default function OrdersTable({ orders, onUpdateStatus, onDelete }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  const totalPages = Math.max(1, Math.ceil(orders.length / pageSize));
+  const activePage = Math.min(currentPage, totalPages);
+  const visibleOrders = orders.slice((activePage - 1) * pageSize, activePage * pageSize);
   const userAvatars = {
     1: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
     2: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
@@ -30,9 +36,9 @@ export default function OrdersTable({ orders }) {
             </tr>
           </thead>
           <tbody className="text-sm divide-y divide-gray-50 text-gray-700 font-medium">
-            {orders.map((order, index) => (
+            {visibleOrders.map((order, index) => (
               <tr key={order.id} className="hover:bg-gray-50/40 transition-colors duration-200 group">
-                <td className="py-4 px-6 text-center font-bold text-gray-400 text-base">{index + 1}</td>
+                <td className="py-4 px-6 text-center font-bold text-gray-400 text-base">{(activePage - 1) * pageSize + index + 1}</td>
                 <td className="py-4 px-6 font-mono font-bold text-gray-900 text-[14px]">{order.reqCode}</td>
                 
                 <td className="py-4 px-6">
@@ -72,9 +78,9 @@ export default function OrdersTable({ orders }) {
                 
                 <td className="py-4 px-6 text-center">
                   <div className="flex items-center justify-center gap-1.5 opacity-90">
-                    <button className="p-2.5 rounded-xl text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 active:scale-90 transition-all duration-150 cursor-pointer" title="عرض"><FaEye className="text-sm" /></button>
-                    <button className="p-2.5 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-50 active:scale-90 transition-all duration-150 cursor-pointer" title="تعديل"><FaEdit className="text-sm" /></button>
-                    <button className="p-2.5 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 active:scale-90 transition-all duration-150 cursor-pointer" title="حذف"><FaTrash className="text-sm" /></button>
+                    <button onClick={() => onUpdateStatus?.(order.id, "accepted")} className="p-2.5 rounded-xl text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 active:scale-90 transition-all duration-150 cursor-pointer" title="قبول الطلب"><FaEye className="text-sm" /></button>
+                    <button onClick={() => onUpdateStatus?.(order.id, "completed")} className="p-2.5 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-50 active:scale-90 transition-all duration-150 cursor-pointer" title="تحديد كمكتمل"><FaEdit className="text-sm" /></button>
+                    <button onClick={() => onDelete?.(order.id)} className="p-2.5 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 active:scale-90 transition-all duration-150 cursor-pointer" title="حذف الطلب"><FaTrash className="text-sm" /></button>
                   </div>
                 </td>
               </tr>
@@ -84,13 +90,13 @@ export default function OrdersTable({ orders }) {
       </div>
 
       <div className="p-4 bg-gray-50/60 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-gray-400 font-bold">
-        <div>عرض <span className="text-gray-700 font-black">1</span> إلى <span className="text-gray-700 font-black">8</span> من أصل <span className="text-gray-700 font-black">240</span> طلب</div>
+        <div>عرض <span className="text-gray-700 font-black">{visibleOrders.length ? (activePage - 1) * pageSize + 1 : 0}</span> إلى <span className="text-gray-700 font-black">{visibleOrders.length ? (activePage - 1) * pageSize + visibleOrders.length : 0}</span> من أصل <span className="text-gray-700 font-black">{orders.length}</span> طلب</div>
         <div className="flex items-center gap-1" dir="ltr">
-          <button className="px-2 py-1 rounded bg-white border border-gray-200 text-gray-400 hover:bg-gray-50">&lt;</button>
-          <button className="px-3 py-1 rounded bg-emerald-600 text-white font-black">1</button>
-          <button className="px-3 py-1 rounded bg-white border border-gray-200 text-gray-600 hover:bg-gray-50">2</button>
-          <button className="px-3 py-1 rounded bg-white border border-gray-200 text-gray-600 hover:bg-gray-50">3</button>
-          <button className="px-2 py-1 rounded bg-white border border-gray-200 text-gray-400 hover:bg-gray-50">&gt;</button>
+          <button type="button" disabled={activePage === 1} onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} className="rounded bg-white px-2 py-1 disabled:opacity-40">&lt;</button>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+            <button type="button" key={page} onClick={() => setCurrentPage(page)} className={`rounded px-3 py-1 ${activePage === page ? "bg-emerald-600 text-white font-black" : "border border-gray-200 bg-white text-gray-600"}`}>{page}</button>
+          ))}
+          <button type="button" disabled={activePage === totalPages} onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))} className="rounded bg-white px-2 py-1 disabled:opacity-40">&gt;</button>
         </div>
       </div>
 

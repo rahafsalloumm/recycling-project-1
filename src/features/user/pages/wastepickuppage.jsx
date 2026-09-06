@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { FaBell, FaUserCircle, FaLeaf, FaTruck } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
+import { FaUserCircle, FaLeaf, FaTruck } from 'react-icons/fa'
 import Sidebar from '../components/sidebar/sidebar/sidebar'
 import WasteTypeSelector from '../components/wastepickup/wastetypeselector'
 import LocationPicker from '../components/wastepickup/locationpicker'
@@ -7,24 +8,91 @@ import DateTimePicker from '../components/wastepickup/datetimepicker'
 import WeightInput from '../components/wastepickup/weightinput'
 import ImageUpload from '../components/wastepickup/imageupload'
 import NotesInput from '../components/wastepickup/notesinput'
+import { userService } from '@/services'
+
+const formatPickupTime = (timeString) => {
+  if (!timeString) return ''
+
+  const [hourString, minute] = timeString.split(':')
+  const hour = Number(hourString)
+  const suffix = hour >= 12 ? 'PM' : 'AM'
+  const normalizedHour = hour % 12 || 12
+
+  return `${normalizedHour}:${minute} ${suffix}`
+}
 
 export default function WastePickupPage() {
   const [activePage, setActivePage] = useState('wastepickup')
   const [selectedWaste, setSelectedWaste] = useState(null)
-  const [location, setLocation] = useState({ lat: 36.2021, lng: 37.1343, address: 'سوريا , حلب , الاسماعلية' })
-  const [date, setDate] = useState('2024-05-20')
-  const [time, setTime] = useState('10:00')
-  const [weight, setWeight] = useState(5)
+  const [location, setLocation] = useState({ lat: null, lng: null, address: '' })
+  const [date, setDate] = useState('')
+  const [time, setTime] = useState('')
+  const [weight, setWeight] = useState('')
   const [image, setImage] = useState(null)
   const [notes, setNotes] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedWaste) {
-      alert('الرجاء اختيار نوع النفايات')
+      setError('يرجى اختيار نوع النفايات')
       return
     }
-    console.log({ selectedWaste, location, date, time, weight, image, notes })
-    alert('تم إرسال الطلب بنجاح!')
+
+    if (!location.address.trim() || location.lat === null || location.lng === null) {
+      setError('يرجى إضافة العنوان وتحديد موقع التسليم على الخريطة')
+      return
+    }
+
+    if (!date || !time) {
+      setError('يرجى اختيار تاريخ ووقت التسليم')
+      return
+    }
+
+    if (!weight || Number(weight) < 1) {
+      setError('يرجى إضافة الوزن التقريبي للنفايات')
+      return
+    }
+
+    if (!image) {
+      setError('يرجى إرفاق صورة للنفايات')
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('wasteType', selectedWaste)
+    formData.append('address', location.address || 'غير محدد')
+    formData.append('lat', String(location.lat))
+    formData.append('lng', String(location.lng))
+    formData.append('quantity', String(Number(weight) || 0))
+    formData.append('pickupSchedule[date]', date)
+    formData.append('pickupSchedule[time]', formatPickupTime(time))
+    formData.append('notes', notes || '')
+    formData.append('image', image)
+
+    setLoading(true)
+    setError('')
+    setSuccess('')
+
+    try {
+      const result = await userService.createWasteRequest(formData)
+      setSuccess(result?.message || 'تم إرسال الطلب بنجاح!')
+      setSelectedWaste(null)
+      setLocation({ lat: null, lng: null, address: '' })
+      setWeight('')
+      setNotes('')
+      setImage(null)
+      setDate('')
+      setTime('')
+    } catch (err) {
+      const backendMessage = Array.isArray(err?.errors)
+        ? err.errors.join(' • ')
+        : err?.message || 'حدث خطأ أثناء إرسال الطلب'
+      setError(backendMessage)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -39,11 +107,9 @@ export default function WastePickupPage() {
 
           {/* يسار - الأيقونات */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ position: 'relative' }}>
-              <FaBell style={{ fontSize: '20px', color: '#555' }} />
-              <span style={{ position: 'absolute', top: '-6px', right: '-6px', backgroundColor: '#e53e3e', color: 'white', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>2</span>
-            </div>
-            <FaUserCircle style={{ fontSize: '28px', color: '#555' }} />
+            <Link to="/profile" aria-label="الملف الشخصي">
+              <FaUserCircle style={{ fontSize: '28px', color: '#555', cursor: 'pointer' }} />
+            </Link>
           </div>
 
           {/* يمين - الشعار */}
@@ -58,10 +124,10 @@ export default function WastePickupPage() {
         <div style={{ width: '100%', padding: '32px 24px', boxSizing: 'border-box' }}>
 
           <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#1a1a1a', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            طلب استلام النفايات
+            طلب تسليم النفايات
             <FaTruck style={{ color: '#2d6a2d' }} />
           </h1>
-          <p style={{ color: '#888', fontSize: '14px', marginBottom: '24px' }}>املأ البيانات التالية لإرسال طلب استلام النفايات</p>
+          <p style={{ color: '#888', fontSize: '14px', marginBottom: '24px' }}>املأ البيانات التالية لإرسال طلب تسليم النفايات</p>
 
           <WasteTypeSelector selected={selectedWaste} onSelect={setSelectedWaste} />
 
@@ -87,29 +153,43 @@ export default function WastePickupPage() {
 
           <div style={{ backgroundColor: '#f0f7ee', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
             <FaLeaf style={{ color: '#2d6a2d' }} />
-            <span style={{ fontSize: '14px', color: '#2d6a2d', fontWeight: '600' }}>ستحصل تقريباً على 50 نقطة بعد استلام الطلب</span>
+            <span style={{ fontSize: '14px', color: '#2d6a2d', fontWeight: '600' }}>سيتم احتساب النقاط بعد استلام الطلب وتقييم كمية النفايات</span>
           </div>
+
+          {error && (
+            <div style={{ marginTop: '16px', backgroundColor: '#fff1f2', color: '#b42318', border: '1px solid #fecdd3', borderRadius: '12px', padding: '12px 14px', fontSize: '14px', fontWeight: '600' }}>
+              {error}
+            </div>
+          )}
+
+          {success && (
+            <div style={{ marginTop: '16px', backgroundColor: '#ecfdf5', color: '#067647', border: '1px solid #a7f3d0', borderRadius: '12px', padding: '12px 14px', fontSize: '14px', fontWeight: '600' }}>
+              {success}
+            </div>
+          )}
 
           <button
             onClick={handleSubmit}
+            disabled={loading}
             style={{
               width: '100%',
-              backgroundColor: '#2d6a2d',
+              backgroundColor: loading ? '#7ca07b' : '#2d6a2d',
               color: 'white',
               border: 'none',
               borderRadius: '12px',
               padding: '16px',
               fontSize: '18px',
               fontWeight: '700',
-              cursor: 'pointer',
+              cursor: loading ? 'not-allowed' : 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
+              marginTop: '16px',
               marginBottom: '16px'
             }}
           >
-            إرسال الطلب ✈️
+            {loading ? 'جارٍ إرسال الطلب...' : 'إرسال الطلب ✈️'}
           </button>
 
           <div style={{ backgroundColor: '#f0f7ee', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>

@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaHome, FaTruck, FaMapMarkerAlt, FaRecycle, FaGift, FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa'
+import authService from '@/services/auth'
 
 const menuItems = [
   { icon: <FaHome />, label: 'لوحة المستخدم', path: 'dashboard', route: '/dashboard' },
-  { icon: <FaTruck />, label: 'طلب استلام النفايات', path: 'wastepickup', route: '/wastepickup' },
+  { icon: <FaTruck />, label: 'طلب تسليم النفايات', path: 'wastepickup', route: '/wastepickup' },
   { icon: <FaMapMarkerAlt />, label: 'تتبع الطلبات', path: 'tracking', route: '/tracking' },
   { icon: <FaRecycle />, label: 'سجل إعادة التدوير', path: 'tracking', route: '/tracking' },
   { icon: <FaGift />, label: 'المكافآت', path: 'tracking', route: '/tracking' },
@@ -13,12 +15,24 @@ const menuItems = [
 
 export default function Sidebar({ activePage, onNavigate }) {
   const navigate = useNavigate()
+  const [user] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('user') || 'null')
+    } catch {
+      return null
+    }
+  })
 
   const handleNavigate = (item) => {
     if (onNavigate) {
       onNavigate(item.path)
     }
     navigate(item.route)
+  }
+
+  const handleLogout = () => {
+    authService.logout()
+    navigate('/login', { replace: true })
   }
 
   return (
@@ -53,7 +67,7 @@ export default function Sidebar({ activePage, onNavigate }) {
         marginBottom: '25px'
       }}>
         <div>
-          <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#333' }}>رهف محمد</div>
+          <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#333' }}>{user?.name || 'مستخدم'}</div>
           <div style={{ fontSize: '12px', color: '#777' }}>مستخدم</div>
         </div>
         <div style={{ 
@@ -103,7 +117,7 @@ export default function Sidebar({ activePage, onNavigate }) {
       </div>
 
       {/* زر تسجيل الخروج */}
-      <button style={{
+      <button onClick={handleLogout} style={{
         display: 'flex',
         alignItems: 'center',
         gap: '12px',

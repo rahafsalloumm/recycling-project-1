@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaRecycle } from "react-icons/fa";
+import authService from '@/services/auth'
 
 export default function Register() {
   const navigate = useNavigate();
@@ -55,17 +56,29 @@ export default function Register() {
   };
 
   // ===== SUBMIT REGISTER =====
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      await authService.register({
+        name: fullName,
+        email,
+        password,
+        confirmPassword,
+        phone,
+        role,
+      })
+
+      setShowOtpModal(true);
+      setTimer(59);
+    } catch (error) {
+      setErrors((prev) => ({ ...prev, submit: error?.message || 'فشل إنشاء الحساب' }))
+    } finally {
       setLoading(false);
-      setShowOtpModal(true); 
-      setTimer(59); 
-    }, 1200);
+    }
   };
 
   // ===== HANDLE OTP INPUT =====
@@ -89,24 +102,32 @@ export default function Register() {
   };
 
   // ===== VERIFY OTP SUBMIT =====
-  const handleVerifyOtp = (e) => {
+  const handleVerifyOtp = async (e) => {
     e.preventDefault();
     setOtpError("");
     const enteredCode = otp.join("");
 
-    if (enteredCode.length < 5) {
+    if (enteredCode.length !== 5) {
       setOtpError("يرجى إدخال الكود كاملاً من 5 أرقام");
       return;
     }
 
     setOtpLoading(true);
 
-    setTimeout(() => {
-      setOtpLoading(false);
+    try {
+      await authService.verifyCode({
+        email,
+        verifyCode: enteredCode,
+        verify: 'register',
+      });
       alert("تم تفعيل الحساب وإنشاؤه بنجاح! 🎉");
       setShowOtpModal(false);
-      navigate("/login"); 
-    }, 1500);
+      navigate("/login");
+    } catch (error) {
+      setOtpError(error?.message || 'كود التحقق غير صحيح');
+    } finally {
+      setOtpLoading(false);
+    }
   };
 
   const handleResendCode = () => {
@@ -215,6 +236,7 @@ export default function Register() {
             </div>
             {errors.password && <p className="text-red-500 text-sm mt-1 text-right">{errors.password}</p>}
           </div>
+          {errors.submit && <p className="text-red-500 text-sm mt-1 text-right">{errors.submit}</p>}
           {/* CONFIRM PASSWORD */}
           <div>
             <label className="block mb-2 font-semibold text-gray-700 text-right">

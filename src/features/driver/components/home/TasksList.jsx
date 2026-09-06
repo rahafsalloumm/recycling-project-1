@@ -1,6 +1,8 @@
 ﻿import { FiList, FiHome, FiTrash2 } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 const TasksList = () => {
+  const navigate = useNavigate();
   const tasks = [
     { id: 1, type: 'home', title: 'شارع الجامعة - عمارة 15', desc: 'استلام نفايات منزلية', dist: '1.2 كم', time: '10:45 ص', current: true },
     { id: 2, type: 'bin', title: 'حي الياسمين - شارع 8', desc: 'حاوية ذكية BIN-045', dist: '2.8 كم', time: '11:00 ص' },
@@ -59,8 +61,8 @@ const TasksList = () => {
         </div>
       </div>
 
-      <button className="w-full text-center text-xs text-gray-400 hover:text-emerald-600 font-bold border-t border-gray-50 pt-4 mt-3 transition-colors">
-        ∨ عرض جميع المهام
+      <button type="button" onClick={() => navigate('/driver/tasks')} className="w-full text-center text-xs text-gray-400 hover:text-emerald-600 font-bold border-t border-gray-50 pt-4 mt-3 transition-colors">
+        عرض جميع المهام
       </button>
     </div>
   );

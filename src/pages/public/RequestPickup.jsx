@@ -1,6 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import adminService from "@/services/admin";
 
 export default function RequestPickup() {
+  const [wasteTypes, setWasteTypes] = useState([
+    { key: "plastic", label: "بلاستيك" },
+    { key: "paper", label: "ورق" },
+    { key: "glass", label: "زجاج" },
+    { key: "metal", label: "معدن" },
+  ]);
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -12,6 +19,15 @@ export default function RequestPickup() {
 
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    adminService.getPublicWasteTypes()
+      .then((response) => {
+        const types = response?.wasteTypes || response?.data?.wasteTypes;
+        if (Array.isArray(types) && types.length) setWasteTypes(types);
+      })
+      .catch(() => {});
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -118,10 +134,7 @@ export default function RequestPickup() {
               className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
             >
               <option value="">اختر نوع النفايات</option>
-              <option value="plastic">بلاستيك</option>
-              <option value="paper">ورق</option>
-              <option value="glass">زجاج</option>
-              <option value="electronic">إلكترونيات</option>
+              {wasteTypes.map((type) => <option key={type.key} value={type.key}>{type.label}</option>)}
             </select>
             {errors.wasteType && <p className="text-red-500 text-sm">{errors.wasteType}</p>}
           </div>

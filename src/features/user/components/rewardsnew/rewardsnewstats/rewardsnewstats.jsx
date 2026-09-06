@@ -1,9 +1,9 @@
-export default function RewardsNewStats() {
+export default function RewardsNewStats({ points = 0, redeemedCount = 0, availableCount = 0 }) {
   const stats = [
-    { icon: '🌿', value: '2,450', unit: 'نقطة', label: 'رصيد نقاطك', color: '#2d6a2d' },
-    { icon: '🏷️', value: '2,450', unit: 'نقطة', label: 'إجمالي النقاط المكتسبة', color: '#7c3aed' },
-    { icon: '⏳', value: '3', unit: 'مكافآت', label: 'إجمالي المكافآت المستبدلة', color: '#d97706' },
-    { icon: '🎁', value: '12', unit: 'مكافأة', label: 'المكافآت المتاحة', color: '#2563eb' },
+    { icon: '🌿', value: points.toLocaleString(), unit: 'نقطة', label: 'رصيد نقاطك', color: '#2d6a2d' },
+    { icon: '🏷️', value: points.toLocaleString(), unit: 'نقطة', label: 'إجمالي النقاط المكتسبة', color: '#7c3aed' },
+    { icon: '⏳', value: redeemedCount.toLocaleString(), unit: 'مكافآت', label: 'إجمالي المكافآت المستبدلة', color: '#d97706' },
+    { icon: '🎁', value: availableCount.toLocaleString(), unit: 'مكافأة', label: 'المكافآت المتاحة', color: '#2563eb' },
   ]
 
   return (

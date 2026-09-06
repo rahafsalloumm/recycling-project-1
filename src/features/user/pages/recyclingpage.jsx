@@ -1,13 +1,41 @@
-import { useState } from 'react'
-import { FaBell, FaUserCircle, FaLeaf } from 'react-icons/fa'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { FaUserCircle, FaLeaf } from 'react-icons/fa'
 import Sidebar from '../components/sidebar/sidebar/sidebar'
 import RecyclingStats from '../components/recycling/recyclingstats/recyclingstats'
 import RecyclingFilter from '../components/recycling/recyclingfilter/recyclingfilter'
 import RecyclingTable from '../components/recycling/recyclingtable/recyclingtable'
+import { userService } from '@/services'
 
 export default function RecyclingPage() {
   const [activePage, setActivePage] = useState('recycling')
   const [filterType, setFilterType] = useState('الكل')
+  const [period, setPeriod] = useState('جميع الفترات')
+  const [stats, setStats] = useState(null)
+  const [records, setRecords] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    const loadRecyclingData = async () => {
+      try {
+        const [dashboardResult, requestsResult] = await Promise.all([
+          userService.getDashboardStats(),
+          userService.getMyRequests(),
+        ])
+        const dashboard = dashboardResult?.data || dashboardResult
+        const requests = requestsResult?.wasteRequests || requestsResult?.data || []
+        setStats(dashboard?.recyclingHistoryPage || {})
+        setRecords(requests)
+      } catch (err) {
+        setError(err?.message || 'تعذر تحميل سجل إعادة التدوير')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadRecyclingData()
+  }, [])
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', direction: 'rtl' }}>
@@ -19,11 +47,9 @@ export default function RecyclingPage() {
         {/* الهيدر */}
         <div style={{ backgroundColor: 'white', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ position: 'relative' }}>
-              <FaBell style={{ fontSize: '20px', color: '#555' }} />
-              <span style={{ position: 'absolute', top: '-6px', right: '-6px', backgroundColor: '#e53e3e', color: 'white', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>2</span>
-            </div>
-            <FaUserCircle style={{ fontSize: '28px', color: '#555' }} />
+            <Link to="/profile" aria-label="الملف الشخصي">
+              <FaUserCircle style={{ fontSize: '28px', color: '#555', cursor: 'pointer' }} />
+            </Link>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <FaLeaf style={{ color: '#2d6a2d', fontSize: '20px' }} />
@@ -39,9 +65,17 @@ export default function RecyclingPage() {
           </h1>
           <p style={{ fontSize: '14px', color: '#888', marginBottom: '24px', textAlign: 'center' }}>عرض جميع عمليات إعادة التدوير التي قمت بها</p>
 
-          <RecyclingStats />
-          <RecyclingFilter onFilterChange={setFilterType} />
-          <RecyclingTable filterType={filterType} />
+          {loading ? (
+            <p style={{ textAlign: 'center', color: '#666' }}>جاري تحميل سجل إعادة التدوير...</p>
+          ) : error ? (
+            <p style={{ textAlign: 'center', color: 'crimson' }}>{error}</p>
+          ) : (
+            <>
+              <RecyclingStats stats={stats} />
+              <RecyclingFilter onFilterChange={setFilterType} onPeriodChange={setPeriod} />
+              <RecyclingTable records={records} filterType={filterType} period={period} />
+            </>
+          )}
 
         </div>
       </div>

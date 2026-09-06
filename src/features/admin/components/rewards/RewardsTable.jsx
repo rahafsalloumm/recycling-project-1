@@ -1,38 +1,41 @@
 ﻿import { useState } from "react";
-import { FaEdit, FaTrash, FaEye, FaTimes, FaShoppingBag, FaTint, FaSeedling, FaLeaf, FaBoxOpen, FaCoffee, FaTrashRestore, FaSolarPanel, FaSave, FaBoxes, FaCoins, FaHistory, FaUser } from "react-icons/fa";
+import { FaEdit, FaTrash, FaEye, FaTimes, FaSave, FaBoxes, FaCoins, FaHistory, FaUser } from "react-icons/fa";
 
-export default function RewardsTable({onToggleStatus }) {
-  // 💡 مصفوفة المكافآت الثمانية العينية الموحدة والمدعومة بالأيقونات للتوصيل الميداني مع السائق
-  const demoRewards = [
-    { id: 1, icon: <FaShoppingBag className="text-pink-600" />, name: "شنطة قماش صديقة للبيئة", category: "منتجات بيئية بديلة", points: 900, stock: 145, claimed: 1420, status: true },
-    { id: 2, icon: <FaTint className="text-blue-500" />, name: "زجاجة miah (ستانلس ستيل) مخصصة", category: "منتجات بيئية بديلة", points: 800, stock: 80, claimed: 298, status: true },
-    { id: 3, icon: <FaSeedling className="text-emerald-600" />, name: "نبتة منزلية طبيعية أنيقة لتنقية الهواء", category: "منتجات بيئية بديلة", points: 1200, stock: 120, claimed: 340, status: true },
-    { id: 4, icon: <FaLeaf className="text-emerald-500" />, name: "طقم بذور زراعية سريعة النمو", category: "منتجات بيئية بديلة", points: 1100, stock: 45, claimed: 115, status: true },
-    { id: 5, icon: <FaBoxOpen className="text-amber-600" />, name: "صندوق سماد عضوي للحدائق المنزلية", category: "منتجات بيئية بديلة", points: 1400, stock: 150, claimed: 2450, status: true },
-    { id: 6, icon: <FaCoffee className="text-yellow-700" />, name: "كوب (ماج) حراري حافظ للحرارة والبرودة", category: "منتجات بيئية بديلة", points: 1000, stock: 200, claimed: 510, status: true },
-    { id: 7, icon: <FaTrashRestore className="text-teal-600" />, name: "طقم أكياس فرز منزلية ملونة", category: "منتجات بيئية بديلة", points: 600, stock: 310, claimed: 840, status: true },
-    { id: 8, icon: <FaSolarPanel className="text-cyan-500" />, name: "شاحن طاقة شمسية محمول للأجهزة", category: "منتجات بيئية بديلة", points: 3500, stock: 15, claimed: 42, status: true }
-  ];
-  // جعل الجدول يقرأ من المصفوفة العينية مباشرة لفرض التحديث البصري فوراً
-  const [localRewards, setLocalRewards] = useState(demoRewards);
+export default function RewardsTable({ rewards = [], claims = [], onToggleStatus, onUpdate, onDelete }) {
+  const visibleRewards = rewards;
   
   // حالات فتح النوافذ المنبثقة
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedReward, setSelectedRoute] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   const handleOpenDetails = (reward) => { setSelectedRoute(reward); setIsDetailsOpen(true); };
   const handleOpenEdit = (reward) => { setSelectedRoute({ ...reward }); setIsEditOpen(true); };
 
   const handleSaveEditSubmit = (e) => {
     e.preventDefault();
-    setLocalRewards(localRewards.map(r => r.id === selectedReward.id ? selectedReward : r));
+    onUpdate?.(selectedReward.id, {
+      title: selectedReward.name,
+      pointsRequired: selectedReward.points,
+      stock: selectedReward.stock,
+    });
     setIsEditOpen(false);
   };
 
   const handleLocalToggle = (id) => {
-    setLocalRewards(localRewards.map(r => r.id === id ? { ...r, status: !r.status } : r));
-    if (onToggleStatus) onToggleStatus(id);
+    const reward = visibleRewards.find((item) => item.id === id);
+    if (reward && onToggleStatus) onToggleStatus(id, reward.status);
+  };
+
+  const handleDelete = async (reward) => {
+    if (!onDelete || !window.confirm(`هل تريد حذف المكافأة "${reward.name}"؟`)) return;
+    try {
+      setDeletingId(reward.id);
+      await onDelete(reward.id);
+    } finally {
+      setDeletingId(null);
+    }
   };
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden text-right transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
@@ -51,7 +54,7 @@ export default function RewardsTable({onToggleStatus }) {
             </tr>
           </thead>
           <tbody className="text-sm divide-y divide-gray-50 text-gray-700 font-medium">
-            {localRewards.map((reward, index) => (
+            {visibleRewards.map((reward, index) => (
               <tr key={reward.id} className="hover:bg-gray-50/40 transition-colors duration-200 group">
                 <td className="py-4 px-6 text-center font-bold text-gray-400 text-base">{index + 1}</td>
                 <td className="py-4 px-6">
@@ -77,7 +80,9 @@ export default function RewardsTable({onToggleStatus }) {
                   <div className="flex items-center justify-center gap-1.5 opacity-90">
                     <button type="button" onClick={() => handleOpenDetails(reward)} className="p-2.5 rounded-xl text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 active:scale-90 transition-all duration-150 cursor-pointer" title="عرض"><FaEye className="text-sm" /></button>
                     <button type="button" onClick={() => handleOpenEdit(reward)} className="p-2.5 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-50 active:scale-90 transition-all duration-150 cursor-pointer" title="تعديل"><FaEdit className="text-sm" /></button>
-                    <button type="button" className="p-2.5 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 active:scale-90 transition-all duration-150 cursor-pointer" title="حذف"><FaTrash className="text-sm" /></button>
+                    <button type="button" onClick={() => handleDelete(reward)} disabled={deletingId === reward.id} className="p-2.5 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 active:scale-90 transition-all duration-150 cursor-pointer disabled:cursor-wait disabled:opacity-50" title="حذف">
+                      <FaTrash className="text-sm" />
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -110,8 +115,13 @@ export default function RewardsTable({onToggleStatus }) {
             <div className="space-y-2 text-right">
               <h4 className="text-xs font-black text-gray-500 flex items-center gap-1.5"><FaHistory className="text-[11px]" /> آخر طلبات استبدال المستخدمين ميدانياً</h4>
               <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center bg-gray-50/50 p-2.5 rounded-xl border border-gray-100"><span className="text-gray-700 font-bold flex items-center gap-1.5"><FaUser className="text-gray-400 text-[10px]" /> رهف سلوم (تم التوصيل مع السائق)</span><span className="text-gray-400 font-mono">منذ ساعتين</span></div>
-                <div className="flex justify-between items-center bg-gray-50/50 p-2.5 rounded-xl border border-gray-100"><span className="text-gray-700 font-bold flex items-center gap-1.5"><FaUser className="text-gray-400 text-[10px]" /> أحمد محمد (قيد الشحن بالشاحنة)</span><span className="text-amber-600 font-bold">نشط حالياً</span></div>
+                {(selectedReward.claims?.length ? selectedReward.claims : claims.filter((claim) => (claim.rewardId?._id || claim.rewardId) === selectedReward.id)).map((claim) => (
+                  <div key={claim._id} className="flex justify-between items-center gap-2 bg-gray-50/50 p-2.5 rounded-xl border border-gray-100">
+                    <span className="text-gray-700 font-bold flex items-center gap-1.5"><FaUser className="text-gray-400 text-[10px]" /> {claim.userId?.name || "مستخدم"}</span>
+                    <span className="text-gray-500 font-bold">{claim.status === "delivered" ? "تم التوصيل" : claim.status === "cancelled" ? "ملغى" : "بانتظار التوصيل"}</span>
+                  </div>
+                ))}
+                {!selectedReward.claims?.length && !claims.some((claim) => (claim.rewardId?._id || claim.rewardId) === selectedReward.id) && <p className="text-center text-gray-400">لا توجد عمليات استرداد</p>}
               </div>
             </div>
             <div className="pt-2 border-t border-gray-100 flex justify-end">

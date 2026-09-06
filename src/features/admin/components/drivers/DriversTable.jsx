@@ -6,9 +6,8 @@ import {
   FaRoute, FaBuilding 
 } from "react-icons/fa";
 
-export default function DriversTable({ onUpdateStatus }) {
-  // 💡 بيانات وهمية مؤقتة لمشاهدة كيفية ظهور السائقين قيد الانتظار في الجدول
-  const demoDrivers = [
+export default function DriversTable({ drivers = [], onUpdateStatus, onUpdateDriver, onDeleteDriver, availableTasks = [], onAssignTasks }) {
+  /*
     {
       id: "1",
       idCode: "DVR-001",
@@ -77,7 +76,7 @@ export default function DriversTable({ onUpdateStatus }) {
       idCardUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
       driverLicenseUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
     }
-  ];
+  */
 
   const driverAvatars = {
     "DVR-001": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
@@ -86,18 +85,15 @@ export default function DriversTable({ onUpdateStatus }) {
     "DVR-004": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
   };
 
-  const availableTasks = [
-    { id: "TASK-101", title: "تفريغ حاوية الكرتون الذكية BIN-003 (ممتلئة 95%) - العزيزية" },
-    { id: "TASK-102", title: "جمع النفايات البلاستيكية لطلب رقم #1258 - الشهباء" }
-  ];
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [selectedTasks, setSelectedTasks] = useState([]);
+  const [isSavingDriver, setIsSavingDriver] = useState(false);
+  const [saveDriverError, setSaveDriverError] = useState("");
 
   // ربط المصفوفة بالبيانات الوهمية المحدثة لمشاهدتها فوراً
-  const [localDrivers, setLocalDrivers] = useState(demoDrivers);
   const [startPointType, setStartPointType] = useState("company"); 
   const [customLocationName, setCustomLocationName] = useState("");
 
@@ -107,18 +103,22 @@ export default function DriversTable({ onUpdateStatus }) {
   const prepareSelectedDriver = (driver) => {
     return {
       ...driver,
-      licenseNo: driver.licenseNo || "0123456789",
-      licenseType: driver.licenseType || "قيادة مركبات ثقيلة",
-      licenseIssue: driver.licenseIssue || "2020-01-15", 
-      licenseExpiry: driver.licenseExpiry || "2026-01-15", 
-      truckNo: driver.truckNo || "TRK-007",
-      truckType: driver.truckType || "ضاغطة نفايات",
-      workHours: driver.workHours || "120 ساعة",
-      rating: driver.rating || "4.8"
+      idCode: driver.idCode || (driver.id ? String(driver.id).slice(-6).toUpperCase() : "-"),
+      phone: driver.phone || "-",
+      region: driver.region || driver.address?.city || driver.address || "غير محدد",
+      licenseNo: driver.licenseNo || driver.driverProfile?.license?.number || "غير محدد",
+      licenseType: driver.licenseType || driver.driverProfile?.license?.type || "غير محدد",
+      licenseIssue: driver.licenseIssue || (driver.driverProfile?.license?.issueDate ? new Date(driver.driverProfile.license.issueDate).toISOString().split("T")[0] : ""),
+      licenseExpiry: driver.licenseExpiry || (driver.driverProfile?.license?.expiryDate ? new Date(driver.driverProfile.license.expiryDate).toISOString().split("T")[0] : ""),
+      truckNo: driver.truckNo || driver.driverProfile?.vehicle?.truckNumber || "غير محدد",
+      truckType: driver.truckType || driver.driverProfile?.vehicle?.truckType || "غير محدد",
+      workHours: driver.workHours || (driver.driverProfile?.workingHours ? `${driver.driverProfile.workingHours} ساعة` : "0 ساعة"),
+      rating: driver.rating ?? 0,
+      profileImage: driver.profileImage || driver.image?.url || driverAvatars[driver.idCode] || "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
     };
   };
 
-  const handleEditClick = (driver) => { setSelectedDriver(prepareSelectedDriver(driver)); setIsEditModalOpen(true); };
+  const handleEditClick = (driver) => { setSelectedDriver(prepareSelectedDriver(driver)); setSaveDriverError(""); setIsEditModalOpen(true); };
   const handleDetailsClick = (driver) => { setSelectedDriver(prepareSelectedDriver(driver)); setIsDetailsModalOpen(true); };
   const handleAssignClick = (driver) => { 
     setSelectedDriver(prepareSelectedDriver(driver)); 
@@ -136,27 +136,47 @@ export default function DriversTable({ onUpdateStatus }) {
     }
   };
 
-  const handleSaveChanges = (e) => { 
+  const handleSaveChanges = async (e) => {
     e.preventDefault(); 
-    setLocalDrivers(localDrivers.map(d => d.id === selectedDriver.id ? selectedDriver : d));
-    setIsEditModalOpen(false); 
+    if (!onUpdateDriver || !selectedDriver?.id) return;
+    try {
+      setIsSavingDriver(true);
+      setSaveDriverError("");
+      await onUpdateDriver(selectedDriver.id, {
+        name: selectedDriver.name,
+        phone: selectedDriver.phone,
+        address: selectedDriver.region,
+        status: { "متاح": "active", "قيد الانتظار": "pending", "في مهمة": "active", "غير نشط": "rejected" }[selectedDriver.status] || "pending",
+        workingHours: Number.parseFloat(selectedDriver.workHours) || 0,
+        licenseNumber: selectedDriver.licenseNo,
+        licenseType: selectedDriver.licenseType,
+        issueDate: selectedDriver.licenseIssue || undefined,
+        expiryDate: selectedDriver.licenseExpiry || undefined,
+        truckNumber: selectedDriver.truckNo,
+        truckType: selectedDriver.truckType,
+      });
+      setIsEditModalOpen(false);
+    } catch (requestError) {
+      setSaveDriverError(requestError.message || "تعذر حفظ تغييرات السائق");
+    } finally {
+      setIsSavingDriver(false);
+    }
   };
   
   // دالة تحديث الحالة محلياً لنقل السائق المقبول لقائمة المتاحين فوراً بالواجهة
   const handleLocalUpdateStatus = (driverId, newStatus) => {
-    setLocalDrivers(localDrivers.map(driver => 
-      driver.id === driverId ? { ...driver, status: newStatus === 'approved' ? 'متاح' : 'غير نشط' } : driver
-    ));
     if(onUpdateStatus) onUpdateStatus(driverId, newStatus);
   };
 
-  const handleAssignTaskSubmit = (e) => { 
-    e.preventDefault(); 
+  const handleAssignTaskSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedDriver || !onAssignTasks) return;
+    await onAssignTasks(selectedDriver.id, selectedTasks);
     setIsAssignModalOpen(false); 
   };
 
   // فلترة المصفوفة بناءً على التبويب المحدد
-  const filteredDrivers = localDrivers.filter(driver => {
+  const filteredDrivers = drivers.filter(driver => {
     if (activeTab === 'all') return true;
     return driver.status === activeTab;
   });
@@ -230,22 +250,8 @@ export default function DriversTable({ onUpdateStatus }) {
                   {/* عمود الوثائق المرفوعة للمراجعة والتحقق */}
                   <td className="py-4 px-6 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <a 
-                        href={driver.idCardUrl} 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-2.5 py-1.5 rounded-xl border border-blue-100 hover:bg-blue-100/70 transition-all font-bold shadow-2xs"
-                      >
-                        <FaIdCard className="text-xs" /> الهوية
-                      </a>
-                      <a 
-                        href={driver.driverLicenseUrl} 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        className="inline-flex items-center gap-1 text-xs bg-indigo-50 text-indigo-600 px-2.5 py-1.5 rounded-xl border border-indigo-100 hover:bg-indigo-100/70 transition-all font-bold shadow-2xs"
-                      >
-                        <FaFileAlt className="text-xs" /> الرخصة
-                      </a>
+                      {driver.idCardUrl ? <a href={driver.idCardUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-2.5 py-1.5 rounded-xl border border-blue-100 hover:bg-blue-100/70 transition-all font-bold shadow-2xs"><FaIdCard className="text-xs" /> الهوية</a> : <span className="text-xs text-gray-400">الهوية غير مرفوعة</span>}
+                      {driver.driverLicenseUrl ? <a href={driver.driverLicenseUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs bg-indigo-50 text-indigo-600 px-2.5 py-1.5 rounded-xl border border-indigo-100 hover:bg-indigo-100/70 transition-all font-bold shadow-2xs"><FaFileAlt className="text-xs" /> الرخصة</a> : <span className="text-xs text-gray-400">الرخصة غير مرفوعة</span>}
                     </div>
                   </td>
 
@@ -264,7 +270,7 @@ export default function DriversTable({ onUpdateStatus }) {
                         <div className="flex gap-1.5">
                           <button 
                             type="button"
-                            onClick={() => handleLocalUpdateStatus(driver.id, 'approved')}
+                            onClick={() => handleLocalUpdateStatus(driver.id, 'active')}
                             className="bg-emerald-600 text-white px-3 py-1.5 rounded-xl font-bold text-xs hover:bg-emerald-700 active:scale-95 transition-all cursor-pointer shadow-sm"
                           >
                             قبول
@@ -282,7 +288,7 @@ export default function DriversTable({ onUpdateStatus }) {
                           <button type="button" onClick={() => handleAssignClick(driver)} className="p-2 rounded-xl text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 active:scale-90 transition-all duration-150 cursor-pointer" title="مسار AI الذكي"><FaClipboardList className="text-sm" /></button>
                           <button type="button" onClick={() => handleDetailsClick(driver)} className="p-2 rounded-xl text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 active:scale-90 transition-all duration-150 cursor-pointer" title="تفاصيل"><FaEye className="text-sm" /></button>
                           <button type="button" onClick={() => handleEditClick(driver)} className="p-2 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-50 active:scale-90 transition-all duration-150 cursor-pointer" title="تعديل"><FaEdit className="text-sm" /></button>
-                          <button type="button" className="p-2 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 active:scale-90 transition-all duration-150 cursor-pointer" title="حذف"><FaTrash className="text-sm" /></button>
+                          <button type="button" onClick={() => onDeleteDriver?.(driver.id)} className="p-2 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 active:scale-90 transition-all duration-150 cursor-pointer" title="حذف"><FaTrash className="text-sm" /></button>
                         </>
                       )}
                     </div>
@@ -389,7 +395,7 @@ export default function DriversTable({ onUpdateStatus }) {
             </div>
 
             <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100 text-right">
-              <img src={driverAvatars[selectedDriver.idCode] || "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"} alt={selectedDriver.name} className="w-14 h-14 rounded-full object-cover ring-2 ring-white shadow" />
+              <img src={selectedDriver.profileImage || driverAvatars[selectedDriver.idCode] || "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"} alt={selectedDriver.name} className="w-14 h-14 rounded-full object-cover ring-2 ring-white shadow" />
               <div className="flex-1">
                 <h4 className="text-base font-black text-gray-900">{selectedDriver.name}</h4>
                 <div className="flex items-center gap-4 text-xs font-bold text-gray-400 mt-1">
@@ -421,8 +427,14 @@ export default function DriversTable({ onUpdateStatus }) {
             <div className="space-y-3 text-right">
               <h5 className="text-xs font-black text-gray-500 flex items-center gap-1.5"><FaHistory className="text-[11px]" /> آخر المهام المنجزة بالميدان</h5>
               <div className="space-y-2 text-xs font-bold">
-                <div className="flex justify-between items-center bg-gray-50/50 p-2.5 rounded-xl border border-gray-100"><span className="text-gray-600">تفريغ حاوية الكرتون من العزيزية</span><span className="text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-lg text-[10px]">مكتملة بنجاح</span></div>
-                <div className="flex justify-between items-center bg-gray-50/50 p-2.5 rounded-xl border border-gray-100"><span className="text-gray-600">تفريغ الحاوية BIN-003 من الموكامبو</span><span className="text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-lg text-[10px]">مكتملة بنجاح</span></div>
+                {selectedDriver.recentTasks?.length ? selectedDriver.recentTasks.map((task) => (
+                  <div key={task._id} className="flex justify-between items-center gap-3 bg-gray-50/50 p-2.5 rounded-xl border border-gray-100">
+                    <span className="text-gray-600">{task.address} - {task.wasteType} ({task.quantity} كغ)</span>
+                    <span className="shrink-0 text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-lg text-[10px]">مكتملة بنجاح</span>
+                  </div>
+                )) : (
+                  <p className="rounded-xl border border-dashed border-gray-200 p-3 text-center text-gray-400">لا توجد مهام مكتملة حتى الآن</p>
+                )}
               </div>
             </div>
             <div className="pt-2 border-t border-gray-100 flex justify-end">
@@ -446,6 +458,7 @@ export default function DriversTable({ onUpdateStatus }) {
             </div>
             
             <form onSubmit={handleSaveChanges} className="space-y-4 text-right">
+              {saveDriverError && <p className="rounded-xl bg-red-50 p-3 text-xs font-bold text-red-600">{saveDriverError}</p>}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-gray-500 flex items-center gap-1.5"><FaUser className="text-[10px]" /> اسم السائق</label>
@@ -514,7 +527,7 @@ export default function DriversTable({ onUpdateStatus }) {
               </div>
 
               <div className="flex items-center gap-3 pt-2 border-t border-gray-100 mt-4">
-                <button type="submit" className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-2.5 text-xs font-black flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.98] transition-all cursor-pointer"><FaSave /> حفظ التغييرات الشاملة</button>
+                <button type="submit" disabled={isSavingDriver} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-2.5 text-xs font-black flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.98] transition-all cursor-pointer disabled:cursor-wait disabled:opacity-60"><FaSave /> {isSavingDriver ? "جاري الحفظ..." : "حفظ التغييرات الشاملة"}</button>
                 <button type="button" onClick={() => setIsEditModalOpen(false)} className="bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-xl px-4 py-2.5 text-xs font-bold active:scale-[0.98] transition-all cursor-pointer">إلغاء</button>
               </div>
             </form>

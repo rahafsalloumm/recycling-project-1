@@ -21,7 +21,7 @@ export default function ImageUpload({ onChange }) {
 
   return (
     <div style={{ direction: 'rtl', marginBottom: '8px' }}>
-      <p style={{ fontSize: '14px', fontWeight: '600', color: '#1a1a1a', marginBottom: '8px' }}>إرفاق صورة (اختياري)</p>
+      <p style={{ fontSize: '14px', fontWeight: '600', color: '#1a1a1a', marginBottom: '8px' }}> إرفاق صورة </p>
       <label style={{
         display: 'flex',
         flexDirection: 'column',
