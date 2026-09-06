@@ -1,4 +1,5 @@
-import { FaBell, FaUser, FaBars, FaRecycle } from 'react-icons/fa'
+import { FaUser, FaBars, FaRecycle } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
 
 function Header() {
   return (
@@ -16,13 +17,11 @@ function Header() {
       </button>
 
       <div className="flex items-center gap-4 mr-auto px-6">
-        <div className="relative">
-          <FaBell className="text-gray-500 text-xl cursor-pointer hover:text-[#2d8a2d]" />
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">2</span>
-        </div>
-        <div className="w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-300">
-          <FaUser className="text-gray-500" />
-        </div>
+        <Link to="/profile" aria-label="الملف الشخصي">
+          <div className="w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-300">
+            <FaUser className="text-gray-500" />
+          </div>
+        </Link>
       </div>
     </div>
   )

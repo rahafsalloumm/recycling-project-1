@@ -1,5 +1,6 @@
 ﻿import {  useState  } from 'react';
 import { FiList, FiHome, FiTrash2, FiChevronLeft, FiSliders } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 const DetailedTasksList = () => {
   const [activeTaskId, setActiveTaskId] = useState(3); // افتراضياً المهمة رقم 3 محددة كالصورة
@@ -13,6 +14,7 @@ const DetailedTasksList = () => {
     { id: 7, type: 'home', title: 'حي النور - شارع 7', desc: 'استلام نفايات منزلية', time: '01:00 م', status: 'not_started', statusText: 'لم يبدأ' },
   ]);
 
+  const navigate = useNavigate();
   return (
     <div className="bg-white p-6 rounded-2xl border border-gray-100 flex flex-col justify-between min-h-[580px] shadow-[0_2px_12px_rgba(0,0,0,0.01)]" dir="rtl">
       <div>
@@ -83,8 +85,8 @@ const DetailedTasksList = () => {
         </div>
       </div>
 
-      <button className="w-full text-center text-xs font-bold text-gray-400 border border-gray-100 py-3 rounded-xl hover:text-emerald-600 hover:bg-gray-50 transition-all mt-4">
-        عرض جميع المهام (12)
+      <button type="button" onClick={() => navigate('/driver/tasks')} className="w-full text-center text-xs font-bold text-gray-400 border border-gray-100 py-3 rounded-xl hover:text-emerald-600 hover:bg-gray-50 transition-all mt-4">
+        عرض جميع المهام
       </button>
     </div>
   );

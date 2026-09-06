@@ -1,4 +1,4 @@
-import { FaHeadset, FaQuestionCircle } from 'react-icons/fa';
+import { FaHeadset } from 'react-icons/fa';
 
 const styles = {
   card: {
@@ -34,24 +34,9 @@ const styles = {
     cursor: 'pointer',
     marginBottom: '10px',
   },
-  secondaryBtn: {
-    width: '100%',
-    backgroundColor: '#fff',
-    color: '#1a1a1a',
-    border: '1px solid #e5e7eb',
-    borderRadius: '10px',
-    padding: '12px',
-    fontSize: '14px',
-    fontWeight: 600,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '8px',
-    cursor: 'pointer',
-  },
 };
 
-export default function SupportCard({ onContactSupport, onFaqClick }) {
+export default function SupportCard({ onContactSupport }) {
   return (
     <div style={styles.card}>
       <div style={styles.title}>تحتاج إلى مساعدة؟</div>
@@ -60,11 +45,6 @@ export default function SupportCard({ onContactSupport, onFaqClick }) {
       <button style={styles.primaryBtn} onClick={onContactSupport}>
         <FaHeadset />
         تواصل مع الدعم
-      </button>
-
-      <button style={styles.secondaryBtn} onClick={onFaqClick}>
-        <FaQuestionCircle />
-        الأسئلة الشائعة
       </button>
     </div>
   );

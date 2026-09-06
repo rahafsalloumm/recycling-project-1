@@ -7,12 +7,17 @@ const authService = {
 
   forgotPassword: (email) => api.post('/api/auth/forgot-password', { email }),
 
-  resetPassword: (data) => api.post('/api/auth/reset-password', data),
+  verifyCode: (data) => api.post('/api/auth/verify-code', data),
 
-  getProfile: () => api.get('/api/auth/me'),
+  updatePassword: (data) => api.post('/api/auth/update-password', data),
+
+  resetPassword: (data) => api.post('/api/auth/update-password', data),
+
+  getProfile: () => api.get('/api/auth/profile'),
 
   logout: () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('user')
   },
 }
 

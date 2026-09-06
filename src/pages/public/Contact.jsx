@@ -1,49 +1,67 @@
-import { useState, useRef } from "react";
-import { FaUser, FaEnvelope, FaPhone, FaHeading, FaPaperPlane, FaClock, FaMapMarkerAlt } from "react-icons/fa";
-import Navbar from "@/components/layout/Navbar"; 
+import { useState, useRef } from 'react'
+import { FaUser, FaEnvelope, FaPhone, FaHeading, FaPaperPlane, FaClock, FaMapMarkerAlt } from 'react-icons/fa'
+import Navbar from '@/components/layout/Navbar'
+import { userService } from '@/services'
 
 export default function Contact() {
-  const submitBtnRef = useRef(null);
+  const submitBtnRef = useRef(null)
 
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
+  const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [subject, setSubject] = useState('')
+  const [message, setMessage] = useState('')
 
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState('')
+  const [errors, setErrors] = useState({})
 
   const validate = () => {
-    const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const newErrors = {}
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-    if (!fullName.trim()) newErrors.fullName = "الاسم الكامل مطلوب";
-    if (!emailRegex.test(email)) newErrors.email = "البريد الإلكتروني غير صالح";
-    if (!phone.trim()) newErrors.phone = "رقم الهاتف مطلوب";
-    if (!message.trim()) newErrors.message = "نص الرسالة مطلوب";
+    if (!fullName.trim()) newErrors.fullName = 'الاسم الكامل مطلوب'
+    if (!emailRegex.test(email)) newErrors.email = 'البريد الإلكتروني غير صالح'
+    if (!phone.trim()) newErrors.phone = 'رقم الهاتف مطلوب'
+    if (!subject.trim()) newErrors.subject = 'الموضوع مطلوب'
+    if (!message.trim()) newErrors.message = 'نص الرسالة مطلوب'
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSuccess("");
-    if (!validate()) return;
-    setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setSuccess('')
+    if (!validate()) return
 
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess("تم إرسال رسالتك بنجاح! سنتواصل معك قريباً 🚀");
-      setFullName("");
-      setEmail("");
-      setPhone("");
-      setSubject("");
-      setMessage("");
-    }, 1500);
-  };
+    setLoading(true)
+
+    try {
+      await userService.sendMessage({
+        name: fullName,
+        email,
+        phone,
+        subject,
+        messageText: message,
+      })
+
+      setSuccess('تم إرسال رسالتك بنجاح! سنتواصل معك قريباً 🚀')
+      setFullName('')
+      setEmail('')
+      setPhone('')
+      setSubject('')
+      setMessage('')
+      setErrors({})
+    } catch (error) {
+      setErrors((prev) => ({
+        ...prev,
+        submit: error?.message || 'حدث خطأ أثناء إرسال الرسالة',
+      }))
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#F9FBF8] flex flex-col font-sans text-sm text-gray-700 antialiased">

@@ -1,4 +1,5 @@
  import { Routes, Route, Navigate } from 'react-router-dom'
+import ProtectedRoute from '@/components/ProtectedRoute'
 
 // الصفحات العامة
 import Home from '@/pages/public/Home'
@@ -49,17 +50,6 @@ import Sidebar from '@/features/driver/layout/Sidebar'
 function App() {
   return (
     <Routes>
-      {/* صفحات المستخدم */}
-      <Route path="/user" element={< DashboardPage/>}></Route>
-      <Route path="/dashboard" element={<DashboardPage />} />
-      <Route path="/wastepickup" element={<WastePickupPage />} />
-      <Route path="/services" element={<ServicesPage />} />
-      <Route path="/tracking" element={< TrackingPage />} />
-      <Route path="/settings" element={<SettingsPage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/recycling" element={<RecyclingPage />} />
-      <Route path="/rewardsnew" element={<RewardsNewPage />} />
-      <Route path="/myrewards" element={<MyRewards />} />
       {/* الصفحات العامة */}
       <Route path="/" element={<Home />} />
       <Route path="/request-pickup" element={<RequestPickup />} />
@@ -70,32 +60,43 @@ function App() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/rewards" element={<RewardsPage />} />
 
+      {/* صفحات المستخدم */}
+      <Route path="/user" element={<ProtectedRoute allowedRoles={['user']}><DashboardPage /></ProtectedRoute>} />
+      <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['user']}><DashboardPage /></ProtectedRoute>} />
+      <Route path="/wastepickup" element={<ProtectedRoute allowedRoles={['user']}><WastePickupPage /></ProtectedRoute>} />
+      <Route path="/services" element={<ProtectedRoute allowedRoles={['user']}><ServicesPage /></ProtectedRoute>} />
+      <Route path="/tracking" element={<ProtectedRoute allowedRoles={['user']}><TrackingPage /></ProtectedRoute>} />
+      <Route path="/settings" element={<ProtectedRoute allowedRoles={['user']}><SettingsPage /></ProtectedRoute>} />
+      <Route path="/profile" element={<ProtectedRoute allowedRoles={['user']}><ProfilePage /></ProtectedRoute>} />
+      <Route path="/recycling" element={<ProtectedRoute allowedRoles={['user']}><RecyclingPage /></ProtectedRoute>} />
+      <Route path="/rewardsnew" element={<ProtectedRoute allowedRoles={['user']}><RewardsNewPage /></ProtectedRoute>} />
+      <Route path="/myrewards" element={<ProtectedRoute allowedRoles={['user']}><MyRewards /></ProtectedRoute>} />
+
       {/* لوحة تحكم الـ Admin */}
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminLayout /></ProtectedRoute>}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="drivers" element={<AdminDrivers />} />
- <Route path="orders" element={<AdminOrders />} />
+        <Route path="orders" element={<AdminOrders />} />
         <Route path="bins" element={<AdminBins />} />
         <Route path="routes" element={<AdminRoutes />} />
         <Route path="reports" element={<AdminReports />} />
         <Route path="rewards" element={<AdminRewards />} />
         <Route path="settings" element={<AdminSettings />} />
-        <Route path="/admin/support" element={<AdminSupport />} />
-
+        <Route path="support" element={<AdminSupport />} />
       </Route>
 
-{/* لوحة تحكم الـ Driver */}
-      <Route path="/driver" element={<DriverDashboard />}></Route>
-      <Route path="/driver/dashboard" element={<DriverDashboard />} />
-      <Route path="/driver/tasks" element={<DriverTasks />} />
-      <Route path="/driver/route" element={<DriverRoute />} />
-      <Route path="/driver/bins" element={<DriverBins />} />
-      <Route path="/driver/homes" element={<DriverHomes />} />
-      <Route path="/driver/history" element={<DriverHistory />} />
-      <Route path="/driver/profile" element={<DriverProfile />} />
-      <Route path="/driver/help" element={<DriverHelp />} />
+      {/* لوحة تحكم الـ Driver */}
+      <Route path="/driver" element={<ProtectedRoute allowedRoles={['driver']}><DriverDashboard /></ProtectedRoute>} />
+      <Route path="/driver/dashboard" element={<ProtectedRoute allowedRoles={['driver']}><DriverDashboard /></ProtectedRoute>} />
+      <Route path="/driver/tasks" element={<ProtectedRoute allowedRoles={['driver']}><DriverTasks /></ProtectedRoute>} />
+      <Route path="/driver/route" element={<ProtectedRoute allowedRoles={['driver']}><DriverRoute /></ProtectedRoute>} />
+      <Route path="/driver/bins" element={<ProtectedRoute allowedRoles={['driver']}><DriverBins /></ProtectedRoute>} />
+      <Route path="/driver/homes" element={<ProtectedRoute allowedRoles={['driver']}><DriverHomes /></ProtectedRoute>} />
+      <Route path="/driver/history" element={<ProtectedRoute allowedRoles={['driver']}><DriverHistory /></ProtectedRoute>} />
+      <Route path="/driver/profile" element={<ProtectedRoute allowedRoles={['driver']}><DriverProfile /></ProtectedRoute>} />
+      <Route path="/driver/help" element={<ProtectedRoute allowedRoles={['driver']}><DriverHelp /></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

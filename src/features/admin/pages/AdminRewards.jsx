@@ -1,32 +1,102 @@
-﻿import { useState } from 'react';
+﻿import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaSearch, FaStar, FaUsers, FaCoins, FaBoxes, FaGift } from "react-icons/fa";
 
 import RewardStatCard from "@/features/admin/components/rewards/RewardStatCard";
 import RewardsTable from "@/features/admin/components/rewards/RewardsTable";
+import adminService from "@/services/admin";
 
 export default function AdminRewards() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("الكل");
 
   // 💡 استبدال المكافآت القديمة بالمنتجات العينية الثمانية المخصصة للتوصيل الفوري مع السائق
-  const [rewardsData, setRewardsData] = useState([
-    { id: 1, name: "شنطة قماش صديقة للبيئة وخفيفة للتوصيل", category: "منتجات بيئية بديلة", points: 900, stock: 145, claimed: 1420, icon: "🛍️", status: true },
-    { id: 2, name: "زجاجة مياه مخصصة مقاومة للصدأ وقابلة لإعادة الاستخدام", category: "منتجات بيئية بديلة", points: 800, stock: 80, claimed: 298, icon: "🧪", status: true },
-    { id: 3, name: "نبتة داخلية صغيرة في أصيص بلاستيكي آمن للنقل", category: "منتجات بيئية بديلة", points: 1200, stock: 120, claimed: 340, icon: "🪴", status: true },
-    { id: 4, name: "طقم بذور زراعية سريعة النمو في الميدان", category: "منتجات بيئية بديلة", points: 1100, stock: 45, claimed: 115, icon: "🌱", status: true },
-    { id: 5, name: "صندوق سماد عضوي مغلف مخصص للحدائق المنزلية", category: "منتجات بيئية بديلة", points: 1400, stock: 150, claimed: 2450, icon: "📦", status: true },
-    { id: 6, name: "كوب (ماج) حراري حافظ مصنوع من مواد معاد تدويرها", category: "منتجات بيئية بديلة", points: 1000, stock: 200, claimed: 510, icon: "☕", status: true },
-    { id: 7, name: "طقم أكياس فرز منزلية ملونة وقابلة لإعادة الاستخدام", category: "منتجات بيئية بديلة", points: 600, stock: 310, claimed: 840, icon: "♻️", status: true },
-    { id: 8, name: "شاحن طاقة شمسي محمول للأجهزة الذكية عبر الشمس", category: "منتجات بيئية بديلة", points: 3500, stock: 15, claimed: 42, icon: "☀️", status: true }
-  ]);
+  const [rewardsData, setRewardsData] = useState([]);
+  const [claims, setClaims] = useState([]);
+  const [rewardStats, setRewardStats] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [form, setForm] = useState({ title: "", category: "منتجات بيئية بديلة", pointsRequired: 100, stock: 10, isActive: true });
 
-  // دالة تشغيل وتغيير حالة الإتاحة (Toggle Switch) الحية
-  const handleToggleStatus = (id) => {
-    setRewardsData(prevRewards =>
-      prevRewards.map(reward =>
-        reward.id === id ? { ...reward, status: !reward.status } : reward
-      )
-    );
+  const loadRewards = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const [response, claimsResponse] = await Promise.all([
+        adminService.getRewards({
+          category: activeCategory === "الكل" ? "all" : activeCategory,
+          search: searchTerm || undefined,
+        }),
+        adminService.getRewardClaims(),
+      ]);
+      const payload = response?.data ?? response ?? {};
+      const rewards = Array.isArray(payload?.rewards) ? payload.rewards : [];
+      const claimsPayload = claimsResponse?.data ?? claimsResponse ?? {};
+      setClaims(Array.isArray(claimsPayload?.data) ? claimsPayload.data : []);
+      setRewardStats(payload?.stats || {});
+      setRewardsData(rewards.map((reward) => ({
+        id: reward._id,
+        name: reward.title,
+        category: reward.category,
+        points: reward.pointsRequired,
+        stock: reward.stock,
+        claimed: reward.claimedCount,
+        status: reward.isActive,
+        claims: (Array.isArray(claimsPayload?.data) ? claimsPayload.data : []).filter((claim) => (claim.rewardId?._id || claim.rewardId) === reward._id),
+      })));
+    } catch (requestError) {
+      setError(requestError.message || "تعذر تحميل المكافآت");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadRewards();
+  }, [searchTerm, activeCategory]);
+
+  const handleToggleStatus = async (id, currentStatus) => {
+    try {
+      await adminService.updateReward(id, { isActive: !currentStatus });
+      await loadRewards();
+    } catch (requestError) {
+      setError(requestError.message || "تعذر تحديث حالة المكافأة");
+    }
+  };
+
+  const handleCreateReward = async (event) => {
+    event.preventDefault();
+    setIsCreating(true);
+    setError("");
+
+    try {
+      await adminService.createReward({
+        ...form,
+        pointsRequired: Number(form.pointsRequired),
+        stock: Number(form.stock),
+      });
+      setForm({ title: "", category: "منتجات بيئية بديلة", pointsRequired: 100, stock: 10, isActive: true });
+      setIsCreateOpen(false);
+      await loadRewards();
+    } catch (requestError) {
+      setError(requestError.message || "تعذر إنشاء المكافأة");
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  const handleDeleteReward = async (id) => {
+    try {
+      setError("");
+      await adminService.deleteReward(id);
+      await loadRewards();
+    } catch (requestError) {
+      setError(requestError.message || "تعذر حذف المكافأة");
+      throw requestError;
+    }
   };
 
   // 📋 تحديث الفئات الجانبية المتاحة لتطابق التصنيف العيني الجديد
@@ -43,6 +113,13 @@ export default function AdminRewards() {
   });
   return (
     <div className="w-full space-y-6 text-right font-sans p-1 animate-fadeIn duration-300" dir="rtl">
+      {loading && !rewardsData.length && (
+        <div className="rounded-xl bg-white p-4 text-sm text-gray-600 shadow-sm border border-gray-100">
+          جاري تحميل المكافآت...
+        </div>
+      )}
+
+      {error && <p className="rounded-xl bg-red-50 p-4 text-sm font-bold text-red-600">{error}</p>}
       
       {/* هيدر الصفحة */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
@@ -54,7 +131,7 @@ export default function AdminRewards() {
           <p className="text-sm text-gray-400 mt-1.5 font-medium">تحفيز المشاركة المجتمعية عبر ربط نقاط التدوير بمنتجات بيئية وحوافز عصرية مرغوبة وعينية</p>
         </div>
         
-        <button className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl text-sm font-bold shadow-md hover:bg-emerald-700 transition-all duration-300 cursor-pointer active:scale-98">
+        <button type="button" onClick={() => setIsCreateOpen(true)} className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl text-sm font-bold shadow-md hover:bg-emerald-700 transition-all duration-300 cursor-pointer active:scale-98">
           <FaPlus className="text-xs" /> 
           <span>إضافة حافز جديد</span>
         </button>
@@ -62,10 +139,10 @@ export default function AdminRewards() {
 
       {/* الكروت العلوية الإحصائية */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <RewardStatCard title="إجمالي النقاط الموزعة" value="125,430" desc="+12% هذا الشهر" icon={<FaCoins />} bgIcon="text-emerald-600 bg-emerald-50" />
-        <RewardStatCard title="الحوافز المستردة" value="6,830" desc="عملية استبدال مكتملة" icon={<FaGift />} bgIcon="text-blue-600 bg-blue-50" />
-        <RewardStatCard title="المستفيدين من الدعم" value="1,245" desc="مستند لنقاط التدوير" icon={<FaUsers />} bgIcon="text-purple-600 bg-purple-50" />
-        <RewardStatCard title="معدل النقاط الاستهلاكي" value="1,250" desc="نقطة / مستخدم" icon={<FaStar />} bgIcon="text-amber-500 bg-amber-50" />
+        <RewardStatCard title="إجمالي النقاط الموزعة" value={rewardStats.totalPointsDistributed ?? "-"} desc="من قاعدة البيانات" icon={<FaCoins />} bgIcon="text-emerald-600 bg-emerald-50" />
+        <RewardStatCard title="الحوافز المستردة" value={rewardStats.totalClaimedCount ?? "-"} desc="عمليات الاسترداد" icon={<FaGift />} bgIcon="text-blue-600 bg-blue-50" />
+        <RewardStatCard title="المستفيدين" value={rewardStats.beneficiariesCount ?? "-"} desc="مستخدمون لديهم نقاط" icon={<FaUsers />} bgIcon="text-purple-600 bg-purple-50" />
+        <RewardStatCard title="متوسط النقاط" value={rewardStats.consumptionRate ?? "-"} desc="متوسط المستخدم" icon={<FaStar />} bgIcon="text-amber-500 bg-amber-50" />
       </div>
 
       {/* شريط البحث المطور */}
@@ -87,7 +164,7 @@ export default function AdminRewards() {
       {/* الجدول والقائمة الجانبية الفعالة */}
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
         <div className="xl:col-span-3">
-          <RewardsTable rewards={filteredRewards} onToggleStatus={handleToggleStatus} />
+          <RewardsTable rewards={filteredRewards} claims={claims} onToggleStatus={handleToggleStatus} onUpdate={async (id, data) => { await adminService.updateReward(id, data); await loadRewards(); }} onDelete={handleDeleteReward} />
         </div>
         
         <div className="xl:col-span-1 space-y-6">
@@ -115,6 +192,46 @@ export default function AdminRewards() {
           </div>
         </div>
       </div>
+
+      {isCreateOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4">
+          <form onSubmit={handleCreateReward} className="w-full max-w-md space-y-4 rounded-2xl bg-white p-6 text-right shadow-2xl">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-black text-gray-900">إضافة حافز جديد</h2>
+              <button type="button" onClick={() => setIsCreateOpen(false)} className="text-gray-400 hover:text-gray-700" aria-label="إغلاق">×</button>
+            </div>
+            <label className="block space-y-1 text-sm font-bold text-gray-600">
+              <span>اسم الحافز</span>
+              <input required value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="w-full rounded-xl border border-gray-200 px-3 py-2.5 outline-none focus:border-emerald-500" />
+            </label>
+            <label className="block space-y-1 text-sm font-bold text-gray-600">
+              <span>الفئة</span>
+              <select value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })} className="w-full rounded-xl border border-gray-200 px-3 py-2.5 outline-none focus:border-emerald-500">
+                <option value="منتجات بيئية بديلة">منتجات بيئية بديلة</option>
+                <option value="تجارب">تجارب</option>
+                <option value="خصومات">خصومات</option>
+              </select>
+            </label>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="block space-y-1 text-sm font-bold text-gray-600">
+                <span>النقاط</span>
+                <input required type="number" min="0" value={form.pointsRequired} onChange={(event) => setForm({ ...form, pointsRequired: event.target.value })} className="w-full rounded-xl border border-gray-200 px-3 py-2.5 outline-none focus:border-emerald-500" />
+              </label>
+              <label className="block space-y-1 text-sm font-bold text-gray-600">
+                <span>المخزون</span>
+                <input required type="number" min="0" value={form.stock} onChange={(event) => setForm({ ...form, stock: event.target.value })} className="w-full rounded-xl border border-gray-200 px-3 py-2.5 outline-none focus:border-emerald-500" />
+              </label>
+            </div>
+            <label className="flex items-center justify-between rounded-xl border border-gray-200 px-3 py-2.5 text-sm font-bold text-gray-600">
+              <span>فعال</span>
+              <input type="checkbox" checked={form.isActive} onChange={(event) => setForm({ ...form, isActive: event.target.checked })} className="h-4 w-4 accent-emerald-600" />
+            </label>
+            <button type="submit" disabled={isCreating} className="w-full rounded-xl bg-emerald-600 py-3 font-bold text-white disabled:opacity-60">
+              {isCreating ? "جاري الإنشاء..." : "إنشاء الحافز"}
+            </button>
+          </form>
+        </div>
+      )}
 
     </div>
   );

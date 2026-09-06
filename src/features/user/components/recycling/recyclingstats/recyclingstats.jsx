@@ -1,9 +1,9 @@
-export default function RecyclingStats() {
+export default function RecyclingStats({ stats: recyclingStats = {} }) {
   const stats = [
-    { icon: '♻️', value: '23.6', unit: 'كغ', label: 'إجمالي النفايات المعاد تدويرها' },
-    { icon: '🍶', value: '18', unit: 'مرة', label: 'إجمالي عمليات إعادة التدوير' },
-    { icon: '⭐', value: '2,450', unit: 'نقطة', label: 'إجمالي النقاط المكتسبة' },
-    { icon: '📊', value: '3.2', unit: 'كغ', label: 'متوسط النفايات لكل عملية' },
+    { icon: '♻️', value: recyclingStats.totalWeightKg ?? 0, unit: 'كغ', label: 'إجمالي النفايات المعاد تدويرها' },
+    { icon: '🍶', value: recyclingStats.totalCompletedOps ?? 0, unit: 'مرة', label: 'إجمالي عمليات إعادة التدوير' },
+    { icon: '⭐', value: recyclingStats.currentPoints ?? 0, unit: 'نقطة', label: 'إجمالي النقاط المكتسبة' },
+    { icon: '📊', value: recyclingStats.averageWeightPerOp ?? 0, unit: 'كغ', label: 'متوسط النفايات لكل عملية' },
   ]
 
   return (

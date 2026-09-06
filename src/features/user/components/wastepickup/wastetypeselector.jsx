@@ -1,4 +1,7 @@
-const wasteTypes = [
+import { useEffect, useState } from 'react'
+import adminService from '@/services/admin'
+
+const defaultWasteTypes = [
   { id: 'plastic', label: 'بلاستيك', emoji: '🍶' },
   { id: 'glass', label: 'زجاج', emoji: '🍾' },
   { id: 'metal', label: 'معادن', emoji: '🥫' },
@@ -6,6 +9,19 @@ const wasteTypes = [
 ]
 
 export default function WasteTypeSelector({ selected, onSelect }) {
+  const [wasteTypes, setWasteTypes] = useState(defaultWasteTypes)
+
+  useEffect(() => {
+    adminService.getPublicWasteTypes()
+      .then((response) => {
+        const types = response?.wasteTypes || response?.data?.wasteTypes
+        if (Array.isArray(types) && types.length) {
+          setWasteTypes(types.map((type) => ({ ...type, id: type.key, emoji: type.emoji || '♻️' })))
+        }
+      })
+      .catch(() => {})
+  }, [])
+
   return (
     <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '20px', marginBottom: '16px', direction: 'rtl' }}>
       <h3 style={{ fontWeight: '700', fontSize: '16px', marginBottom: '16px', color: '#1a1a1a' }}>نوع النفايات</h3>

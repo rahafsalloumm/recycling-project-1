@@ -1,7 +1,9 @@
 ﻿import {  useState  } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiTrash2, FiHome, FiRadio, FiAlertTriangle, FiCheckCircle } from 'react-icons/fi';
 
 const DashboardGrid = () => {
+  const navigate = useNavigate();
   // بيانات مجهزة للربط مع الباك إند والـ API
   const [smartBins] = useState({ critical: 3, medium: 4, low: 1, total: 8 });
   const [homeRequests] = useState({ pending: 6, completed: 3 });
@@ -54,7 +56,7 @@ const DashboardGrid = () => {
           </div>
         </div>
         
-        <button className="w-full text-center text-xs font-bold text-gray-400 mt-4 pt-3 border-t border-gray-50 transition-colors group-hover:text-emerald-600">
+        <button type="button" onClick={() => navigate("/driver/bins")} className="w-full text-center text-xs font-bold text-gray-400 mt-4 pt-3 border-t border-gray-50 transition-colors group-hover:text-emerald-600">
           عرض جميع الحاويات
         </button>
       </div>
@@ -68,7 +70,7 @@ const DashboardGrid = () => {
             </div>
             <h4 className="text-sm font-extrabold text-gray-800 tracking-tight">طلبات المنازل</h4>
           </div>
-          <span className="text-[10px] font-bold text-gray-400 hover:text-blue-600 transition-colors">عرض الكل</span>
+          <button type="button" onClick={() => navigate("/driver/homes")} className="text-[10px] font-bold text-gray-400 hover:text-blue-600 transition-colors">عرض الكل</button>
         </div>
         
         <div className="flex items-center justify-between my-2">
@@ -91,7 +93,7 @@ const DashboardGrid = () => {
           </div>
         </div>
         
-        <button className="w-full text-center text-xs font-bold text-gray-400 mt-4 pt-3 border-t border-gray-50 transition-colors group-hover:text-blue-600">
+        <button type="button" onClick={() => navigate("/driver/homes")} className="w-full text-center text-xs font-bold text-gray-400 mt-4 pt-3 border-t border-gray-50 transition-colors group-hover:text-blue-600">
           عرض جميع الطلبات
         </button>
       </div>

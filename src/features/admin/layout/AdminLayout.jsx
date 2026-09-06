@@ -1,4 +1,5 @@
-﻿import { NavLink, Outlet } from "react-router-dom";
+﻿import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import authService from "@/services/auth";
 import { FaRecycle } from "react-icons/fa"; // شعار التدوير الثلاثي الموحد للمشروع
 import { 
   FaChartPie, 
@@ -15,6 +16,12 @@ import {
 } from "react-icons/fa";
 
 export default function AdminLayout() {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/login', { replace: true });
+  };
+
   const menu = [
     { icon: <FaChartPie />, label: "لوحة التحكم", path: "/admin/dashboard" },
     { icon: <FaUsers />, label: "إدارة المستخدمين", path: "/admin/users" },
@@ -75,7 +82,7 @@ export default function AdminLayout() {
         
         {/* زر تسجيل الخروج مدفوع للقاع تماماً وبنفس الستايل النظيف والآمن */}
         <div className="p-5 border-t border-[#1b4332]/50 w-full bg-[#0d2a1d] mb-4">
-          <button className="flex items-center gap-4 px-4 py-3.5 hover:bg-red-950/20 text-red-400 hover:text-red-300 rounded-xl text-sm font-black text-right w-full transition-all duration-200 active:scale-[0.98]">
+          <button type="button" onClick={handleLogout} className="flex items-center gap-4 px-4 py-3.5 hover:bg-red-950/20 text-red-400 hover:text-red-300 rounded-xl text-sm font-black text-right w-full transition-all duration-200 active:scale-[0.98]">
             <FaSignOutAlt className="text-lg shrink-0" />
             <span>تسجيل الخروج</span>
           </button>

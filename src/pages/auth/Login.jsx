@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaRecycle } from "react-icons/fa";
+import authService from '@/services/auth'
 
 export default function Login() {
   const navigate = useNavigate();
@@ -30,16 +31,35 @@ export default function Login() {
   };
 
   // ===== SUBMIT =====
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      const data = await authService.login({ email, password });
+      const user = data?.user || {}
+      const normalizedUser = {
+        ...user,
+        role: String(user.role || '').toLowerCase(),
+      }
+
+      localStorage.setItem('token', data?.token || '')
+      localStorage.setItem('user', JSON.stringify(normalizedUser))
+
+      const role = normalizedUser.role
+      if (role === 'admin') {
+        navigate('/admin')
+      } else if (role === 'driver') {
+        navigate('/driver')
+      } else {
+        navigate('/dashboard')
+      }
+    } catch (error) {
+      setErrors((prev) => ({ ...prev, submit: error?.message || 'حدث خطأ أثناء تسجيل الدخول' }));
+    } finally {
       setLoading(false);
-      alert("تم تسجيل الدخول بنجاح 🎉");
-      navigate("/tracking"); // توجيه المستخدم مباشرة لقسم التتبع بعد النجاح
-    }, 1000);
+    }
   };
 
   // ===== ENTER KEY NAVIGATION =====
@@ -137,6 +157,10 @@ export default function Login() {
           </div>
 
           {/* BUTTON */}
+          {errors.submit && (
+            <p className="text-red-500 text-sm mt-1 text-right">{errors.submit}</p>
+          )}
+
           <button
             ref={submitBtnRef}
             type="submit"
@@ -153,7 +177,7 @@ export default function Login() {
           ليس لديك حساب؟
           <button
             type="button"
-            onClick={() => navigate("/Register")}
+            onClick={() => navigate("/register")}
             className="text-green-700 font-bold mr-2 hover:text-emerald-500"
           >
             إنشاء حساب

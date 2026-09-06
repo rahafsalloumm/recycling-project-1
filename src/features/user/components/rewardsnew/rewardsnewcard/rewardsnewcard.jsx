@@ -6,7 +6,7 @@ const badgeColors = {
   'الأكثر استبدالاً': { bg: '#7c3aed', color: 'white' },
 }
 
-export default function RewardsNewCard({ icon, title, subtitle, points, available, badge }) {
+export default function RewardsNewCard({ icon, title, subtitle, points, available, badge, onSelect }) {
   const navigate = useNavigate()
 
   // لو ما وصلت أيقونة من البيانات، استخدمي عربة تسوق كافتراضي
@@ -33,7 +33,13 @@ export default function RewardsNewCard({ icon, title, subtitle, points, availabl
         <p style={{ fontSize: '12px', color: '#888', marginBottom: '6px' }}>{subtitle}</p>
         <p style={{ fontSize: '15px', fontWeight: '900', color: '#2d6a2d', marginBottom: '10px' }}>{points} نقطة</p>
         <button
-          onClick={() => navigate('/myrewards')}
+          onClick={() => {
+            if (onSelect) {
+              onSelect()
+            } else {
+              navigate('/myrewards')
+            }
+          }}
           style={{ width: '100%', backgroundColor: 'white', color: '#2d6a2d', border: '1.5px solid #2d6a2d', borderRadius: '10px', padding: '8px', fontSize: '13px', fontWeight: '700', cursor: 'pointer', marginBottom: '6px' }}
         >
           استبدل الآن

@@ -1,6 +1,9 @@
-﻿import { FaMapMarkerAlt } from "react-icons/fa";
+﻿import { useNavigate } from "react-router-dom";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
-export default function AdminMap() {
+export default function AdminMap({ fullBins = 0 }) {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between h-full">
       <h3 className="text-base font-bold text-gray-800 mb-3">الحاويات الممتلئة على الخريطة</h3>
@@ -8,9 +11,11 @@ export default function AdminMap() {
         <div className="absolute top-8 left-12 text-red-500 animate-bounce"><FaMapMarkerAlt size={20} /></div>
         <div className="absolute bottom-10 right-20 text-yellow-500 animate-pulse"><FaMapMarkerAlt size={20} /></div>
         <div className="absolute top-16 right-12 text-green-500"><FaMapMarkerAlt size={20} /></div>
-        <span className="text-[11px] font-bold text-emerald-700 bg-white/80 px-3 py-1 rounded-full shadow-sm">عرض محاكي الخريطة التفاعلية</span>
+        <span className="text-[11px] font-bold text-emerald-700 bg-white/80 px-3 py-1 rounded-full shadow-sm">
+          {fullBins > 0 ? `${fullBins} حاوية تحتاج متابعة` : "لا توجد حاويات ممتلئة حالياً"}
+        </span>
       </div>
-      <button className="w-full mt-3 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition-colors">عرض على الخريطة الشاملة</button>
+      <button type="button" onClick={() => navigate('/admin/bins')} className="w-full mt-3 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition-colors">عرض على الخريطة الشاملة</button>
     </div>
   );
 }
