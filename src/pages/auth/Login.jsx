@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaRecycle } from "react-icons/fa";
-import { authService } from "@/services"; 
+import authService from '@/services/auth'
 
 export default function Login() {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export default function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ===== SUBMIT (تعديل الربط الحقيقي) =====
+  // ===== SUBMIT =====
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -40,34 +40,26 @@ export default function Login() {
     setBackendError(""); 
 
     try {
-      // إرسال البيانات للسيرفر وانتظار النتيجة
-      const responseData = await authService.login({ email, password });
-
-      // حل مشكلة غلاف الباك إند: نتحقق إن كانت البيانات مغلفة بـ .data أو قادمة مباشرة
-      const res = responseData?.data ? responseData.data : responseData;
-
-      if (res?.token) {
-        // حفظ التوكن وبيانات المستخدم محلياً
-        localStorage.setItem("token", res.token);
-        localStorage.setItem("user", JSON.stringify(res.user));
-
-        alert("تم تسجيل الدخول بنجاح 🎉");
-
-        // التوجيه التلقائي حسب دور المستخدم (Role) بناءً على تعليمات عبد الرحمن
-        if (res.user?.role === "admin") {
-          navigate("/admin/dashboard");
-        } else if (res.user?.role === "driver") {
-          navigate("/driver/dashboard");
-        } else {
-          navigate("/dashboard"); 
-        }
-      } else {
-        setBackendError("فشل في قراءة بيانات الجلسة من السيرفر. تأكد من رابط الـ API.");
+      const data = await authService.login({ email, password });
+      const user = data?.user || {}
+      const normalizedUser = {
+        ...user,
+        role: String(user.role || '').toLowerCase(),
       }
 
-    } catch (err) {
-      // الإمساك بالخطأ الموحد المعالج في api.js وعرضه
-      setBackendError(err.message || "فشل تسجيل الدخول، يرجى التحقق من البيانات");
+      localStorage.setItem('token', data?.token || '')
+      localStorage.setItem('user', JSON.stringify(normalizedUser))
+
+      const role = normalizedUser.role
+      if (role === 'admin') {
+        navigate('/admin')
+      } else if (role === 'driver') {
+        navigate('/driver')
+      } else {
+        navigate('/dashboard')
+      }
+    } catch (error) {
+      setErrors((prev) => ({ ...prev, submit: error?.message || 'حدث خطأ أثناء تسجيل الدخول' }));
     } finally {
       setLoading(false);
     }
@@ -174,6 +166,10 @@ export default function Login() {
           </div>
 
           {/* BUTTON */}
+          {errors.submit && (
+            <p className="text-red-500 text-sm mt-1 text-right">{errors.submit}</p>
+          )}
+
           <button
             ref={submitBtnRef}
             type="submit"
@@ -190,7 +186,7 @@ export default function Login() {
           ليس لديك حساب؟
           <button
             type="button"
-            onClick={() => navigate("/Register")}
+            onClick={() => navigate("/register")}
             className="text-green-700 font-bold mr-2 hover:text-emerald-500"
           >
             إنشاء حساب

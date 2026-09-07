@@ -20,8 +20,9 @@ function LocationMarker({ position, setPosition }) {
 }
 
 export default function LocationPicker({ onChange }) {
-  const [position, setPosition] = useState([31.9539, 35.9106])
-  const [address, setAddress] = useState('عمان، شارع الجامعة الأردنية')
+  const [position, setPosition] = useState(null)
+  const [address, setAddress] = useState('')
+  const mapCenter = position || [0, 0]
 
   const handlePositionChange = (pos) => {
     setPosition(pos)
@@ -52,12 +53,12 @@ export default function LocationPicker({ onChange }) {
         }}
       />
       <div style={{ borderRadius: '12px', overflow: 'hidden', height: '200px' }}>
-        <MapContainer center={position} zoom={13} style={{ height: '100%', width: '100%' }}>
+        <MapContainer center={mapCenter} zoom={position ? 13 : 2} style={{ height: '100%', width: '100%' }}>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <LocationMarker position={position} setPosition={handlePositionChange} />
         </MapContainer>
       </div>
-      <p style={{ fontSize: '11px', color: '#888', marginTop: '6px' }}>اضغط على الخريطة لتحديد موقعك</p>
+      <p style={{ fontSize: '11px', color: '#888', marginTop: '6px' }}>يرجى إضافة العنوان والضغط على الخريطة لتحديد موقعك</p>
     </div>
   )
 }

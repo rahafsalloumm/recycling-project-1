@@ -1,7 +1,7 @@
 ﻿import { useState } from "react";
 import { FaEdit, FaTrash, FaEye, FaTimes, FaRoute, FaUser, FaMapMarkerAlt, FaSave } from "react-icons/fa";
 
-export default function RoutesTable({ routes, onSelectRoute }) {
+export default function RoutesTable({ routes, totalRoutes = routes.length, drivers = [], onSelectRoute, onUpdateRoute, onDeleteRoute }) {
   // صور افتراضية للسائقين
   const driverAvatars = {
     "DRV-001": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
@@ -12,17 +12,16 @@ export default function RoutesTable({ routes, onSelectRoute }) {
   };
 
   // قائمة السائقين المتاحين الميدانيين لاستخدامها في منبثقة التعديل
-  const availableDrivers = [
-    { id: "DRV-001", name: "أحمد محمود" },
-    { id: "DRV-002", name: "خالد ناصر" },
-    { id: "DRV-003", name: "محمد علي" },
-    { id: "DRV-004", name: "يوسف سامي" },
-    { id: "DRV-005", name: "سامي حسن" }
-  ];
+  const availableDrivers = drivers.map((driver) => ({ id: driver.id || driver._id, name: driver.name }));
   // حالات النوافذ المنبثقة
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  const totalPages = Math.max(1, Math.ceil(routes.length / pageSize));
+  const activePage = Math.min(currentPage, totalPages);
+  const visibleRoutes = routes.slice((activePage - 1) * pageSize, activePage * pageSize);
 
   // دوال فتح النوافذ وتثبيت المسار المحدد
   const handleOpenDetails = (route) => {
@@ -37,9 +36,13 @@ export default function RoutesTable({ routes, onSelectRoute }) {
     setIsEditOpen(true);
   };
 
-  const handleSaveEditSubmit = (e) => {
+  const handleSaveEditSubmit = async (e) => {
     e.preventDefault();
-    console.log("تمت تحديثات المسار الميداني يدويّاً:", selectedRoute);
+    await onUpdateRoute?.(selectedRoute.id, {
+      driver: selectedRoute.driverId,
+      status: selectedRoute.apiStatus,
+      totalDistanceKm: Number.parseFloat(selectedRoute.distance) || undefined,
+    });
     setIsEditOpen(false);
   };
   return (
@@ -60,9 +63,9 @@ export default function RoutesTable({ routes, onSelectRoute }) {
             </tr>
           </thead>
           <tbody className="text-sm divide-y divide-gray-50 text-gray-700 font-medium">
-            {routes.map((route, index) => (
+            {visibleRoutes.length ? visibleRoutes.map((route, index) => (
               <tr key={route.id} className="hover:bg-gray-50/40 transition-colors duration-200 group">
-                <td className="py-4 px-6 text-center font-bold text-gray-400 text-base">{index + 1}</td>
+                <td className="py-4 px-6 text-center font-bold text-gray-400 text-base">{(activePage - 1) * pageSize + index + 1}</td>
                 <td className="py-4 px-6">
                   <div className="flex flex-col">
                     <span className="font-bold text-gray-900 group-hover:text-emerald-700 transition-colors duration-150 text-[15px]">{route.routeName}</span>
@@ -108,22 +111,25 @@ export default function RoutesTable({ routes, onSelectRoute }) {
                   <div className="flex items-center justify-center gap-1 opacity-90">
                     <button type="button" onClick={() => handleOpenDetails(route)} className="p-2 rounded-xl text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 active:scale-90 transition-all duration-150 cursor-pointer" title="عرض الحاويات والتفاصيل"><FaEye className="text-sm" /></button>
                     <button type="button" onClick={() => handleOpenEdit(route)} className="p-2 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-50 active:scale-90 transition-all duration-150 cursor-pointer" title="تعديل السائق والمهام"><FaEdit className="text-sm" /></button>
-                    <button type="button" className="p-2 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 active:scale-90 transition-all duration-150 cursor-pointer" title="حذف المسار"><FaTrash className="text-sm" /></button>
+                    <button type="button" onClick={() => onDeleteRoute?.(route.id)} className="p-2 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 active:scale-90 transition-all duration-150 cursor-pointer" title="حذف المسار"><FaTrash className="text-sm" /></button>
                   </div>
                 </td>
               </tr>
-            ))}
+            )) : (
+              <tr><td colSpan="9" className="py-10 text-center text-gray-400">لا توجد مسارات مطابقة.</td></tr>
+            )}
           </tbody>
         </table>
       </div>
       {/* شريط التنقل الرقمي المطور */}
       <div className="p-4 bg-gray-50/60 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-gray-400 font-bold">
-        <div>عرض <span className="text-gray-700 font-black">1</span> إلى <span className="text-gray-700 font-black">6</span> من أصل <span className="text-gray-700 font-black">18</span> مسار ميداني</div>
+        <div>عرض <span className="text-gray-700 font-black">{visibleRoutes.length ? (activePage - 1) * pageSize + 1 : 0}</span> إلى <span className="text-gray-700 font-black">{visibleRoutes.length ? (activePage - 1) * pageSize + visibleRoutes.length : 0}</span> من أصل <span className="text-gray-700 font-black">{totalRoutes}</span> مسار ميداني</div>
         <div className="flex items-center gap-1" dir="ltr">
-          <button type="button" className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-400 hover:bg-gray-50 active:scale-95 transition-all">&lt;</button>
-          <button type="button" className="px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-black shadow-xs">1</button>
-          <button type="button" className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 active:scale-95 transition-all">2</button>
-          <button type="button" className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-400 hover:bg-gray-50 active:scale-95 transition-all">&gt;</button>
+          <button type="button" disabled={activePage === 1} onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-400 hover:bg-gray-50 active:scale-95 transition-all disabled:opacity-40">&lt;</button>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+            <button type="button" key={page} onClick={() => setCurrentPage(page)} className={`px-3 py-1.5 rounded-lg ${activePage === page ? "bg-emerald-600 text-white font-black shadow-xs" : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"}`}>{page}</button>
+          ))}
+          <button type="button" disabled={activePage === totalPages} onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-400 hover:bg-gray-50 active:scale-95 transition-all disabled:opacity-40">&gt;</button>
         </div>
       </div>
       {/* 👁️ شاشة عرض تقرير تفاصيل المسار الشاملة المنبثقة */}

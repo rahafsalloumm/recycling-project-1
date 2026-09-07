@@ -8,8 +8,10 @@ export default function WeightInput({ value, onChange }) {
         <input
           type="number"
           value={value}
+          placeholder="أضف الوزن التقريبي"
           onChange={(e) => onChange(e.target.value)}
           min="1"
+          required
           style={{
             flex: 1,
             border: '1px solid #e5e7eb',

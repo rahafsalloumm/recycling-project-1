@@ -50,19 +50,14 @@ const DriverDashboard = () => {
   }, []);
 
   return (
-    // 💡 هذا التقسيم الذكي يجبر السايد بار واللوحة على الوقوف جنباً إلى جنب كأعمدة حقيقية بدون تداخل نهائياً
     <div className="bg-[#f4f7f6] h-screen w-full flex overflow-hidden" dir="rtl">
-      
-      {/* العمود الأول: السايد بار الثابت في جهة اليمين */}
       <Sidebar />
 
-      {/* العمود الثاني: محتوى اللوحة بالكامل، يأخذ باقي المساحة ويتحرك لأسفل بسكرول مستقل ناعم */}
-      <div className="flex-1 h-screen overflow-y-auto flex flex-col justify-between bg-[#f4f7f6]"> 
+      <div className="flex-1 h-screen overflow-y-auto flex flex-col justify-between bg-[#f4f7f6]">
         <div>
           <DriverNavbar />
 
           <main className="p-6 space-y-6 max-w-[1600px] mx-auto animate-fade-in-up">
-            
             {/* كروت الإحصائيات الخمسة */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
               <StatCard title="الوقود المتبقي" value={dashboardData ? `${dashboardData.fuelPercentage}%` : '—'} subtext="تقريباً" icon={<FiBattery />} colorClass="bg-purple-50 text-purple-600 border border-purple-100/50" />
@@ -91,13 +86,11 @@ const DriverDashboard = () => {
           </main>
         </div>
 
-        {/* فوتر اللوحة */}
         <footer className="text-center text-xs text-emerald-700 font-bold py-5 border-t border-gray-100 bg-white flex items-center justify-center gap-2 shadow-[0_-2px_10px_rgba(0,0,0,0.01)] mt-auto w-full">
           <span>🍃</span>
           <span>مشروع EcoCycle لإعادة التدوير الذكي • شكرًا لجهودك اليومية في حماية البيئة!</span>
         </footer>
       </div>
-
     </div>
   );
 };

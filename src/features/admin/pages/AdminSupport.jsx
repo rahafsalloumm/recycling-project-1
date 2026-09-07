@@ -1,45 +1,73 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEnvelope, FaClock, FaCheckCircle, FaReply, FaTimes, FaSearch, FaInbox } from "react-icons/fa";
+import adminService from "@/services/admin";
 
 export default function AdminSupport() {
-  // 💡 بيانات وهمية دقيقة تعكس الحقول المرسلة من صفحة "تواصل معنا" الحالية
-  const [messages, setMessages] = useState([
-    { 
-      id: 1, 
-      name: "أحمد محمود أحمد", 
-      email: "ahmed.m@gmail.com", 
-      phone: "+962 79 123 4567", 
-      subject: "مشكلة في استبدال نقاط زجاجة المياه", 
-      text: "مرحباً، قمت بطلب زجاجة مياه مخصصة من متجر المكافآت وتم خصم 800 نقطة من حسابي ولكن لم يصلني إشعار بتكليف السائق لتوصيلها بعد. أرجو المتابعة لحل المشكلة يرجى تزويدي بالدعم الميداني الفوري.", 
-      date: "2026-09-02", 
-      status: "معلق" 
-    },
-    { 
-      id: 2, 
-      name: "سارة خالد التميمي", 
-      email: "sara.kh@gmail.com", 
-      phone: "+962 79 345 6789", 
-      subject: "استفسار عن مواعيد مرور الشاحنة", 
-      text: "شكراً لكم على هذه المنصة الرائعة. أود الاستفسار هل تمر شاحنة استلام النفايات من منطقة حي البالوع خلال عطلة نهاية الأسبوع لكي نتمكن من تجهيز أكياس فرز المواد البلاستيكية والكرتون؟", 
-      date: "2026-08-31", 
-      status: "تم الرد" 
-    }
-  ]);
-
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [activeFilter, setActiveFilter] = useState("الكل");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMsg, setSelectedMsg] = useState(null);
   const [replyText, setReplyText] = useState("");
 
+  useEffect(() => {
+    let active = true;
+
+    const loadMessages = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await adminService.getSupport({
+          search: searchTerm || undefined,
+          isRead: activeFilter === "الكل" ? undefined : activeFilter === "تم الرد",
+        });
+        const payload = response?.data ?? response ?? [];
+
+        if (active) {
+          setMessages((Array.isArray(payload) ? payload : payload.data || []).map((message) => ({
+            id: message._id,
+            name: message.name,
+            email: message.email,
+            phone: message.phone,
+            subject: message.subject,
+            text: message.messageText,
+            date: message.createdAt ? new Date(message.createdAt).toLocaleDateString("ar-SY") : "-",
+            status: "معلق",
+              status: message.isRead ? "تم الرد" : "معلق",
+          })));
+        }
+      } catch (requestError) {
+        if (active) {
+          setError(requestError.message || "تعذر تحميل رسائل الدعم");
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadMessages();
+
+    return () => {
+      active = false;
+    };
+  }, [searchTerm, activeFilter]);
+
   // دالة محاكاة إرسال الرد وتغيير حالة التذكرة فوراً بالفرونت إند لقراءة النتيجة التفاعلية
-  const handleSendReply = (e) => {
+  const handleSendReply = async (e) => {
     e.preventDefault();
-    setMessages(messages.map(msg => 
-      msg.id === selectedMsg.id ? { ...msg, status: "تم الرد" } : msg
-    ));
-    setReplyText("");
-    setIsModalOpen(false);
+    try {
+      await adminService.replyToSupport(selectedMsg.id, replyText);
+      setMessages((current) => current.map((message) => message.id === selectedMsg.id ? { ...message, status: "تم الرد" } : message));
+      setIsModalOpen(false);
+      setReplyText("");
+    } catch (requestError) {
+      setError(requestError.message || "تعذر تحديث حالة الرسالة");
+    }
   };
 
   const handleOpenReply = (msg) => {
@@ -48,14 +76,16 @@ export default function AdminSupport() {
   };
 
   // فلاتر البحث وحالة التصفية السريعة
-  const filteredMessages = messages.filter(msg => {
-    const matchesSearch = msg.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          msg.subject.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = activeFilter === "الكل" || msg.status === activeFilter;
-    return matchesSearch && matchesFilter;
-  });
+  const filteredMessages = messages;
   return (
     <div className="w-full space-y-6 text-right font-sans p-1 animate-fadeIn duration-300" dir="rtl">
+      {loading && messages.length === 0 && (
+        <div className="rounded-xl bg-white p-4 text-sm text-gray-600 shadow-sm border border-gray-100">
+          جاري تحميل رسائل الدعم...
+        </div>
+      )}
+
+      {error && <p className="rounded-xl bg-amber-50 p-4 text-sm font-bold text-amber-700">{error}</p>}
       
       {/* هيدر الصفحة الفخم */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
@@ -200,7 +230,7 @@ export default function AdminSupport() {
 
             <form onSubmit={handleSendReply} className="space-y-4 text-right">
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-gray-400 block">✍️ اكتب رد الدعم الفني الرسمي (سيصل لبريد المستخدم فوراً):</label>
+                <label className="text-[11px] font-bold text-gray-400 block">✍️ ملاحظات الرد الداخلي (لن يتم إرسال بريد إلكتروني):</label>
                 <textarea 
                   placeholder="اكتب تفاصيل الإجابة أو الحل التقني للمستخدم هنا..." 
                   value={replyText}
@@ -209,7 +239,7 @@ export default function AdminSupport() {
                   required
                 />
               </div>
-              <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-2.5 text-xs font-black transition-all cursor-pointer shadow-sm active:scale-98 flex items-center justify-center gap-1.5"><FaReply /> إرسال الرد وإغلاق التذكرة</button>
+              <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-2.5 text-xs font-black transition-all cursor-pointer shadow-sm active:scale-98 flex items-center justify-center gap-1.5"><FaReply /> تعليم الرسالة كمقروءة</button>
             </form>
           </div>
         </div>

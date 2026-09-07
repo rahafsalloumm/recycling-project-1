@@ -1,6 +1,40 @@
-﻿import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
+﻿import { useState } from "react";
+import { FaEdit, FaTrash, FaEye, FaTimes } from "react-icons/fa";
 
-export default function BinsTable({ bins }) {
+export default function BinsTable({ bins, totalCount = bins.length, onUpdate, onDelete }) {
+  const [selectedBin, setSelectedBin] = useState(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [draftLevel, setDraftLevel] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
+  const totalItems = totalCount || bins.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const activePage = Math.min(currentPage, totalPages);
+  const visibleBins = bins.slice((activePage - 1) * pageSize, activePage * pageSize);
+  const displayFrom = visibleBins.length ? (activePage - 1) * pageSize + 1 : 0;
+  const displayTo = displayFrom ? displayFrom + visibleBins.length - 1 : 0;
+
+  const handleOpenDetails = (bin) => {
+    setSelectedBin(bin);
+    setIsDetailsOpen(true);
+  };
+
+  const handleOpenEdit = (bin) => {
+    setSelectedBin(bin);
+    setDraftLevel(Number(bin.fillLevel) || 0);
+    setIsEditOpen(true);
+  };
+
+  const handleSaveEdit = (event) => {
+    event.preventDefault();
+    if (selectedBin && Number(draftLevel) >= 0 && Number(draftLevel) <= 100) {
+      onUpdate?.(selectedBin.id, Number(draftLevel));
+      setIsEditOpen(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden text-right">
       <div className="overflow-x-auto">
@@ -18,7 +52,7 @@ export default function BinsTable({ bins }) {
             </tr>
           </thead>
           <tbody className="text-sm divide-y divide-gray-50 text-gray-700 font-medium">
-            {bins.map((bin, index) => (
+            {visibleBins.map((bin, index) => (
               <tr key={bin.id} className="hover:bg-gray-50/40 transition-colors duration-200 group">
                 <td className="py-4 px-6 text-center font-bold text-gray-400 text-base">{index + 1}</td>
                 <td className="py-4 px-6 font-mono font-bold text-gray-900 text-[14px]">
@@ -27,7 +61,6 @@ export default function BinsTable({ bins }) {
                 <td className="py-4 px-6 text-gray-800 font-bold text-[15px]">{bin.location}</td>
                 <td className="py-4 px-6 text-gray-500 font-semibold">{bin.region}</td>
                 
-                {/* شريط التقدم التفاعلي (Progress Bar) الملون حسب النسبة كالصورة */}
                 <td className="py-4 px-6 text-center">
                   <div className="flex items-center gap-3">
                     <span className="font-mono text-xs font-black text-gray-700 w-8 text-left">{bin.fillLevel}%</span>
@@ -43,7 +76,6 @@ export default function BinsTable({ bins }) {
                   </div>
                 </td>
                 
-                {/* الحالات اللونية الهادئة والمطابقة تماماً */}
                 <td className="py-4 px-6 text-center">
                   <span className={`px-2.5 py-1 rounded-xl font-bold text-xs inline-flex items-center gap-1.5 border ${
                     bin.status === "طبيعية" ? "bg-emerald-50 text-emerald-700 border-emerald-100/50" :
@@ -62,9 +94,9 @@ export default function BinsTable({ bins }) {
                 
                 <td className="py-4 px-6 text-center">
                   <div className="flex items-center justify-center gap-1.5 opacity-90">
-                    <button className="p-2.5 rounded-xl text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 active:scale-90 transition-all duration-150 cursor-pointer" title="عرض"><FaEye className="text-sm" /></button>
-                    <button className="p-2.5 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-50 active:scale-90 transition-all duration-150 cursor-pointer" title="تعديل"><FaEdit className="text-sm" /></button>
-                    <button className="p-2.5 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 active:scale-90 transition-all duration-150 cursor-pointer" title="حذف"><FaTrash className="text-sm" /></button>
+                    <button type="button" onClick={() => handleOpenDetails(bin)} className="p-2.5 rounded-xl text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 active:scale-90 transition-all duration-150 cursor-pointer" title="عرض"><FaEye className="text-sm" /></button>
+                    <button type="button" onClick={() => handleOpenEdit(bin)} className="p-2.5 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-50 active:scale-90 transition-all duration-150 cursor-pointer" title="تعديل"><FaEdit className="text-sm" /></button>
+                    <button type="button" onClick={() => onDelete?.(bin.id)} className="p-2.5 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 active:scale-90 transition-all duration-150 cursor-pointer" title="حذف"><FaTrash className="text-sm" /></button>
                   </div>
                 </td>
               </tr>
@@ -73,17 +105,50 @@ export default function BinsTable({ bins }) {
         </table>
       </div>
 
-      {/* أزرار الترقيم الصفلي */}
       <div className="p-4 bg-gray-50/60 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-gray-400 font-bold select-none">
-        <div>عرض <span className="text-gray-700 font-black">1</span> إلى <span className="text-gray-700 font-black">8</span> من أصل <span className="text-gray-700 font-black">42</span> حاوية</div>
+        <div>عرض <span className="text-gray-700 font-black">{displayFrom}</span> إلى <span className="text-gray-700 font-black">{displayTo}</span> من أصل <span className="text-gray-700 font-black">{totalItems}</span> حاوية</div>
         <div className="flex items-center gap-1" dir="ltr">
-          <button className="px-2 py-1 rounded bg-white border border-gray-200 text-gray-400 hover:bg-gray-50">&lt;</button>
-          <button className="px-3 py-1 rounded bg-emerald-600 text-white font-black">1</button>
-          <button className="px-3 py-1 rounded bg-white border border-gray-200 text-gray-600 hover:bg-gray-50">2</button>
-          <button className="px-3 py-1 rounded bg-white border border-gray-200 text-gray-600 hover:bg-gray-50">3</button>
-          <button className="px-2 py-1 rounded bg-white border border-gray-200 text-gray-400 hover:bg-gray-50">&gt;</button>
+          <button type="button" disabled={activePage === 1} onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} className="px-2 py-1 rounded bg-white border border-gray-200 text-gray-400 hover:bg-gray-50 disabled:opacity-40">&lt;</button>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+            <button type="button" key={page} onClick={() => setCurrentPage(page)} className={`px-3 py-1 rounded ${activePage === page ? "bg-emerald-600 text-white font-black" : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"}`}>{page}</button>
+          ))}
+          <button type="button" disabled={activePage === totalPages} onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))} className="px-2 py-1 rounded bg-white border border-gray-200 text-gray-400 hover:bg-gray-50 disabled:opacity-40">&gt;</button>
         </div>
       </div>
+
+      {isDetailsOpen && selectedBin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 text-right shadow-2xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-black text-gray-900">تفاصيل الحاوية</h2>
+              <button type="button" onClick={() => setIsDetailsOpen(false)} className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700" aria-label="إغلاق"><FaTimes /></button>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl bg-gray-50 p-3"><div className="text-[10px] text-gray-400">رمز الحاوية</div><div className="font-bold">{selectedBin.code}</div></div>
+              <div className="rounded-xl bg-gray-50 p-3"><div className="text-[10px] text-gray-400">النسبة</div><div className="font-bold">{selectedBin.fillLevel}%</div></div>
+              <div className="rounded-xl bg-gray-50 p-3 sm:col-span-2"><div className="text-[10px] text-gray-400">الموقع</div><div className="font-bold">{selectedBin.location}</div></div>
+              <div className="rounded-xl bg-gray-50 p-3"><div className="text-[10px] text-gray-400">المنطقة</div><div className="font-bold">{selectedBin.region}</div></div>
+              <div className="rounded-xl bg-gray-50 p-3"><div className="text-[10px] text-gray-400">الحالة</div><div className="font-bold">{selectedBin.status}</div></div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isEditOpen && selectedBin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4">
+          <form onSubmit={handleSaveEdit} className="w-full max-w-md rounded-2xl bg-white p-6 text-right shadow-2xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-black text-gray-900">تحديث نسبة الامتلاء</h2>
+              <button type="button" onClick={() => setIsEditOpen(false)} className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700" aria-label="إغلاق"><FaTimes /></button>
+            </div>
+            <label className="block space-y-1 text-sm font-bold text-gray-600">
+              <span>نسبة الامتلاء</span>
+              <input required type="number" min="0" max="100" value={draftLevel} onChange={(event) => setDraftLevel(event.target.value)} className="w-full rounded-xl border border-gray-200 px-3 py-2.5 outline-none focus:border-emerald-500" />
+            </label>
+            <button type="submit" className="mt-4 w-full rounded-xl bg-emerald-600 py-3 font-bold text-white">حفظ التغيير</button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

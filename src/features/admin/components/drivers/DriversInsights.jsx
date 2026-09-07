@@ -1,45 +1,57 @@
 ﻿import { FaMapMarkerAlt } from "react-icons/fa";
 
-export default function DriversInsights() {
+export default function DriversInsights({ stats = {} }) {
+  const available = stats.availableDrivers ?? 0;
+  const inMission = stats.inMissionDrivers ?? 0;
+  const offline = stats.offlineDrivers ?? 0;
+  const total = stats.totalDrivers ?? available + inMission + offline;
+
   return (
     <div className="space-y-6">
-      
-      {/* الخريطة بطريقة برمجية تفاعلية حديثة كصندوق خريطة مخصص */}
       <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
         <h4 className="text-xs font-bold text-gray-800 mb-3 flex items-center gap-1.5">
           <FaMapMarkerAlt className="text-emerald-600" />
           <span>توزيع السائقين الميداني</span>
         </h4>
-        
-        {/* محاكاة حاوية الخريطة المخصصة لتوصيل Google Maps أو Leaflet لاحقاً */}
+
         <div className="w-full h-44 bg-emerald-50/40 rounded-xl relative overflow-hidden border border-emerald-100/30 flex items-center justify-center">
           <div className="absolute top-10 right-20 animate-bounce text-emerald-600 text-lg"><FaMapMarkerAlt /></div>
           <div className="absolute bottom-12 left-16 animate-bounce text-purple-600 text-lg"><FaMapMarkerAlt /></div>
-          <span className="text-xs font-semibold text-emerald-800 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm border border-emerald-100">
-            الخريطة الميدانية النشطة
-          </span>
+          <div className="text-center">
+            <div className="text-lg font-black text-emerald-800">{total}</div>
+            <span className="text-[11px] font-semibold text-emerald-800 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm border border-emerald-100">
+              إجمالي السائقين
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* قسم أحدث المهام الحية */}
       <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-        <h4 className="text-xs font-bold text-gray-800 mb-4">أحدث المهام الجارية</h4>
-        
+        <h4 className="text-xs font-bold text-gray-800 mb-4">حالة السائقين الحالي</h4>
+
         <div className="space-y-4">
           <div className="flex justify-between items-center border-b border-gray-50 pb-3">
             <div className="space-y-0.5">
-              <p className="text-xs font-bold text-gray-800">جمع النفايات - حلب</p>
-              <p className="text-[10px] text-gray-400">السائق: أحمد محمود</p>
+              <p className="text-xs font-bold text-gray-800">متاح</p>
+              <p className="text-[10px] text-gray-400">سائقون جاهزون للعمل</p>
             </div>
-            <span className="px-2 py-0.5 bg-green-50 text-green-700 text-[10px] font-bold rounded">جاري التنفيذ</span>
+            <span className="px-2 py-0.5 bg-green-50 text-green-700 text-[10px] font-bold rounded">{available}</span>
           </div>
 
           <div className="flex justify-between items-center border-b border-gray-50 pb-3">
             <div className="space-y-0.5">
-              <p className="text-xs font-bold text-gray-800">جمع البلاستيك - الشهباء</p>
-              <p className="text-[10px] text-gray-400">السائق: خالد ناصر</p>
+              <p className="text-xs font-bold text-gray-800">في المهمة</p>
+              <p className="text-[10px] text-gray-400">قيد التنفيذ حاليًا</p>
             </div>
-            <span className="px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-bold rounded">بانتظار التفريغ</span>
+            <span className="px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-bold rounded">{inMission}</span>
+          </div>
+
+          <div className="flex justify-between items-center">
+            <div className="space-y-0.5">
+              <p className="text-xs font-bold text-gray-800">غير متصل</p>
+              <p className="text-[10px] text-gray-400">حالة غير نشطة</p>
+            </div>
+            <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-[10px] font-bold rounded">{offline}</span>
           </div>
         </div>
       </div>

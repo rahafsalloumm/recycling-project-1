@@ -49,10 +49,11 @@ export default function ForgotPassword() {
     e.preventDefault();
     setError("");
     const code = otp.join("");
-    if (code.length < 5) {
+    if (code.length !== 5) {
       setError("الرجاء إدخال كود التحقق كاملاً المكون من 5 أرقام");
       return;
     }
+
     setLoading(true);
     try {
       await authService.verifyCode({
@@ -91,6 +92,7 @@ export default function ForgotPassword() {
       setError("كلمات المرور غير متطابقة");
       return;
     }
+
     setLoading(true);
     try {
       await authService.updatePassword({

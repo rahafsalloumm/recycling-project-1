@@ -67,7 +67,7 @@ const DashboardGrid = ({ data, totalBins }) => {
             </div>
             <h4 className="text-sm font-extrabold text-gray-800 tracking-tight">طلبات المنازل</h4>
           </div>
-          <span className="text-[10px] font-bold text-gray-400 hover:text-blue-600 transition-colors">عرض الكل</span>
+          <button type="button" onClick={() => navigate("/driver/homes")} className="text-[10px] font-bold text-gray-400 hover:text-blue-600 transition-colors">عرض الكل</button>
         </div>
         
         <div className="flex items-center justify-between my-2">

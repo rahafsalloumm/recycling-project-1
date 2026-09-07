@@ -1,19 +1,25 @@
 import api from './api'
 
 const userService = {
-  getDashboard: () => api.get('/api/user/dashboard'),
+  getDashboard: () => api.get('/api/stats/user-stats'),
 
-  getStats: () => api.get('/api/user/stats'),
+  getStats: () => api.get('/api/stats/user-stats'),
+
+  getDashboardStats: () => api.get('/api/stats/user-stats'),
 
   getNotifications: () => api.get('/api/user/notifications'),
 
   markNotificationRead: (id) => api.put(`/api/user/notifications/${id}/read`),
 
-  getProfile: () => api.get('/api/user/profile'),
+  getProfile: () => api.get('/user/profile'),
 
-  updateProfile: (data) => api.put('/api/user/profile', data),
+  updateProfile: (data) => api.put('/user/profile', data),
 
-  getRecyclingHistory: () => api.get('/api/user/recycling'),
+  getRecyclingHistory: () => api.get('/api/wasterequest/myrequest'),
+
+  getMyRequests: () => api.get('/api/wasterequest/myrequest'),
+
+  createWasteRequest: (formData) => api.post('/api/wasterequest', formData),
 
   updatePreferences: (data) => api.put('/api/user/preferences', data),
 
@@ -21,7 +27,9 @@ const userService = {
 
   getActivities: () => api.get('/api/user/activities'),
 
-  contactSupport: (data) => api.post('/api/user/support', data),
+  contactSupport: (data) => api.post('/api/message/send', data),
+
+  sendMessage: (data) => api.post('/api/message/send', data),
 }
 
 export default userService

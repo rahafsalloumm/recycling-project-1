@@ -13,35 +13,41 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function RoutesInsights({ selectedRoute }) {
-  // بيانات المسار الافتراضي (المسار 2 كما بالصورة) لمنع حدوث أخطاء قبل الاختيار
-  const defaultRoute = {
-    routeName: "المسار 2",
-    driverName: "خالد ناصر",
-    status: "قيد التنفيذ",
-    binsCount: 16,
-    distance: "32 كم",
-    estTime: "3.2 ساعة",
-    startTime: "08:30 AM",
-    endTime: "11:30 AM",
-    fontColor: "text-blue-600 bg-blue-50 border-blue-100",
-    desc: "الحي السكني - الشمال"
+  const activeRoute = selectedRoute || {
+    routeName: "لا يوجد مسار محدد",
+    driverName: "-",
+    status: "-",
+    binsCount: 0,
+    distance: "-",
+    estTime: "-",
+    fontColor: "text-gray-600 bg-gray-50 border-gray-100",
+    waypoints: [],
   };
+  const normalizedStatus = activeRoute.status === "مكتمل" || activeRoute.status === "completed"
+    ? "مكتمل"
+    : activeRoute.status === "قيد التنفيذ" || activeRoute.status === "in_progress"
+      ? "قيد التنفيذ"
+      : activeRoute.status === "لم يبدأ" || activeRoute.status === "pending"
+        ? "لم يبدأ"
+        : activeRoute.status || "قيد التنفيذ";
 
-  // دمج البيانات المستلمة مع الافتراضية
-  const activeRoute = selectedRoute ? selectedRoute : defaultRoute;
+  const routeDistance = activeRoute.distance || "-";
+  const routeBins = activeRoute.binsCount ?? 0;
+  const routeTime = activeRoute.estTime || "-";
 
   // 📍 إحداثيات جغرافية دقيقة لمدينة حلب كمثال لرسم خطوط سير الشاحنة
-  const centerPosition = [36.2021, 37.1343]; // مركز مدينة حلب
-  
-  const routeCoordinates = [
-    [36.2021, 37.1343], // مقر الشركة (نقطة الانطلاق)
-    [36.2110, 37.1420], // الحاوية الأولى (العزيزية)
-    [36.2230, 37.1290], // الحاوية الثانية (الشهباء)
-    [36.1950, 37.1150]  // مركز المعالجة والتفريغ النهائي
-  ];
+  const routeCoordinates = (activeRoute.waypoints || [])
+    .map((waypoint) => waypoint.details?.coordinates || waypoint.coordinates)
+    .map((coordinates) => {
+      if (Array.isArray(coordinates) && coordinates.length >= 2) return [Number(coordinates[0]), Number(coordinates[1])];
+      if (coordinates?.lat != null && coordinates?.lng != null) return [Number(coordinates.lat), Number(coordinates.lng)];
+      return null;
+    })
+    .filter((coordinates) => coordinates && coordinates.every(Number.isFinite));
+  const centerPosition = routeCoordinates[0] || [36.2021, 37.1343];
 
   // تخصيص لون خط السير بناءً على حالة المسار (أخضر للمكتمل، أزرق لقيد التنفيذ)
-  const polylineColor = activeRoute.status === "مكتمل" ? "#10b981" : "#3b82f6";
+  const polylineColor = normalizedStatus === "مكتمل" ? "#10b981" : "#3b82f6";
 
   return (
     <div className="space-y-6" dir="rtl">
@@ -55,7 +61,7 @@ export default function RoutesInsights({ selectedRoute }) {
         
         {/* حواضن الخريطة الحقيقية بالطول المناسب للتصميم */}
         <div className="w-full h-56 rounded-xl overflow-hidden border border-gray-100 shadow-inner z-0 relative">
-          <MapContainer center={centerPosition} zoom={13} scrollWheelZoom={false} className="w-full h-full">
+          {routeCoordinates.length ? <MapContainer center={centerPosition} zoom={13} scrollWheelZoom={false} className="w-full h-full">
             {/* 💡 تم تصحيح الرابط هنا وحمايته كلياً ليعمل بدون مشاكل */}
             <TileLayer
               attribution='&copy; OpenStreetMap contributors'
@@ -78,7 +84,7 @@ export default function RoutesInsights({ selectedRoute }) {
 
             {/* 🛣️ رسم خط السير الفعلي الذي يربط الإحداثيات ببعضها برمجياً */}
             <Polyline positions={routeCoordinates} color={polylineColor} weight={4} opacity={0.85} dashArray="5, 8" />
-          </MapContainer>
+          </MapContainer> : <div className="h-full flex items-center justify-center text-sm text-gray-400">اختر مسارًا لعرض نقاطه على الخريطة.</div>}
         </div>
       </div>
 
@@ -102,28 +108,28 @@ export default function RoutesInsights({ selectedRoute }) {
           <div className="flex justify-between items-center">
             <span>الحالة:</span>
             <span className={`px-2 py-0.5 rounded font-black text-[11px] border ${activeRoute.fontColor || "bg-blue-50 text-blue-600 border-blue-100"}`}>
-              {activeRoute.status}
+              {normalizedStatus}
             </span>
           </div>
           <div className="flex justify-between items-center">
             <span>عدد الحاويات:</span>
-            <span className="text-gray-900 font-mono font-black">{activeRoute.binsCount}</span>
+            <span className="text-gray-900 font-mono font-black">{routeBins}</span>
           </div>
           <div className="flex justify-between items-center">
             <span>المسافة الإجمالية:</span>
-            <span className=" font-mono font-black text-blue-600">{activeRoute.distance}</span>
+            <span className=" font-mono font-black text-blue-600">{routeDistance}</span>
           </div>
           <div className="flex justify-between items-center">
             <span>الوقت المتوقع:</span>
-            <span className=" font-black text-amber-600">{activeRoute.estTime}</span>
+            <span className=" font-black text-amber-600">{routeTime}</span>
           </div>
           <div className="flex justify-between items-center">
             <span>وقت البدء:</span>
-            <span className="text-gray-400 font-mono font-normal">{activeRoute.startTime || "08:30 AM"}</span>
+            <span className="text-gray-400 font-mono font-normal">{activeRoute.startTime || "-"}</span>
           </div>
           <div className="flex justify-between items-center">
             <span>وقت الانتهاء المتوقع:</span>
-            <span className="text-gray-400 font-mono font-normal">{activeRoute.endTime || "11:30 AM"}</span>
+            <span className="text-gray-400 font-mono font-normal">{activeRoute.endTime || "-"}</span>
           </div>
         </div>
 

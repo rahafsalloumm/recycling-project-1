@@ -1,24 +1,35 @@
- import { useState } from 'react'
+import { useState } from 'react'
 
-const allRecords = [
-  { date: '20 مايو 2024', time: '10:00 AM', type: 'بلاستيك', emoji: '🍶', weight: '5.2 كغ', method: 'استلام من المنزل', methodIcon: '🏠', points: 150, id: '#1028', status: 'مكتمل' },
-  { date: '18 مايو 2024', time: '02:30 PM', type: 'ورق', emoji: '📦', weight: '3.8 كغ', method: 'استلام من المنزل', methodIcon: '🏠', points: 120, id: '#1025', status: 'مكتمل' },
-  { date: '17 مايو 2024', time: '11:15 AM', type: 'زجاج', emoji: '🍾', weight: '4.6 كغ', method: 'استلام من المنزل', methodIcon: '🏠', points: 180, id: '#1022', status: 'مكتمل' },
-  { date: '15 مايو 2024', time: '09:00 AM', type: 'بلاستيك', emoji: '🍶', weight: '2.5 كغ', method: 'تسليم في حاوية ذكية', methodIcon: '🗑️', points: 100, id: '#1018', status: 'مكتمل' },
-  { date: '12 مايو 2024', time: '04:20 PM', type: 'معادن', emoji: '🥫', weight: '1.9 كغ', method: 'تسليم في حاوية ذكية', methodIcon: '🗑️', points: 80, id: '#1015', status: 'مكتمل' },
-  { date: '10 مايو 2024', time: '10:30 AM', type: 'ورق', emoji: '📦', weight: '5.6 كغ', method: 'استلام من المنزل', methodIcon: '🏠', points: 200, id: '#1012', status: 'مكتمل' },
-  { date: '8 مايو 2024', time: '03:45 PM', type: 'زجاج', emoji: '🍾', weight: '2.0 كغ', method: 'تسليم في حاوية ذكية', methodIcon: '🗑️', points: 90, id: '#1009', status: 'مكتمل' },
-  { date: '5 مايو 2024', time: '09:20 AM', type: 'بلاستيك', emoji: '🍶', weight: '2.8 كغ', method: 'استلام من المنزل', methodIcon: '🏠', points: 110, id: '#1006', status: 'مكتمل' },
-]
+const typeLabels = { plastic: 'بلاستيك', glass: 'زجاج', metal: 'معادن', paper: 'ورق' }
+const statusLabels = { pending: 'قيد المراجعة', accepted: 'قيد التنفيذ', completed: 'مكتمل', rejected: 'مرفوض' }
+const typeIcons = { plastic: '🍶', glass: '🍾', metal: '🥫', paper: '📦' }
 
 const headers = ['التاريخ والوقت', 'نوع النفايات', 'الوزن', 'طريقة التسليم', 'النقاط المكتسبة', 'رقم الطلب', 'الحالة']
 
-export default function RecyclingTable({ filterType }) {
+export default function RecyclingTable({ records = [], filterType, period }) {
   const [showAll, setShowAll] = useState(false)
+  const [today] = useState(() => new Date())
 
-  const filtered = filterType && filterType !== 'الكل'
-    ? allRecords.filter(r => r.type === filterType)
-    : allRecords
+  const periodDays = { 'هذا الشهر': 30, 'آخر 3 أشهر': 90, 'هذا العام': 365 }
+  const cutoff = periodDays[period] ? today.getTime() - periodDays[period] * 86400000 : null
+  const normalizedRecords = records.map((record) => ({
+    date: record.pickupSchedule?.date ? new Date(record.pickupSchedule.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Not specified',
+    time: record.pickupSchedule?.time || '',
+    type: typeLabels[record.wasteType] || record.wasteType || 'نفايات',
+    emoji: typeIcons[record.wasteType] || '♻️',
+    weight: `${record.quantity || 0} كغ`,
+    method: 'استلام من المنزل',
+    methodIcon: '🏠',
+    points: '-',
+    id: record._id || record.id,
+    status: statusLabels[record.status] || record.status || 'غير محدد',
+    createdAt: record.createdAt,
+  }))
+  const filtered = normalizedRecords.filter((record) => {
+    const matchesType = !filterType || filterType === 'الكل' || record.type === filterType
+    const matchesPeriod = !cutoff || new Date(record.createdAt).getTime() >= cutoff
+    return matchesType && matchesPeriod
+  })
 
   const displayed = showAll ? filtered : filtered.slice(0, 5)
 

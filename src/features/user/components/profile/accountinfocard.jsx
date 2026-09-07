@@ -37,8 +37,6 @@ const styles = {
 export default function AccountInfoCard({ user }) {
   const rows = [
     { label: 'تاريخ إنشاء الحساب', value: user.createdAt },
-    { label: 'اللغة', value: user.language },
-    { label: 'طريقة الدفع', value: user.paymentMethod },
     { label: 'حالة الحساب', value: 'نشط', isActive: true },
   ];
 

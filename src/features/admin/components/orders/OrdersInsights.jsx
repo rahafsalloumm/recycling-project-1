@@ -1,6 +1,16 @@
 ﻿import { FaChartPie, FaFilter } from "react-icons/fa";
+import { useState } from "react";
 
-export default function OrdersInsights() {
+export default function OrdersInsights({ orders = [], onApplyFilter }) {
+  const [status, setStatus] = useState("");
+  const [wasteType, setWasteType] = useState("");
+  const [location, setLocation] = useState("");
+  const counts = {
+    pending: orders.filter((order) => order.apiStatus === "pending").length,
+    accepted: orders.filter((order) => order.apiStatus === "accepted").length,
+    completed: orders.filter((order) => order.apiStatus === "completed").length,
+    rejected: orders.filter((order) => order.apiStatus === "rejected").length,
+  };
   return (
     <div className="space-y-6">
       
@@ -15,32 +25,32 @@ export default function OrdersInsights() {
           {/* فلتر الحالة */}
           <div className="space-y-1">
             <label className="text-xs font-bold text-gray-400">الحالة</label>
-            <select className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-gray-700 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all duration-200 cursor-pointer">
-              <option>جميع الحالات</option>
-              <option>قيد المراجعة</option>
-              <option>قيد التنفيذ</option>
-              <option>تم الاستلام</option>
-              <option>ملغاة</option>
+            <select value={status} onChange={(event) => setStatus(event.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-gray-700 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all duration-200 cursor-pointer">
+              <option value="">جميع الحالات</option>
+              <option value="pending">قيد المراجعة</option>
+              <option value="accepted">قيد التنفيذ</option>
+              <option value="completed">تم الاستلام</option>
+              <option value="rejected">مرفوضة</option>
             </select>
           </div>
 
           {/* فلتر نوع النفايات */}
           <div className="space-y-1">
             <label className="text-xs font-bold text-gray-400">نوع النفايات</label>
-            <select className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-gray-700 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all duration-200 cursor-pointer">
-              <option>جميع الأنواع</option>
-              <option>بلاستيك</option>
-              <option>ورق</option>
-              <option>زجاج</option>
-              <option>معدن</option>
+            <select value={wasteType} onChange={(event) => setWasteType(event.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-gray-700 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all duration-200 cursor-pointer">
+              <option value="">جميع الأنواع</option>
+              <option value="plastic">بلاستيك</option>
+              <option value="paper">ورق</option>
+              <option value="glass">زجاج</option>
+              <option value="metal">معدن</option>
             </select>
           </div>
 
           {/* فلتر الموقع */}
           <div className="space-y-1">
             <label className="text-xs font-bold text-gray-400">الموقع</label>
-            <select className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-gray-700 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all duration-200 cursor-pointer">
-              <option>جميع المناطق</option>
+            <select value={location} onChange={(event) => setLocation(event.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-gray-700 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all duration-200 cursor-pointer">
+              <option value="">جميع المناطق</option>
               <option>حلب الجديدة</option>
               <option>الشعار</option>
               <option>الفرقان</option>
@@ -50,10 +60,9 @@ export default function OrdersInsights() {
 
           {/* أزرار الفلترة الملونة والمتجاوبة */}
           <div className="pt-2 space-y-2">
-            <button className="w-full py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-600/10 hover:bg-emerald-700 transition-all duration-200 active:scale-98 cursor-pointer text-center">
+            <button type="button" onClick={() => onApplyFilter?.({ status, wasteType, location })} className="w-full py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-600/10 hover:bg-emerald-700 transition-all duration-200 active:scale-98 cursor-pointer text-center">
               تطبيق الفلتر
             </button>
-            
           </div>
         </div>
       </div>
@@ -65,21 +74,21 @@ export default function OrdersInsights() {
         </h4>
         
         <div className="w-32 h-32 rounded-full border-[12px] border-transparent border-t-green-500 border-r-blue-500 border-b-amber-500 border-l-red-500 flex items-center justify-center shadow-inner relative my-2">
-          <span className="text-center font-black text-gray-900 text-sm font-mono">240<br/><span className="text-[10px] text-gray-400 font-medium">الكل</span></span>
+          <span className="text-center font-black text-gray-900 text-sm font-mono">{orders.length}<br/><span className="text-[10px] text-gray-400 font-medium">الكل</span></span>
         </div>
         
         <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-[11px] text-gray-500 font-bold mt-4 w-full">
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-amber-500 inline-block"></span><span>قيد مراجعة</span>
+            <span className="w-2 h-2 rounded-full bg-amber-500 inline-block"></span><span>قيد مراجعة ({counts.pending})</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-blue-500 inline-block"></span><span>قيد تنفيذ</span>
+            <span className="w-2 h-2 rounded-full bg-blue-500 inline-block"></span><span>قيد تنفيذ ({counts.accepted})</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-green-500 inline-block"></span><span>تم استلام</span>
+            <span className="w-2 h-2 rounded-full bg-green-500 inline-block"></span><span>تم استلام ({counts.completed})</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-red-500 inline-block"></span><span>ملغاة</span>
+            <span className="w-2 h-2 rounded-full bg-red-500 inline-block"></span><span>مرفوضة ({counts.rejected})</span>
           </div>
         </div>
       </div>

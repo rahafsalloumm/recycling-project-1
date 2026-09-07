@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaRecycle } from "react-icons/fa";
-import { authService } from "@/services"; 
+import authService from '@/services/auth'
 
 export default function Register() {
   const navigate = useNavigate();
@@ -73,10 +73,10 @@ export default function Register() {
         role,
       });
 
-      setShowOtpModal(true); 
-      setTimer(59); 
-    } catch (err) {
-      setBackendError(err.message || "فشل إنشاء الحساب، يرجى المحاولة مرة أخرى");
+    setShowOtpModal(true);
+    setTimer(59);
+    } catch (error) {
+    setErrors((prev) => ({ ...prev, submit: error?.message || 'فشل إنشاء الحساب' }))
     } finally {
       setLoading(false);
     }
@@ -111,7 +111,7 @@ export default function Register() {
     setOtpError("");
     const enteredCode = otp.join("");
 
-    if (enteredCode.length < 5) {
+    if (enteredCode.length !== 5) {
       setOtpError("يرجى إدخال الكود كاملاً من 5 أرقام");
       return;
     }
@@ -119,17 +119,16 @@ export default function Register() {
     setOtpLoading(true);
 
     try {
-      if (authService.verifyOtp) {
-        await authService.verifyOtp({ email, code: enteredCode });
-      } else if (authService.verify) {
-        await authService.verify({ email, code: enteredCode });
-      }
-
+      await authService.verifyCode({
+        email,
+        verifyCode: enteredCode,
+        verify: 'register',
+      });
       alert("تم تفعيل الحساب وإنشاؤه بنجاح! 🎉");
       setShowOtpModal(false);
-      navigate("/login"); 
-    } catch (err) {
-      setOtpError(err.message || "كود التحقق غير صحيح أو منتهي الصلاحية");
+      navigate("/login");
+    } catch (error) {
+      setOtpError(error?.message || 'كود التحقق غير صحيح');
     } finally {
       setOtpLoading(false);
     }
@@ -253,7 +252,7 @@ export default function Register() {
             </div>
             {errors.password && <p className="text-red-500 text-sm mt-1 text-right">{errors.password}</p>}
           </div>
-
+          {errors.submit && <p className="text-red-500 text-sm mt-1 text-right">{errors.submit}</p>}
           {/* CONFIRM PASSWORD */}
           <div>
             <label className="block mb-2 font-semibold text-gray-700 text-right">تأكيد كلمة المرور</label>

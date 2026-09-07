@@ -33,11 +33,8 @@ export default function Sidebar() {
   };
 
   return (
-    // 🎨 رجعنا اللون الزيتي الفخم والمطفي اللي برمجناه سوا [#0d2a1d] مع الطول الكامل
     <aside className="w-64 bg-[#0d2a1d] text-white flex flex-col justify-between h-full min-h-screen shrink-0 border-l border-[#1b4332]/40 select-none shadow-2xl" dir="rtl">
-      
       <div className="flex flex-col w-full">
-        {/* ♻️ الشعار الثلاثي والخط العريض الكبير المتناسق مع حجم الإدارة */}
         <div className="p-6 border-b border-[#1b4332]/50 flex items-center gap-4 w-full bg-[#0d2a1d]">
           <span className="text-3xl text-white font-light">
             <FaRecycle />
@@ -48,7 +45,6 @@ export default function Sidebar() {
           </div>
         </div>
         
-        {/* 📋 القائمة بتباعد فسيح ونظيف كالإدارة، لكن بستايل التحديد الأبيض الشفاف الفاخر اللي اخترته سابقاً */}
         <nav className="flex flex-col gap-2 p-4 w-full">
           {menu.map((item, i) => (
             <NavLink 
@@ -66,7 +62,6 @@ export default function Sidebar() {
                   <span className={`text-base flex items-center justify-center shrink-0 transition-colors duration-200 ${isActive ? 'text-white' : 'text-emerald-500/50 group-hover:text-emerald-400'}`}>
                     {item.icon}
                   </span>
-                  {/* خط الكلمات صار أوضح وأكبر (text-sm) وما عاد يكبس أو يلتصق */}
                   <span className="truncate text-sm font-medium">{item.label}</span>
                 </>
               )}
@@ -75,7 +70,6 @@ export default function Sidebar() {
         </nav>
       </div>
       
-      {/* زر تسجيل الخروج المثبت بالقاع وبنفس الألوان الداكنة والمسافة المريحة */}
       <div className="p-5 border-t border-[#1b4332]/50 w-full bg-[#0d2a1d] mb-4">
         <button
           type="button"
@@ -86,7 +80,6 @@ export default function Sidebar() {
           <span>تسجيل الخروج</span>
         </button>
       </div>
-
     </aside>
   );
 }

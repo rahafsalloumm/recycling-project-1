@@ -1,22 +1,57 @@
- import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FaHome, FaTruck, FaMapMarkerAlt, FaRecycle, FaGift, FaUser, FaCog, FaSignOutAlt, FaLeaf } from 'react-icons/fa'
+import authService from '@/services/auth'
+import { userService } from '@/services'
 
 const menuItems = [
   { icon: <FaHome />, label: 'لوحة المستخدم', path: 'dashboard', route: '/dashboard' },
-  { icon: <FaTruck />, label: 'طلب استلام النفايات', path: 'wastepickup', route: '/wastepickup' },
+  { icon: <FaTruck />, label: 'طلب تسليم النفايات', path: 'wastepickup', route: '/wastepickup' },
   { icon: <FaMapMarkerAlt />, label: 'تتبع الطلبات', path: 'tracking', route: '/tracking' },
   { icon: <FaRecycle />, label: 'سجل إعادة التدوير', path: 'recycling', route: '/recycling' },
-  { icon: <FaGift />, label: 'المكافآت', path: 'rewards', route: '/rewards-new' },
+  { icon: <FaGift />, label: 'المكافآت', path: 'rewards', route: '/rewardsnew' },
   { icon: <FaUser />, label: 'الملف الشخصي', path: 'profile', route: '/profile' },
   { icon: <FaCog />, label: 'الإعدادات', path: 'settings', route: '/settings' },
 ]
 
 export default function Sidebar({ activePage, onNavigate }) {
   const navigate = useNavigate()
+  const [user] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('user') || 'null')
+    } catch {
+      return null
+    }
+  })
+  const [points, setPoints] = useState(0)
+
+  useEffect(() => {
+    let active = true
+
+    userService.getDashboardStats()
+      .then((result) => {
+        if (active) {
+          const dashboard = result?.data || result
+          setPoints(dashboard?.userDashboardPage?.currentPoints ?? 0)
+        }
+      })
+      .catch(() => {
+        if (active) setPoints(Number(user?.points) || 0)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [user?.points])
 
   const handleNavigate = (item) => {
     onNavigate(item.path)
     navigate(item.route)
+  }
+
+  const handleLogout = () => {
+    authService.logout()
+    navigate('/login', { replace: true })
   }
 
   return (
@@ -46,7 +81,7 @@ export default function Sidebar({ activePage, onNavigate }) {
           <FaUser style={{ color: '#ffffff' }} />
         </div>
         <div>
-          <p style={{ fontWeight: '700', fontSize: '14px', color: '#ffffff' }}>رهف محمد</p>
+          <p style={{ fontWeight: '700', fontSize: '14px', color: '#ffffff' }}>{user?.name || 'مستخدم'}</p>
           <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>مستخدم</p>
         </div>
       </div>
@@ -87,11 +122,11 @@ export default function Sidebar({ activePage, onNavigate }) {
       ) : (
         <div style={{ padding: '16px 20px', borderTop: '1px solid rgba(255,255,255,0.15)', textAlign: 'center' }}>
  <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)', marginBottom: '4px' }}>نقاطك الحالية</p>
-          <p style={{ fontSize: '24px', fontWeight: '900', color: '#ffffff' }}>2,450</p>
+          <p style={{ fontSize: '24px', fontWeight: '900', color: '#ffffff' }}>{points.toLocaleString('ar-EG')}</p>
           <FaLeaf style={{ color: '#ffffff', marginBottom: '8px' }} />
           <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)', marginBottom: '8px' }}>استبدل نقاطك بمكافآت رائعة</p>
           <button
-            onClick={() => navigate('/rewards-new')}
+            onClick={() => navigate('/rewardsnew')}
             style={{ border: '1px solid #ffffff', color: '#ffffff', backgroundColor: 'transparent', borderRadius: '8px', padding: '6px 16px', fontSize: '12px', fontWeight: '700', cursor: 'pointer', width: '100%' }}>
             عرض المكافآت
           </button>
@@ -100,7 +135,7 @@ export default function Sidebar({ activePage, onNavigate }) {
 
       {/* تسجيل الخروج */}
       <div style={{ padding: '16px 20px', borderTop: '1px solid rgba(255,255,255,0.15)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ffcccc', cursor: 'pointer' }}>
+        <div onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ffcccc', cursor: 'pointer' }}>
           <FaSignOutAlt />
           <span style={{ fontSize: '14px', fontWeight: '600' }}>تسجيل الخروج</span>
         </div>

@@ -8,13 +8,15 @@ const authService = {
   forgotPassword: (data) => api.post('/api/auth/forgot-password', data),
 
   verifyCode: (data) => api.post('/api/auth/verify-code', data),
-
   updatePassword: (data) => api.post('/api/auth/update-password', data),
 
-  getProfile: () => api.get('/api/auth/me'),
+  resetPassword: (data) => api.post('/api/auth/update-password', data),
+
+  getProfile: () => api.get('/api/auth/profile'),
 
   logout: () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('user')
   },
 }
 

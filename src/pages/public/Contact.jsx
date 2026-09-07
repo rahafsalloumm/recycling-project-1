@@ -4,13 +4,13 @@ import Navbar from "@/components/layout/Navbar";
 import contactService from "@/services/contact";
 
 export default function Contact() {
-  const submitBtnRef = useRef(null);
+  const submitBtnRef = useRef(null)
 
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
+  const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [subject, setSubject] = useState('')
+  const [message, setMessage] = useState('')
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
@@ -34,17 +34,17 @@ export default function Contact() {
   }, []);
 
   const validate = () => {
-    const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const newErrors = {}
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
     if (!fullName.trim()) newErrors.fullName = "الاسم الكامل مطلوب";
     if (!emailRegex.test(email)) newErrors.email = "البريد الإلكتروني غير صالح";
     if (!subject.trim()) newErrors.subject = "الموضوع مطلوب";
     if (!message.trim()) newErrors.message = "نص الرسالة مطلوب";
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
