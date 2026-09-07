@@ -1,11 +1,41 @@
-﻿import Sidebar from '@/features/driver/layout/Sidebar';
+import { useEffect, useState } from 'react';
+import Sidebar from '@/features/driver/layout/Sidebar';
 import DriverNavbar from '@/features/driver/layout/DriverNavbar';
 import HomesHeader from '@/features/driver/components/homes/HomesHeader';
 import HomesStats from '@/features/driver/components/homes/HomesStats';
 import HomesFilter from '@/features/driver/components/homes/HomesFilter';
 import HomesTable from '@/features/driver/components/homes/HomesTable';
+import driverService from '@/services/driver';
 
 const DriverHomes = () => {
+  const [homesStats, setHomesStats] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadHomesStats = async () => {
+      try {
+        const response = await driverService.getHomes();
+        setHomesStats(response.data?.data?.homeRequestsPage || null);
+      } catch (loadError) {
+        const status = loadError.response?.status;
+        setError(
+          status === 401
+            ? 'انتهت جلسة الدخول. يرجى تسجيل الدخول مرة أخرى.'
+            : status === 403
+              ? 'ليس لديك صلاحية للوصول إلى إحصائيات طلبات المنازل.'
+              : loadError.response?.data?.message || 'تعذر تحميل إحصائيات طلبات المنازل. حاول مرة أخرى.'
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadHomesStats();
+  }, []);
+
+  const hasHomesStats = homesStats !== null && typeof homesStats === 'object';
+
   return (
     <div className="bg-[#f4f7f6] h-screen w-full flex overflow-hidden" dir="rtl">
       {/* القائمة الجانبية الثابتة */}
@@ -21,14 +51,33 @@ const DriverHomes = () => {
             {/* رأس الصفحة */}
             <HomesHeader />
 
-            {/* العدادات الخمسة العلوية للطلبات السكنية */}
-            <HomesStats />
+            {isLoading && (
+              <div className="rounded-2xl border border-gray-100 bg-white p-6 text-sm font-bold text-gray-500">
+                جارٍ تحميل إحصائيات طلبات المنازل...
+              </div>
+            )}
+            {error && (
+              <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-sm font-bold text-red-600">
+                {error}
+              </div>
+            )}
+            {!isLoading && !error && !hasHomesStats && (
+              <div className="rounded-2xl border border-amber-100 bg-amber-50 p-6 text-sm font-bold text-amber-700">
+                لا تتوفر إحصائيات لطلبات المنازل حاليًا.
+              </div>
+            )}
+            {!isLoading && !error && hasHomesStats && (
+              <>
+                {/* العدادات الخمسة العلوية للطلبات السكنية */}
+                <HomesStats stats={homesStats} />
 
-            {/* شريط أدوات البحث والتصفية المتطور */}
-            <HomesFilter />
+                {/* شريط أدوات البحث والتصفية المتطور */}
+                <HomesFilter />
 
-            {/* الجدول الرئيسي الفسيح للبيانات وعناصر الـ Pagination */}
-            <HomesTable />
+                {/* الجدول الرئيسي الفسيح للبيانات وعناصر الـ Pagination */}
+                <HomesTable />
+              </>
+            )}
 
           </main>
         </div>

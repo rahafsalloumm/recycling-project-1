@@ -1,12 +1,41 @@
-﻿import Sidebar from '@/features/driver/layout/Sidebar';
+import { useEffect, useState } from 'react';
+import Sidebar from '@/features/driver/layout/Sidebar';
 import DriverNavbar from '@/features/driver/layout/DriverNavbar';
 import BinsHeader from '@/features/driver/components/bins/BinsHeader';
 import BinsStats from '@/features/driver/components/bins/BinsStats';
 import BinsMapSection from '@/features/driver/components/bins/BinsMapSection';
 import BinsChartSection from '@/features/driver/components/bins/BinsChartSection';
 import BinsTableSection from '@/features/driver/components/bins/BinsTableSection';
+import driverService from '@/services/driver';
 
 const DriverBins = () => {
+  const [binsStats, setBinsStats] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const hasBinStats = binsStats !== null && typeof binsStats === 'object';
+
+  useEffect(() => {
+    const loadBinsStats = async () => {
+      try {
+        const response = await driverService.getStats();
+        setBinsStats(response.data?.data?.smartBinsPage || null);
+      } catch (loadError) {
+        const status = loadError.response?.status;
+        setError(
+          status === 401
+            ? 'انتهت جلسة الدخول. يرجى تسجيل الدخول مرة أخرى.'
+            : status === 403
+              ? 'ليس لديك صلاحية للوصول إلى إحصائيات الحاويات.'
+              : loadError.response?.data?.message || 'تعذر تحميل إحصائيات الحاويات. حاول مرة أخرى.'
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadBinsStats();
+  }, []);
+
   return (
     <div className="bg-[#f4f7f6] h-screen w-full flex overflow-hidden" dir="rtl">
       {/* القائمة الجانبية الثابتة */}
@@ -22,17 +51,36 @@ const DriverBins = () => {
             {/* رأس الصفحة والوصف */}
             <BinsHeader />
 
-            {/* كروت العدادات الخمسة العلوية للحاويات */}
-            <BinsStats />
+            {isLoading && (
+              <div className="rounded-2xl border border-gray-100 bg-white p-6 text-sm font-bold text-gray-500">
+                جارٍ تحميل إحصائيات الحاويات...
+              </div>
+            )}
+            {error && (
+              <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-sm font-bold text-red-600">
+                {error}
+              </div>
+            )}
+            {!isLoading && !error && !hasBinStats && (
+              <div className="rounded-2xl border border-amber-100 bg-amber-50 p-6 text-sm font-bold text-amber-700">
+                لا تتوفر إحصائيات للحاويات حاليًا.
+              </div>
+            )}
+            {!isLoading && !error && hasBinStats && (
+              <>
+                {/* كروت العدادات الخمسة العلوية للحاويات */}
+                <BinsStats stats={binsStats} />
 
-            {/* القسم الأوسط: خريطة المواقع الجغرافية (يمين) ومخطط النسب والنسب المئوية (يسار) */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <BinsMapSection />
-              <BinsChartSection />
-            </div>
+                {/* القسم الأوسط: خريطة المواقع الجغرافية (يمين) ومخطط النسب والنسب المئوية (يسار) */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <BinsMapSection />
+                  <BinsChartSection stats={binsStats} />
+                </div>
 
-            {/* الجدول السفلي لعرض وتصفية تفاصيل الحاويات وشريط الامتلاء */}
-            <BinsTableSection />
+                {/* الجدول السفلي لعرض وتصفية تفاصيل الحاويات وشريط الامتلاء */}
+                <BinsTableSection />
+              </>
+            )}
 
           </main>
         </div>

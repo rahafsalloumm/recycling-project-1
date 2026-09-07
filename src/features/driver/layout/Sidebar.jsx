@@ -1,5 +1,6 @@
-﻿import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FaRecycle } from 'react-icons/fa'; 
+import authService from '@/services/auth';
 import { 
   FiGrid, 
   FiCalendar, 
@@ -7,13 +8,13 @@ import {
   FiTrash2, 
   FiHome, 
   FiClipboard, 
-  FiBell, 
   FiUser, 
   FiHelpCircle, 
   FiLogOut
 } from 'react-icons/fi';
 
 export default function Sidebar() {
+  const navigate = useNavigate();
   const menu = [
     { icon: <FiGrid />, label: "لوحة التحكم", path: "/driver/dashboard" },
     { icon: <FiCalendar />, label: "المهام اليومية", path: "/driver/tasks" },
@@ -21,10 +22,15 @@ export default function Sidebar() {
     { icon: <FiTrash2 />, label: "الحاويات الذكية", path: "/driver/bins" },
     { icon: <FiHome />, label: "طلبات المنازل", path: "/driver/homes" },
     { icon: <FiClipboard />, label: "سجل المهام", path: "/driver/history" },
-    { icon: <FiBell />, label: "الإشعارات", path: "/driver/notifications" },
     { icon: <FiUser />, label: "الملف الشخصي", path: "/driver/profile" },
     { icon: <FiHelpCircle />, label: "المساعدة", path: "/driver/help" },
   ];
+
+  const handleLogout = () => {
+    authService.logout();
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
 
   return (
     // 🎨 رجعنا اللون الزيتي الفخم والمطفي اللي برمجناه سوا [#0d2a1d] مع الطول الكامل
@@ -71,7 +77,11 @@ export default function Sidebar() {
       
       {/* زر تسجيل الخروج المثبت بالقاع وبنفس الألوان الداكنة والمسافة المريحة */}
       <div className="p-5 border-t border-[#1b4332]/50 w-full bg-[#0d2a1d] mb-4">
-        <button className="flex items-center gap-4 px-4 py-3 hover:bg-red-950/20 text-red-400 hover:text-red-300 rounded-xl text-sm font-black text-right w-full transition-all duration-200 active:scale-[0.98] group">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex items-center gap-4 px-4 py-3 hover:bg-red-950/20 text-red-400 hover:text-red-300 rounded-xl text-sm font-black text-right w-full transition-all duration-200 active:scale-[0.98] group"
+        >
           <FiLogOut className="text-lg shrink-0 transition-transform duration-200 group-hover:-translate-x-1" />
           <span>تسجيل الخروج</span>
         </button>

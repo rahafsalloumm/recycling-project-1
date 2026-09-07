@@ -5,9 +5,11 @@ const authService = {
 
   register: (data) => api.post('/api/auth/register', data),
 
-  forgotPassword: (email) => api.post('/api/auth/forgot-password', { email }),
+  forgotPassword: (data) => api.post('/api/auth/forgot-password', data),
 
-  resetPassword: (data) => api.post('/api/auth/reset-password', data),
+  verifyCode: (data) => api.post('/api/auth/verify-code', data),
+
+  updatePassword: (data) => api.post('/api/auth/update-password', data),
 
   getProfile: () => api.get('/api/auth/me'),
 

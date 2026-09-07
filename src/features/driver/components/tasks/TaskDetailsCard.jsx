@@ -1,6 +1,26 @@
 ﻿import { FiMap, FiPlay, FiInfo, FiMapPin, FiBriefcase } from 'react-icons/fi';
 
-const TaskDetailsCard = () => {
+const TaskDetailsCard = ({ task, waypoints = [] }) => {
+  const mappedWaypoints = waypoints
+    .filter((waypoint) => waypoint.taskType !== 'FinalDestination')
+    .map((waypoint) => {
+      const coordinates = waypoint.details?.coordinates;
+      const lat = Number(coordinates?.lat ?? coordinates?.latitude);
+      const lng = Number(coordinates?.lng ?? coordinates?.longitude);
+      return Number.isFinite(lat) && Number.isFinite(lng) ? { waypoint, lat, lng } : null;
+    })
+    .filter(Boolean);
+  const minLat = Math.min(...mappedWaypoints.map(({ lat }) => lat));
+  const maxLat = Math.max(...mappedWaypoints.map(({ lat }) => lat));
+  const minLng = Math.min(...mappedWaypoints.map(({ lng }) => lng));
+  const maxLng = Math.max(...mappedWaypoints.map(({ lng }) => lng));
+  const projectPoint = ({ lat, lng }) => ({
+    x: maxLng === minLng ? 50 : 10 + ((lng - minLng) / (maxLng - minLng)) * 80,
+    y: maxLat === minLat ? 50 : 90 - ((lat - minLat) / (maxLat - minLat)) * 80,
+  });
+  const projectedWaypoints = mappedWaypoints.map((item) => ({ ...item, point: projectPoint(item) }));
+  const path = projectedWaypoints.map(({ point }) => `${point.x},${point.y}`).join(' ');
+
   return (
     <div className="space-y-5" dir="rtl">
       
@@ -13,12 +33,26 @@ const TaskDetailsCard = () => {
         
         {/* محاكاة خريطة فسيحة بألوان فاتحة وراقية */}
         <div className="relative h-44 bg-slate-50 border border-gray-100 rounded-xl overflow-hidden flex items-center justify-center group/map">
-          <svg className="absolute w-full h-full p-8" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M 15 65 L 40 40 L 68 50 L 88 15" fill="none" stroke="#10b981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <div className="absolute bottom-[35%] right-[60%] text-xl bg-white p-1 rounded-full shadow border">🚚</div>
-          <span className="absolute top-[40%] left-[58%] bg-emerald-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shadow border-2 border-white">2</span>
-          <span className="absolute top-[18%] left-[10%] bg-emerald-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shadow border-2 border-white">4</span>
+          {projectedWaypoints.length > 0 ? (
+            <svg className="absolute w-full h-full p-8" viewBox="0 0 100 100" preserveAspectRatio="none">
+              {projectedWaypoints.length > 1 && (
+                <polyline points={path} fill="none" stroke="#10b981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+              )}
+              {projectedWaypoints.map(({ waypoint, point }) => (
+                <circle
+                  key={waypoint.waypointId}
+                  cx={point.x}
+                  cy={point.y}
+                  r={waypoint.waypointId === task?.waypointId ? 4 : 2.5}
+                  fill={waypoint.waypointId === task?.waypointId ? '#047857' : '#10b981'}
+                  stroke="white"
+                  strokeWidth="1.5"
+                />
+              ))}
+            </svg>
+          ) : (
+            <span className="text-xs text-gray-400">لا توجد إحداثيات صالحة للمسار</span>
+          )}
         </div>
       </div>
 
@@ -34,39 +68,35 @@ const TaskDetailsCard = () => {
           <div className="grid grid-cols-2 gap-y-4 text-right">
             <div>
               <p className="text-[10px] text-gray-400 font-bold">رقم المهمة</p>
-              <p className="text-xs font-black text-slate-800 font-sans mt-1">#003</p>
+              <p className="text-xs font-black text-slate-800 font-sans mt-1">{task ? `#${task.stopNumber}` : '—'}</p>
             </div>
-            <div>
-              <p className="text-[10px] text-gray-400 font-bold">الوقت المتوقع</p>
-              <p className="text-xs font-black text-slate-800 font-sans mt-1">11:00 ص</p>
-            </div>
-            
             <div className="col-span-2 border-t border-gray-50/50 pt-3">
               <p className="text-[10px] text-gray-400 font-bold flex items-center gap-1">
                 <FiBriefcase className="text-gray-400" /> نوع المهمة
               </p>
-              <p className="text-xs font-black text-emerald-800 mt-1">استلام نفايات منزلية</p>
+              <p className="text-xs font-black text-emerald-800 mt-1">{task?.details?.wasteOrBinType || '—'}</p>
             </div>
 
             <div className="col-span-2 border-t border-gray-50/50 pt-3">
               <p className="text-[10px] text-gray-400 font-bold flex items-center gap-1">
                 <FiMapPin className="text-gray-400" /> العنوان
               </p>
-              <p className="text-xs font-black text-slate-800 mt-1">حي الياسمين - شارع 10</p>
-              <p className="text-[10px] text-gray-400 font-bold mt-0.5 font-sans">المسافة المتبقية: 1.2 كم</p>
+              <p className="text-xs font-black text-slate-800 mt-1">{task?.details?.address || '—'}</p>
+              <p className="text-[10px] text-gray-400 font-bold mt-0.5 font-sans">المسافة المتبقية: {task?.distanceFromPreviousKm ?? '—'} كم</p>
             </div>
 
-            <div className="col-span-2 border-t border-gray-50/50 pt-3">
-              <p className="text-[10px] text-gray-400 font-bold">ملاحظات</p>
-              <p className="text-xs font-bold text-slate-600 mt-1">يرجى التواصل مع السيد محمد</p>
-            </div>
           </div>
         </div>
 
         {/* زر بدء المهمة الأخضر العريض التفاعلي بالأنيميشن */}
-        <button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-md hover:shadow-lg hover:shadow-emerald-600/10 transition-all duration-300 mt-6 active:scale-[0.99]">
+        <button
+          type="button"
+          disabled
+          title="بدء المهمة غير مدعوم حالياً من Backend"
+          className="w-full bg-gray-300 text-gray-500 py-3.5 rounded-xl font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-md transition-all duration-300 mt-6 cursor-not-allowed"
+        >
           <FiPlay className="fill-current text-xs" />
-          <span>بدء المهمة</span>
+          <span>بدء المهمة غير متاحة حالياً</span>
         </button>
       </div>
 

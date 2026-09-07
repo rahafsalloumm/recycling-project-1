@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRecycle, FaArrowRight, FaEnvelope, FaLock, FaKey, FaEye, FaEyeSlash } from "react-icons/fa";
+import authService from "@/services/auth";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -18,7 +19,13 @@ export default function ForgotPassword() {
   const [showPassword, setShowPassword] = useState(false);
 
   // ===== هاندلر الخطوة الأولى: إدخال البريد الإلكتروني =====
-  const handleEmailSubmit = (e) => {
+  const getErrorMessage = (requestError, fallbackMessage) => {
+    const responseData = requestError.response?.data;
+    if (Array.isArray(responseData)) return responseData[0] || fallbackMessage;
+    return responseData?.message || requestError.message || fallbackMessage;
+  };
+
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setError("");
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -27,14 +34,18 @@ export default function ForgotPassword() {
       return;
     }
     setLoading(true);
-    setTimeout(() => {
+    try {
+      await authService.forgotPassword({ email });
+      setStep(2);
+    } catch (requestError) {
+      setError(getErrorMessage(requestError, "تعذر إرسال رمز التحقق"));
+    } finally {
       setLoading(false);
-      setStep(2); // الانتقال التلقائي لخطوة كود التحقق
-    }, 1200);
+    }
   };
 
   // ===== هاندلر الخطوة الثانية: التحقق من كود الـ OTP المكون من 5 خانات =====
-  const handleOtpSubmit = (e) => {
+  const handleOtpSubmit = async (e) => {
     e.preventDefault();
     setError("");
     const code = otp.join("");
@@ -43,15 +54,18 @@ export default function ForgotPassword() {
       return;
     }
     setLoading(true);
-    setTimeout(() => {
+    try {
+      await authService.verifyCode({
+        email,
+        verifyCode: code,
+        verify: "password",
+      });
+      setStep(3);
+    } catch (requestError) {
+      setError(getErrorMessage(requestError, "تعذر التحقق من رمز التحقق"));
+    } finally {
       setLoading(false);
-      // كود التجريب الافتراضي المتوافق مع الخمس خانات
-      if (code === "12345") {
-        setStep(3); // الانتقال التلقائي لخطوة إعادة تعيين كلمة السر
-      } else {
-        setError("كود التحقق غير صحيح! جرب الرمز الافتراضي 12345");
-      }
-    }, 1200);
+    }
   };
 
   // دالة تحريك مؤشر الكتابة تلقائياً بين مربعات الـ OTP الخمسة
@@ -66,7 +80,7 @@ export default function ForgotPassword() {
   };
 
   // ===== هاندلر الخطوة الثالثة: إعادة تعيين كلمة المرور الجديدة =====
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     setError("");
     if (newPassword.length < 6) {
@@ -78,11 +92,18 @@ export default function ForgotPassword() {
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await authService.updatePassword({
+        email,
+        password: newPassword,
+      });
       alert("تم إعادة تعيين كلمة المرور بنجاح 🎉 يمكنك تسجيل الدخول الآن");
-      navigate("/login"); // التوجيه النهائي لصفحة الدخول
-    }, 1500);
+      navigate("/login");
+    } catch (requestError) {
+      setError(getErrorMessage(requestError, "تعذر تحديث كلمة المرور"));
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -213,4 +234,3 @@ export default function ForgotPassword() {
     </div>
   );
 }
-

@@ -1,11 +1,21 @@
 ﻿
-const BinsChartSection = () => {
+const BinsChartSection = ({ stats }) => {
+  const donutChart = stats?.donutChart;
+  const totalBins = stats?.totalBins;
+  const getPercentage = (value) => {
+    if (value === undefined || value === null || !totalBins) {
+      return '—';
+    }
+
+    return `${Math.round((value / totalBins) * 100)}%`;
+  };
+
   const chartData = [
-    { label: 'فارغة (18)', percentage: '37%', color: 'bg-emerald-500' },
-    { label: 'متوسطة (12)', percentage: '25%', color: 'bg-amber-400' },
-    { label: 'ممتلئة (22)', percentage: '29%', color: 'bg-red-500' },
-    { label: 'قيد التفريغ', percentage: '8%', color: 'bg-blue-500' },
-    { label: 'غير نشطة', percentage: '4%', color: 'bg-gray-400' },
+    { label: `فارغة (${donutChart?.empty ?? '—'})`, percentage: getPercentage(donutChart?.empty), color: 'bg-emerald-500' },
+    { label: `متوسطة (${donutChart?.medium ?? '—'})`, percentage: getPercentage(donutChart?.medium), color: 'bg-amber-400' },
+    { label: `ممتلئة (${donutChart?.full ?? '—'})`, percentage: getPercentage(donutChart?.full), color: 'bg-red-500' },
+    { label: `قيد التفريغ (${stats?.deliveryPendingBins ?? '—'})`, percentage: getPercentage(stats?.deliveryPendingBins), color: 'bg-blue-500' },
+    { label: `غير نشطة (${donutChart?.inactive ?? '—'})`, percentage: getPercentage(donutChart?.inactive), color: 'bg-gray-400' },
   ];
 
   return (
@@ -16,7 +26,7 @@ const BinsChartSection = () => {
         <div className="flex flex-col items-center sm:flex-row justify-around gap-6 mt-4">
           {/* المخطط الدائري التفاعلي المصنوع بتيل ويند الصافي */}
           <div className="relative w-40 h-40 rounded-full border-[14px] border-emerald-500 border-t-red-500 border-r-amber-400 border-l-blue-400 flex flex-col items-center justify-center shadow-inner group cursor-pointer transition-transform duration-300 hover:scale-105">
-            <span className="text-3xl font-black text-slate-800">48</span>
+            <span className="text-3xl font-black text-slate-800">{totalBins ?? '—'}</span>
             <span className="text-xs text-gray-400 font-bold mt-1">حاوية</span>
           </div>
 
@@ -40,7 +50,7 @@ const BinsChartSection = () => {
         <span className="text-lg">💡</span>
         <div className="space-y-0.5">
           <p className="text-xs font-black text-emerald-900 leading-tight">نصيحة ذكية</p>
-          <p className="text-[10px] text-emerald-700/90 font-medium leading-relaxed">يوجد 8 حاويات تحتاج تفريغ عاجل في مسارك الحالي. يفضل زيارة الحاويات الممتلئة أولاً لتحسين كفاءة المسار.</p>
+          <p className="text-[10px] text-emerald-700/90 font-medium leading-relaxed">تُعرض مستويات الحاويات الحالية حسب بيانات النظام، ويفضل زيارة الحاويات الممتلئة أولاً لتحسين كفاءة المسار.</p>
         </div>
       </div>
     </div>

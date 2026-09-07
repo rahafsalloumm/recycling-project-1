@@ -1,11 +1,40 @@
-﻿import Sidebar from '@/features/driver/layout/Sidebar';
+import { useEffect, useState } from 'react';
+import Sidebar from '@/features/driver/layout/Sidebar';
 import DriverNavbar from '@/features/driver/layout/DriverNavbar';
 import HistoryHeader from '@/features/driver/components/history/HistoryHeader';
 import HistoryStats from '@/features/driver/components/history/HistoryStats';
 import HistoryFilter from '@/features/driver/components/history/HistoryFilter';
 import HistoryTable from '@/features/driver/components/history/HistoryTable';
+import driverService from '@/services/driver';
 
 const DriverHistory = () => {
+  const [historyStats, setHistoryStats] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    const loadHistoryStats = async () => {
+      try {
+        const response = await driverService.getHistory();
+        setHistoryStats(response.data?.data?.taskLogPage || null);
+      } catch (error) {
+        const status = error.response?.status;
+        if (status === 401) {
+          setErrorMessage('انتهت صلاحية تسجيل الدخول أو أن بيانات الدخول غير صحيحة.');
+        } else if (status === 403) {
+          setErrorMessage('هذا الحساب لا يملك صلاحية الوصول إلى سجل السائق.');
+        } else {
+          setErrorMessage('تعذر تحميل بيانات سجل المهام حاليًا.');
+        }
+        console.error('Failed to load driver history stats:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadHistoryStats();
+  }, []);
+
   return (
     <div className="bg-[#f4f7f6] h-screen w-full flex overflow-hidden" dir="rtl">
       {/* القائمة الجانبية الثابتة */}
@@ -22,7 +51,19 @@ const DriverHistory = () => {
             <HistoryHeader />
 
             {/* العدادات الخمسة العلوية للسجل */}
-            <HistoryStats />
+            {isLoading ? (
+              <HistoryStats isLoading />
+            ) : errorMessage ? (
+              <div className="rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-700" role="alert">
+                {errorMessage}
+              </div>
+            ) : historyStats && typeof historyStats === 'object' ? (
+              <HistoryStats stats={historyStats} />
+            ) : (
+              <div className="rounded-2xl border border-gray-100 bg-white px-5 py-4 text-sm font-bold text-gray-500">
+                لا تتوفر بيانات سجل المهام حاليًا.
+              </div>
+            )}
 
             {/* شريط الفرز والتصدير */}
             <HistoryFilter />

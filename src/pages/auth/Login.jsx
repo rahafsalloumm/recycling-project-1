@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaRecycle } from "react-icons/fa";
+import { authService } from "@/services"; 
 
 export default function Login() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [backendError, setBackendError] = useState(""); 
 
   // ===== VALIDATION =====
   const validate = () => {
@@ -29,17 +31,46 @@ export default function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ===== SUBMIT =====
-  const handleSubmit = (e) => {
+  // ===== SUBMIT (تعديل الربط الحقيقي) =====
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
+    
     setLoading(true);
+    setBackendError(""); 
 
-    setTimeout(() => {
+    try {
+      // إرسال البيانات للسيرفر وانتظار النتيجة
+      const responseData = await authService.login({ email, password });
+
+      // حل مشكلة غلاف الباك إند: نتحقق إن كانت البيانات مغلفة بـ .data أو قادمة مباشرة
+      const res = responseData?.data ? responseData.data : responseData;
+
+      if (res?.token) {
+        // حفظ التوكن وبيانات المستخدم محلياً
+        localStorage.setItem("token", res.token);
+        localStorage.setItem("user", JSON.stringify(res.user));
+
+        alert("تم تسجيل الدخول بنجاح 🎉");
+
+        // التوجيه التلقائي حسب دور المستخدم (Role) بناءً على تعليمات عبد الرحمن
+        if (res.user?.role === "admin") {
+          navigate("/admin/dashboard");
+        } else if (res.user?.role === "driver") {
+          navigate("/driver/dashboard");
+        } else {
+          navigate("/dashboard"); 
+        }
+      } else {
+        setBackendError("فشل في قراءة بيانات الجلسة من السيرفر. تأكد من رابط الـ API.");
+      }
+
+    } catch (err) {
+      // الإمساك بالخطأ الموحد المعالج في api.js وعرضه
+      setBackendError(err.message || "فشل تسجيل الدخول، يرجى التحقق من البيانات");
+    } finally {
       setLoading(false);
-      alert("تم تسجيل الدخول بنجاح 🎉");
-      navigate("/tracking"); // توجيه المستخدم مباشرة لقسم التتبع بعد النجاح
-    }, 1000);
+    }
   };
 
   // ===== ENTER KEY NAVIGATION =====
@@ -77,9 +108,16 @@ export default function Login() {
           <h1 className="text-2xl font-bold text-gray-800">تسجيل الدخول</h1>
           <p className="text-sm text-gray-500 mt-1">مرحباً بعودتك 👋</p>
         </div>
+
         {/* ===== FORM ===== */}
         <form className="space-y-5" onSubmit={handleSubmit}>
 
+          {/* عرض خطأ السيرفر إن وجد */}
+          {backendError && (
+            <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl text-sm text-right font-medium">
+              {backendError}
+            </div>
+          )}
           {/* EMAIL */}
           <div>
             <label className="block mb-2 font-semibold text-gray-700 text-right">
@@ -121,7 +159,6 @@ export default function Login() {
               </button>
             </div>
 
-            {/* تم إضافة زر نسيت كلمة المرور هنا بمحاذاة يمين أنيقة */}
             <div className="text-right mt-2">
               <Link 
                 to="/forgot-password" 
@@ -164,4 +201,3 @@ export default function Login() {
     </div>
   );
 }
-
