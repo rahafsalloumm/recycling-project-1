@@ -1,9 +1,26 @@
-﻿import Sidebar from '@/features/driver/layout/Sidebar';
+import { useEffect, useState } from 'react';
+import Sidebar from '@/features/driver/layout/Sidebar';
 import DriverNavbar from '@/features/driver/layout/DriverNavbar';
 import HelpAccordion from '@/features/driver/components/help/HelpAccordion';
 import { FiHelpCircle, FiShield } from 'react-icons/fi';
+import driverService from '@/services/driver';
 
 const DriverHelp = () => {
+  const [contactInfo, setContactInfo] = useState(null);
+
+  useEffect(() => {
+    const loadContactInfo = async () => {
+      try {
+        const response = await driverService.getContactInfo();
+        setContactInfo(response.data?.data || null);
+      } catch (error) {
+        console.error('Failed to load contact information:', error);
+      }
+    };
+
+    loadContactInfo();
+  }, []);
+
   return (
     <div className="bg-[#f4f7f6] h-screen w-full flex overflow-hidden" dir="rtl">
       {/* القائمة الجانبية الثابتة */}
@@ -26,7 +43,7 @@ const DriverHelp = () => {
             </div>
 
             {/* الأسئلة الشائعة وكروت الاتصال بأسفلها */}
-            <HelpAccordion />
+            <HelpAccordion contactInfo={contactInfo} />
 
             {/* شريط نصائح السلامة الفخم */}
             <div className="bg-emerald-50/50 border border-emerald-100 px-6 py-4 rounded-2xl flex items-center justify-center gap-3 shadow-[0_2px_8px_rgba(0,0,0,0.01)] text-emerald-800">

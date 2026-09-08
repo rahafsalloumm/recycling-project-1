@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRecycle, FaArrowRight, FaEnvelope, FaLock, FaKey, FaEye, FaEyeSlash } from "react-icons/fa";
-import authService from '@/services/auth'
+import authService from "@/services/auth";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -19,6 +19,12 @@ export default function ForgotPassword() {
   const [showPassword, setShowPassword] = useState(false);
 
   // ===== هاندلر الخطوة الأولى: إدخال البريد الإلكتروني =====
+  const getErrorMessage = (requestError, fallbackMessage) => {
+    const responseData = requestError.response?.data;
+    if (Array.isArray(responseData)) return responseData[0] || fallbackMessage;
+    return responseData?.message || requestError.message || fallbackMessage;
+  };
+
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -28,12 +34,11 @@ export default function ForgotPassword() {
       return;
     }
     setLoading(true);
-
     try {
-      await authService.forgotPassword(email);
+      await authService.forgotPassword({ email });
       setStep(2);
-    } catch (err) {
-      setError(err?.message || 'تعذر إرسال الرمز');
+    } catch (requestError) {
+      setError(getErrorMessage(requestError, "تعذر إرسال رمز التحقق"));
     } finally {
       setLoading(false);
     }
@@ -50,16 +55,15 @@ export default function ForgotPassword() {
     }
 
     setLoading(true);
-
     try {
       await authService.verifyCode({
         email,
         verifyCode: code,
-        verify: 'password',
+        verify: "password",
       });
       setStep(3);
-    } catch (err) {
-      setError(err?.message || 'كود التحقق غير صحيح');
+    } catch (requestError) {
+      setError(getErrorMessage(requestError, "تعذر التحقق من رمز التحقق"));
     } finally {
       setLoading(false);
     }
@@ -90,13 +94,15 @@ export default function ForgotPassword() {
     }
 
     setLoading(true);
-
     try {
-      await authService.updatePassword({ email, password: newPassword });
+      await authService.updatePassword({
+        email,
+        password: newPassword,
+      });
       alert("تم إعادة تعيين كلمة المرور بنجاح 🎉 يمكنك تسجيل الدخول الآن");
       navigate("/login");
-    } catch (err) {
-      setError(err?.message || 'تعذر تحديث كلمة المرور');
+    } catch (requestError) {
+      setError(getErrorMessage(requestError, "تعذر تحديث كلمة المرور"));
     } finally {
       setLoading(false);
     }
@@ -230,4 +236,3 @@ export default function ForgotPassword() {
     </div>
   );
 }
-

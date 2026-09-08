@@ -1,11 +1,56 @@
-﻿import Sidebar from '@/features/driver/layout/Sidebar';
+import { useEffect, useState } from 'react';
+import Sidebar from '@/features/driver/layout/Sidebar';
 import DriverNavbar from '@/features/driver/layout/DriverNavbar';
 import ProfileHeader from '@/features/driver/components/profile/ProfileHeader';
 import ProfileCard from '@/features/driver/components/profile/ProfileCard';
 import InfoPersonal from '@/features/driver/components/profile/InfoPersonal';
 import InfoGrids from '@/features/driver/components/profile/InfoGrids';
+import driverService from '@/services/driver';
 
 const DriverProfile = () => {
+  const [profile, setProfile] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const response = await driverService.getProfile();
+        setProfile(response.data?.user || null);
+      } catch (error) {
+        const status = error.response?.status;
+        if (status === 401) {
+          setErrorMessage('انتهت صلاحية تسجيل الدخول أو أن بيانات الدخول غير صحيحة.');
+        } else if (status === 403) {
+          setErrorMessage('لا تملك الصلاحية للوصول إلى بيانات الملف الشخصي.');
+        } else if (status === 404) {
+          setErrorMessage('لم يتم العثور على بيانات الملف الشخصي.');
+        } else {
+          setErrorMessage('تعذر تحميل بيانات الملف الشخصي حاليًا.');
+        }
+        console.error('Failed to load driver profile:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProfile();
+  }, []);
+
+  const handleProfileUpdated = (updatedFields) => {
+    setProfile((currentProfile) => ({
+      ...currentProfile,
+      ...updatedFields,
+    }));
+  };
+
+  const handleProfileImageUpdated = (updatedProfile) => {
+    setProfile((currentProfile) => ({
+      ...currentProfile,
+      ...updatedProfile,
+    }));
+  };
+
   return (
     <div className="bg-[#f4f7f6] h-screen w-full flex overflow-hidden" dir="rtl">
       {/* القائمة الجانبية الموحدة */}
@@ -21,25 +66,34 @@ const DriverProfile = () => {
             {/* رأس الصفحة */}
             <ProfileHeader />
 
-            {/* 📊 التوزيع المحدث: جعل الكروت العلوية في شبكة متناسقة والكروت الثلاثة بالأسفل ممتدة بالكامل */}
-            <div className="space-y-6">
-              
-              {/* القسم العلوي: كرت البيانات الشخصية وبجانبه كرت الإحصائيات (ProfileCard) */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                <div className="lg:col-span-2">
-                  <InfoPersonal />
+            {isLoading ? (
+              <div className="rounded-2xl border border-emerald-100 bg-white px-5 py-4 text-sm font-bold text-emerald-700" role="status">
+                جارٍ تحميل بيانات الملف الشخصي...
+              </div>
+            ) : errorMessage ? (
+              <div className="rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-700" role="alert">
+                {errorMessage}
+              </div>
+            ) : profile && typeof profile === 'object' ? (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                  <div className="lg:col-span-2">
+                    <InfoPersonal profile={profile} onProfileUpdated={handleProfileUpdated} />
+                  </div>
+                  <div className="lg:col-span-1">
+                    <ProfileCard profile={profile} onProfileImageUpdated={handleProfileImageUpdated} />
+                  </div>
                 </div>
-                <div className="lg:col-span-1">
-                  <ProfileCard />
+
+                <div className="w-full">
+                  <InfoGrids profile={profile} />
                 </div>
               </div>
-
-              {/* القسم السفلي: الكروت الثلاثة ممتدة بكامل العرض لتملأ الفراغ بشكل ممتاز */}
-              <div className="w-full">
-                <InfoGrids />
+            ) : (
+              <div className="rounded-2xl border border-gray-100 bg-white px-5 py-4 text-sm font-bold text-gray-500">
+                لا تتوفر بيانات الملف الشخصي حاليًا.
               </div>
-
-            </div>
+            )}
           </main>
         </div>
 

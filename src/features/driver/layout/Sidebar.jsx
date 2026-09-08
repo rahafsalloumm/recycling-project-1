@@ -1,5 +1,6 @@
-﻿import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FaRecycle } from 'react-icons/fa'; 
+import authService from '@/services/auth';
 import { 
   FiGrid, 
   FiCalendar, 
@@ -7,7 +8,6 @@ import {
   FiTrash2, 
   FiHome, 
   FiClipboard, 
-  FiBell, 
   FiUser, 
   FiHelpCircle, 
   FiLogOut
@@ -15,13 +15,6 @@ import {
 
 export default function Sidebar() {
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/login');
-  };
-
   const menu = [
     { icon: <FiGrid />, label: "لوحة التحكم", path: "/driver/dashboard" },
     { icon: <FiCalendar />, label: "المهام اليومية", path: "/driver/tasks" },
@@ -29,10 +22,15 @@ export default function Sidebar() {
     { icon: <FiTrash2 />, label: "الحاويات الذكية", path: "/driver/bins" },
     { icon: <FiHome />, label: "طلبات المنازل", path: "/driver/homes" },
     { icon: <FiClipboard />, label: "سجل المهام", path: "/driver/history" },
-    { icon: <FiBell />, label: "الإشعارات", path: "/driver/notifications" },
     { icon: <FiUser />, label: "الملف الشخصي", path: "/driver/profile" },
     { icon: <FiHelpCircle />, label: "المساعدة", path: "/driver/help" },
   ];
+
+  const handleLogout = () => {
+    authService.logout();
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
 
   return (
     <aside className="w-64 bg-[#0d2a1d] text-white flex flex-col justify-between h-full min-h-screen shrink-0 border-l border-[#1b4332]/40 select-none shadow-2xl" dir="rtl">

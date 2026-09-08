@@ -1,23 +1,56 @@
-﻿import {  useState  } from 'react';
+import { useState } from 'react';
 import { FiUser, FiMail, FiPhone, FiCalendar, FiMapPin, FiCreditCard, FiEdit3, FiX, FiCheck } from 'react-icons/fi';
+import driverService from '@/services/driver';
 
-const InfoPersonal = () => {
-  // 💡 الحالات الجاهزة للربط مع الباك إند: يمكنك جلبها بـ useEffect لاحقاً وتعديلها هنا
-  const [personalData, setPersonalData] = useState({
-    name: 'أحمد محمد السائق',
-    email: 'ahmed.driver@ecocycle.com',
-    phone: '+963 91 123 4567',
-    birthday: '1992-05-15',
-    address: 'حلب، سوريا',
-    nationalId: '9631051234',
-    joinDate: '2023-02-10'
-  });
+const formatDate = (value) => {
+  if (!value) {
+    return '—';
+  }
 
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '—' : date.toISOString().slice(0, 10);
+};
+
+const getAddressFields = (address) => {
+  if (address && typeof address === 'object') {
+    return {
+      city: address.city ?? '',
+      street: address.street ?? '',
+    };
+  }
+
+  return {
+    city: '',
+    street: address ?? '',
+  };
+};
+
+const getPersonalData = (profile) => {
+  const addressFields = getAddressFields(profile?.address);
+  const address = [addressFields.city, addressFields.street].filter(Boolean).join(' - ');
+
+  return {
+    name: profile?.name ?? '',
+    email: profile?.email ?? '',
+    phone: profile?.phone ?? '',
+    birthday: profile?.birthDate ? String(profile.birthDate).slice(0, 10) : '',
+    address,
+    ...addressFields,
+    nationalId: profile?.nationalId ?? '',
+    joinDate: profile?.createdAt ? formatDate(profile.createdAt) : '',
+  };
+};
+
+const InfoPersonal = ({ profile, onProfileUpdated }) => {
   // حالة التحكم بفتح وإغلاق منبثق التعديل
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
+  const [saveError, setSaveError] = useState('');
   
   // حالة مؤقتة لتخزين المدخلات أثناء الكتابة وقبل الحفظ النهائي
-  const [formData, setFormData] = useState({ ...personalData });
+  const personalData = getPersonalData(profile);
+  const [formData, setFormData] = useState(getPersonalData(null));
 
   // دالة التعامل مع تغيير المدخلات
   const handleInputChange = (e) => {
@@ -25,26 +58,65 @@ const InfoPersonal = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  // ⚡ دالة الحفظ المجهزة للربط الكلي مع الباك إند (Axios / Fetch)
-  const handleSaveChanges = (e) => {
+  const handleSaveChanges = async (e) => {
     e.preventDefault();
-    console.log("جاري إرسال البيانات المحدثة إلى الباك إند:", formData);
-    
-    // هنا يتم وضع كود الـ API الخاص بك لحفظ التعديلات في السيرفر، مثلاً:
-    // axios.put('/api/driver/profile', formData).then(...)
-    
-    setPersonalData({ ...formData }); // تحديث الواجهة بالبيانات الجديدة
-    setIsEditModalOpen(false); // إغلاق المنبثق
+    const city = formData.city.trim();
+    const street = formData.street.trim();
+
+    if (!city || !street) {
+      setSaveMessage('');
+      setSaveError('يرجى إدخال المدينة والشارع قبل حفظ البيانات.');
+      return;
+    }
+
+    const updatedFields = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      birthDate: formData.birthday,
+      address: {
+        city,
+        street,
+      },
+    };
+
+    setIsSaving(true);
+    setSaveMessage('');
+    setSaveError('');
+    try {
+      await driverService.updateProfile(updatedFields);
+      const response = await driverService.getProfile();
+      onProfileUpdated(response.data?.user || updatedFields);
+      setSaveMessage('تم حفظ بيانات الملف الشخصي بنجاح.');
+      setIsEditModalOpen(false);
+    } catch (error) {
+      const status = error.response?.status;
+      const responseMessage = Array.isArray(error.response?.data)
+        ? error.response.data[0]
+        : error.response?.data?.message;
+      if (status === 400) {
+        setSaveError(responseMessage || 'يرجى مراجعة البيانات المدخلة.');
+      } else if (status === 401) {
+        setSaveError('انتهت صلاحية تسجيل الدخول أو أن بيانات الدخول غير صحيحة.');
+      } else if (status === 403) {
+        setSaveError('لا تملك الصلاحية لتعديل هذه البيانات.');
+      } else {
+        setSaveError(responseMessage || 'تعذر حفظ بيانات الملف الشخصي.');
+      }
+      console.error('Failed to update driver profile:', error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const details = [
     { icon: <FiUser />, label: 'الاسم الكامل', value: personalData.name },
     { icon: <FiMail />, label: 'البريد الإلكتروني', value: personalData.email, isSans: true },
     { icon: <FiPhone />, label: 'رقم الهاتف', value: personalData.phone, isSans: true },
-    { icon: <FiCalendar />, label: 'تاريخ الميلاد', value: personalData.birthday, isSans: true },
+    { icon: <FiCalendar />, label: 'تاريخ الميلاد', value: personalData.birthday || '—', isSans: true },
     { icon: <FiMapPin />, label: 'العنوان', value: personalData.address },
     { icon: <FiCreditCard />, label: 'رقم الهوية', value: personalData.nationalId, isSans: true },
-    { icon: <FiCalendar />, label: 'تاريخ الانضمام', value: personalData.joinDate, isSans: true },
+    { icon: <FiCalendar />, label: 'تاريخ الانضمام', value: personalData.joinDate || '—', isSans: true },
   ];
 
   return (
@@ -70,12 +142,16 @@ const InfoPersonal = () => {
       <button 
         onClick={() => {
           setFormData({ ...personalData }); // إعادة تعيين الحقول ببيانات السائق الحالية عند الفتح
+          setSaveMessage('');
+          setSaveError('');
           setIsEditModalOpen(true);
         }}
         className="w-fit mr-auto text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1.5 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-100/50 shadow-sm transition-all active:scale-95 mt-4"
       >
         <FiEdit3 className="text-xs" /> تعديل المعلومات الشخصية
       </button>
+      {saveMessage && <p className="mt-3 text-xs font-bold text-emerald-600" role="status">{saveMessage}</p>}
+      {saveError && <p className="mt-3 text-xs font-bold text-red-600" role="alert">{saveError}</p>}
 
       {/* --------------------------------------------------------------------------------- */}
       {/* 📥 🛸 نافذة منبثق تعديل البيانات (Edit Profile Modal) بتصميم فسيح ومطابق للتصميم */}
@@ -123,9 +199,14 @@ const InfoPersonal = () => {
                   <input type="date" name="birthday" value={formData.birthday} onChange={handleInputChange} className="w-full bg-gray-50 border border-gray-100 rounded-xl py-2 px-3 text-xs font-bold text-gray-700 focus:outline-none focus:border-emerald-500/50 focus:bg-white transition-all font-sans shadow-inner" required />
                 </div>
 
-                <div className="space-y-1 sm:col-span-2">
-                  <label className="text-[11px] font-bold text-gray-400">العنوان الحلي</label>
-                  <input type="text" name="address" value={formData.address} onChange={handleInputChange} className="w-full bg-gray-50 border border-gray-100 rounded-xl py-2 px-3 text-xs font-bold text-gray-700 focus:outline-none focus:border-emerald-500/50 focus:bg-white transition-all shadow-inner" required />
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-gray-400">المدينة</label>
+                  <input type="text" name="city" value={formData.city} onChange={handleInputChange} required className="w-full bg-gray-50 border border-gray-100 rounded-xl py-2 px-3 text-xs font-bold text-gray-700 focus:outline-none focus:border-emerald-500/50 focus:bg-white transition-all shadow-inner" />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-gray-400">الشارع</label>
+                  <input type="text" name="street" value={formData.street} onChange={handleInputChange} required className="w-full bg-gray-50 border border-gray-100 rounded-xl py-2 px-3 text-xs font-bold text-gray-700 focus:outline-none focus:border-emerald-500/50 focus:bg-white transition-all shadow-inner" />
                 </div>
 
               </div>
@@ -135,15 +216,17 @@ const InfoPersonal = () => {
                 <button 
                   type="button" 
                   onClick={() => setIsEditModalOpen(false)}
+                  disabled={isSaving}
                   className="px-4 py-2 rounded-xl text-xs font-bold text-gray-500 bg-gray-50 border border-gray-200/70 hover:bg-gray-100 transition-colors"
                 >
                   إلغاء
                 </button>
                 <button 
                   type="submit"
+                  disabled={isSaving}
                   className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md shadow-emerald-600/10 flex items-center gap-1.5 transition-colors"
                 >
-                  <FiCheck /> حفظ التغييرات
+                  <FiCheck /> {isSaving ? 'جارٍ الحفظ...' : 'حفظ التغييرات'}
                 </button>
               </div>
             </form>

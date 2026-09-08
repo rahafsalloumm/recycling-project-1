@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   FaLeaf, FaCalendarCheck, FaRecycle, FaTruck, FaShoppingBag, 
@@ -5,10 +6,56 @@ import {
 } from "react-icons/fa";
 import Navbar from "../../components/layout/Navbar"; 
 import heroImg from "../../assets/images/rewards-hero.png"; 
+import rewardsService from "../../services/rewards";
 
 export default function RewardsPage() {
   const navigate = useNavigate();
-  const points = 2450;
+  const [points, setPoints] = useState(2450);
+
+  let storedUser = null;
+  try {
+    storedUser = JSON.parse(localStorage.getItem("user") || "null");
+  } catch {
+    storedUser = null;
+  }
+
+  const token = localStorage.getItem("token");
+  const isUser = Boolean(token && storedUser?.role === "user");
+
+  useEffect(() => {
+    if (!isUser) return;
+
+    const loadUserPoints = async () => {
+      try {
+        const response = await rewardsService.getAvailableRewards();
+        const currentPoints = response.data?.stats?.currentPoints;
+
+        if (typeof currentPoints === "number") {
+          setPoints(currentPoints);
+        }
+      } catch (error) {
+        console.error("Failed to load user reward points:", error);
+      }
+    };
+
+    loadUserPoints();
+  }, [isUser]);
+
+  const handleRedeemClick = () => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    if (storedUser?.role === "user") {
+      navigate("/myrewards");
+      return;
+    }
+
+    if (storedUser?.role === "driver") {
+      navigate("/register");
+    }
+  };
 
   const earnMethods = [
     { icon: <FaLeaf size={32} className="text-green-850" />, title: "شارك الوعي البيئي", points: "+15 نقطة" },
@@ -122,7 +169,7 @@ export default function RewardsPage() {
                 
                 <button
                   type="button"
-                  onClick={() => navigate("/myrewards")}
+                  onClick={handleRedeemClick}
                   className="w-full bg-green-700 hover:bg-green-800 text-white border-none rounded-xl py-3 text-xs font-black shadow-xs transition duration-300 cursor-pointer active:scale-98"
                 >
                   استبدل الآن
@@ -136,4 +183,3 @@ export default function RewardsPage() {
     </div>
   );
 }
-

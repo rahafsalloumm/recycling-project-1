@@ -9,25 +9,42 @@ import driverService from '@/services/driver';
 
 const DriverTasks = () => {
   const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [route, setRoute] = useState(null);
+  const [activeTask, setActiveTask] = useState(null);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadTasksStats = async () => {
+    const loadTasks = async () => {
       try {
-        const response = await driverService.getStats();
-        setStats(response?.data || response);
-      } catch (err) {
-        setError(err?.message || 'تعذر تحميل بيانات المهام');
+        const [statsResponse, routeResponse] = await Promise.all([
+          driverService.getDashboard(),
+          driverService.getRoute().catch((routeError) => {
+            if (routeError.response?.status === 404) return null;
+            throw routeError;
+          }),
+        ]);
+
+        setStats(statsResponse.data?.data || null);
+        const routePayload = routeResponse?.data?.data || null;
+        setRoute(routePayload);
+        setActiveTask(routePayload?.waypoints?.find((waypoint) => waypoint.waypointStatus !== 'completed') || routePayload?.waypoints?.[0] || null);
+      } catch (loadError) {
+        const status = loadError.response?.status;
+        setError(
+          status === 401
+            ? 'انتهت جلسة الدخول. يرجى تسجيل الدخول مرة أخرى.'
+            : status === 403
+              ? 'ليس لديك صلاحية للوصول إلى المهام اليومية.'
+              : 'تعذر تحميل المهام اليومية. حاول مرة أخرى.'
+        );
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
-    loadTasksStats();
+    loadTasks();
   }, []);
-
-  const taskStats = stats?.taskLogPage || {};
 
   return (
     <div className="bg-[#f4f7f6] h-screen w-full flex overflow-hidden" dir="rtl">
@@ -38,26 +55,25 @@ const DriverTasks = () => {
           <DriverNavbar />
 
           <main className="p-6 space-y-6 max-w-[1600px] mx-auto animate-fade-in-up">
-            {loading ? (
-              <div className="text-center text-gray-500 py-10">جاري تحميل المهام...</div>
-            ) : error ? (
-              <div className="text-center text-red-500 py-10">{error}</div>
-            ) : (
-              <>
-                <TasksHeader />
+            
+            {/* رأس الصفحة بالتاريخ */}
+            <TasksHeader date={route?.date} />
 
-                <TasksStats />
+            {/* العدادات الخمسة */}
+            <TasksStats data={stats} route={route} />
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                  <div className="lg:col-span-2">
-                    <DetailedTasksList />
-                  </div>
-                  <div className="lg:col-span-1">
-                    <TaskDetailsCard />
-                  </div>
-                </div>
-              </>
-            )}
+            {isLoading && <p className="text-sm text-gray-500">جارٍ تحميل المهام اليومية...</p>}
+            {error && <p className="text-sm text-red-600">{error}</p>}
+
+            {/* الجدول والكرت الجانبي */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+              <div className="lg:col-span-2">
+                <DetailedTasksList tasks={route?.waypoints} activeTaskId={activeTask?.waypointId} onTaskSelect={setActiveTask} />
+              </div>
+              <div className="lg:col-span-1">
+                <TaskDetailsCard task={activeTask} waypoints={route?.waypoints} />
+              </div>
+            </div>
           </main>
         </div>
 

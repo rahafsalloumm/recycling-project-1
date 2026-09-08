@@ -18,6 +18,7 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [backendError, setBackendError] = useState(""); 
 
   // الـ States الخاصة بالنافذة المنبثقة والكود
   const [showOtpModal, setShowOtpModal] = useState(false); 
@@ -54,28 +55,28 @@ export default function Register() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   // ===== SUBMIT REGISTER =====
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     setLoading(true);
+    setBackendError(""); 
 
     try {
       await authService.register({
-        name: fullName,
+        name: fullName,       
         email,
-        password,
-        confirmPassword,
         phone,
+        password,
+        confirmPassword,  
         role,
-      })
+      });
 
-      setShowOtpModal(true);
-      setTimer(59);
+    setShowOtpModal(true);
+    setTimer(59);
     } catch (error) {
-      setErrors((prev) => ({ ...prev, submit: error?.message || 'فشل إنشاء الحساب' }))
+    setErrors((prev) => ({ ...prev, submit: error?.message || 'فشل إنشاء الحساب' }))
     } finally {
       setLoading(false);
     }
@@ -91,13 +92,16 @@ export default function Register() {
     setOtp(newOtp);
 
     if (index < 4 && element.value) {
-      otpInputsRef.current[index + 1].focus();
+      otpInputsRef.current[index + 1]?.focus();
     }
   };
 
   const handleOtpKeyDown = (e, index) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      otpInputsRef.current[index - 1].focus();
+      const newOtp = [...otp];
+      newOtp[index - 1] = ""; 
+      setOtp(newOtp);
+      otpInputsRef.current[index - 1]?.focus();
     }
   };
 
@@ -129,12 +133,21 @@ export default function Register() {
       setOtpLoading(false);
     }
   };
-
-  const handleResendCode = () => {
+  // ===== RESEND CODE =====
+  const handleResendCode = async () => {
     setTimer(59);
     setOtp(["", "", "", "", ""]);
     setOtpError("");
-    alert("تم إعادة إرسال كود التحقق إلى بريدك الإلكتروني 📩");
+    try {
+      if (authService.resendOtp) {
+        await authService.resendOtp({ email });
+      } else if (authService.forgotPassword) {
+        await authService.forgotPassword(email);
+      }
+      alert("تم إعادة إرسال كود التحقق إلى بريدك الإلكتروني 📩");
+    } catch (err) {
+      setOtpError(err.message || "فشل إعادة إرسال الكود");
+    }
   };
 
   const handleEnter = (e) => {
@@ -151,10 +164,8 @@ export default function Register() {
       submitBtnRef.current?.click();
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8 relative">
-      
       <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-lg">
         {/* ===== HEADER ===== */}
         <div className="text-center mb-6">
@@ -172,6 +183,12 @@ export default function Register() {
 
         {/* FORM */}
         <form className="space-y-5" onSubmit={handleSubmit}>
+          {backendError && (
+            <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl text-sm text-right font-medium">
+              {backendError}
+            </div>
+          )}
+
           {/* FULL NAME */}
           <div>
             <label className="block mb-2 font-semibold text-gray-700 text-right">الاسم الكامل</label>
@@ -195,7 +212,7 @@ export default function Register() {
               onChange={(e) => setEmail(e.target.value)}
               onKeyDown={handleEnter}
               placeholder="example@mail.com"
-              className="w-full border rounded-2xl p-4 outline-none focus:ring-4 focus:ring-green-200"
+              className="w-full border rounded-2xl p-4 outline-none focus:ring-4 focus:ring-green-200 text-right"
             />
             {errors.email && <p className="text-red-500 text-sm mt-1 text-right">{errors.email}</p>}
           </div>
@@ -209,11 +226,10 @@ export default function Register() {
               onChange={(e) => setPhone(e.target.value)}
               onKeyDown={handleEnter}
               placeholder="09xxxxxxxx"
-              className="w-full border rounded-2xl p-4 outline-none focus:ring-4 focus:ring-green-200"
+              className="w-full border rounded-2xl p-4 outline-none focus:ring-4 focus:ring-green-200 text-right"
             />
             {errors.phone && <p className="text-red-500 text-sm mt-1 text-right">{errors.phone}</p>}
           </div>
-
           {/* PASSWORD */}
           <div>
             <label className="block mb-2 font-semibold text-gray-700 text-right">كلمة المرور</label>
@@ -224,7 +240,7 @@ export default function Register() {
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyDown={handleEnter}
                 placeholder="****"
-                className="w-full border rounded-2xl p-4 pr-12 outline-none focus:ring-4 focus:ring-green-200"
+                className="w-full border rounded-2xl p-4 pr-4 pl-12 outline-none focus:ring-4 focus:ring-green-200 text-right"
               />
               <button
                 type="button"
@@ -239,10 +255,7 @@ export default function Register() {
           {errors.submit && <p className="text-red-500 text-sm mt-1 text-right">{errors.submit}</p>}
           {/* CONFIRM PASSWORD */}
           <div>
-            <label className="block mb-2 font-semibold text-gray-700 text-right">
-              تأكيد كلمة المرور
-            </label>
-
+            <label className="block mb-2 font-semibold text-gray-700 text-right">تأكيد كلمة المرور</label>
             <input
               type={showPassword ? "text" : "password"}
               value={confirmPassword}
@@ -258,11 +271,8 @@ export default function Register() {
 
           {/* ROLE */}
           <div>
-            <label className="block mb-2 font-semibold text-gray-700 text-right">
-              نوع الحساب
-            </label>
-
-            <div className="grid grid-cols-3 gap-2 text-sm">
+            <label className="block mb-2 font-semibold text-gray-700 text-right">نوع الحساب</label>
+            <div className="grid grid-cols-2 gap-2 text-sm">
               <button
                 type="button"
                 onClick={() => setRole("user")}
@@ -272,7 +282,6 @@ export default function Register() {
               >
                 مستخدم
               </button>
-
               <button
                 type="button"
                 onClick={() => setRole("driver")}
@@ -285,7 +294,6 @@ export default function Register() {
             </div>
           </div>
 
-          {/* BUTTON */}
           <button
             ref={submitBtnRef}
             type="submit"
@@ -294,42 +302,27 @@ export default function Register() {
           >
             {loading ? "جاري المعالجة..." : "إنشاء حساب"}
           </button>
-
         </form>
 
-        {/* LOGIN LINK */}
         <p className="text-center text-gray-500 mt-7">
           لديك حساب بالفعل؟
-          <span
-            onClick={() => navigate("/login")}
-            className="text-green-700 font-bold mr-2 cursor-pointer"
-          >
+          <span onClick={() => navigate("/login")} className="text-green-700 font-bold mr-2 cursor-pointer">
             تسجيل الدخول
           </span>
         </p>
-
       </div>
-
-      {/* ======================================================== */}
-      {/* ===== OTP VERIFICATION MODAL (النافذة المنبثقة الاحترافية) ===== */}
-      {/* ======================================================== */}
+      {/* ===== OTP VERIFICATION MODAL ===== */}
       {showOtpModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          
           <div className="w-full max-w-sm bg-white p-6 rounded-3xl shadow-2xl text-center space-y-5">
-            
-            {/* أيقونة رسالة */}
             <div className="mx-auto w-16 h-16 bg-green-50 rounded-full flex items-center justify-center text-green-500 text-2xl">
               📩
             </div>
-
             <h2 className="text-xl font-bold text-gray-800">تأكيد البريد الإلكتروني</h2>
             <p className="text-sm text-gray-500 px-2">
               لقد أرسلنا كود التحقق المكون من 5 أرقام إلى: <br/>
               <span className="font-semibold text-gray-700 text-xs break-all">{email}</span>
             </p>
-
-            {/* حقول الكود */}
             <form onSubmit={handleVerifyOtp} className="space-y-5">
               <div className="flex justify-center gap-2" dir="ltr">
                 {otp.map((data, index) => (
@@ -345,28 +338,16 @@ export default function Register() {
                   />
                 ))}
               </div>
-
-              {/* خطأ كود التفعيل */}
-              {otpError && (
-                <p className="text-red-500 text-sm text-center">{otpError}</p>
-              )}
-
-              {/* عداد الثواني */}
+              {otpError && <p className="text-red-500 text-sm text-center">{otpError}</p>}
               <div className="text-sm text-gray-500 text-center">
                 {timer > 0 ? (
                   <p>إعادة إرسال الكود خلال <span className="font-bold text-green-600">{timer}</span> ثانية</p>
                 ) : (
-                  <button
-                    type="button"
-                    onClick={handleResendCode}
-                    className="text-green-600 font-bold hover:underline"
-                  >
+                  <button type="button" onClick={handleResendCode} className="text-green-600 font-bold hover:underline">
                     إعادة إرسال كود التحقق
                   </button>
                 )}
               </div>
-
-              {/* أزرار التحكم */}
               <div className="flex gap-3">
                 <button
                   type="button"
@@ -384,11 +365,9 @@ export default function Register() {
                 </button>
               </div>
             </form>
-
           </div>
         </div>
       )}
-
     </div>
   );
 }

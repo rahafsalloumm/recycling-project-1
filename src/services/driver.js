@@ -3,31 +3,26 @@ import api from './api'
 const driverService = {
   getDashboard: () => api.get('/api/stats/driver-stats'),
 
-  getProfile: () => api.get('/user/profile'),
+  getProfile: () => api.get('/api/auth/profile'),
 
   updateProfile: (data) => api.put('/user/profile', data),
 
-  getTasks: (params) => api.get('/api/route/my-route', { params }),
+  getContactInfo: () => api.get('/api/contact/info'),
 
-  getTask: (id) => api.get(`/api/route/${id}`),
+  getTasks: (params) => api.get('/api/stats/driver-stats', { params }),
 
-  updateTaskStatus: (id, status) => api.put(`/api/route/${id}`, { status }),
+  getTask: (id) => api.get(`/api/wasterequest/${id}`),
+
+  updateTaskStatus: (routeId, waypointId) =>
+    api.put(`/api/route/${routeId}`, { waypointId }),
 
   getRoute: () => api.get('/api/route/my-route'),
 
-  updateRouteLocation: (data) => api.post('/api/route/my-route', data),
-
-  getBins: () => api.get('/api/bins'),
-
-  getBin: (id) => api.get(`/api/bins/${id}`),
-
-  updateBinStatus: (id, data) => api.put(`/api/bins/${id}/status`, data),
-
-  getHomes: () => api.get('/api/wasterequest'),
+  getHomes: (params) => api.get('/api/stats/driver-stats', { params }),
 
   getHome: (id) => api.get(`/api/wasterequest/${id}`),
 
-  getHistory: () => api.get('/api/stats/driver-stats'),
+  getHistory: (params) => api.get('/api/stats/driver-stats', { params }),
 
   getStats: () => api.get('/api/stats/driver-stats'),
 }

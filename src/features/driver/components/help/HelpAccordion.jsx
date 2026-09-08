@@ -1,14 +1,20 @@
 ﻿import {  useState  } from 'react';
-import { FiChevronDown, FiHelpCircle, FiPhone, FiMail } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { FiChevronDown, FiHelpCircle, FiPhone, FiMail, FiMessageCircle } from 'react-icons/fi';
 
-const HelpAccordion = () => {
+const HelpAccordion = ({ contactInfo }) => {
   const [openFaqId, setOpenFaqId] = useState(null);
+  const companyPhone = contactInfo?.companyPhone || '—';
+  const companyEmail = contactInfo?.companyEmail || '—';
+  const phoneHref = contactInfo?.companyPhone
+    ? `tel:${contactInfo.companyPhone.replace(/\s+/g, '')}`
+    : null;
+  const emailHref = contactInfo?.companyEmail ? `mailto:${contactInfo.companyEmail}` : null;
 
   const faqs = [
     { id: 1, q: 'كيف أبدأ مهمة جديدة في الوردية؟', a: 'انتقل إلى صفحة "المهام اليومية" من القائمة الجانبية، ثم اختر المهمة الحالية واضغط على زر "بدء المهمة" الأخضر لتفعيل التتبع.' },
     { id: 2, q: 'ماذا أفعل إذا كانت الحاوية الذكية معطلة؟', a: 'اضغط على تفاصيل الحاوية من اللوحة، ثم اختر "الإبلاغ عن عطل" ليرسل النظام بلاغاً فورياً لقسم الصيانة.' },
     { id: 3, q: 'كيف يتم تحديث حالة التجميع للمنازل؟', a: 'بمجرد وصولك للموقع وتفريغ النفايات, اضغط على زر "تأكيد الاستلام" لتسجيل الوزن وإغلاق الطلب بنجاح.' },
-    { id: 4, q: 'كيف يمكنني الإبلاغ عن زحام أو إغلاق في الطريق؟', a: 'من خلال زر الإشعارات أو الخريطة، يمكنك إرسال بلاغ سريع بالزحام ليقوم النظام بتعديل مسارك تلقائياً.' },
   ];
 
   return (
@@ -63,11 +69,11 @@ const HelpAccordion = () => {
             </div>
             <div>
               <h4 className="text-xs font-black text-gray-800">الدعم الهاتفي السريع</h4>
-              <p className="text-[11px] text-gray-400 font-sans font-medium mt-0.5" dir="ltr">+963 981 910 976</p>
+              <p className="text-[11px] text-gray-400 font-sans font-medium mt-0.5" dir="ltr">{companyPhone}</p>
             </div>
           </div>
           <button 
-            onClick={() => window.open('tel:+963981910976')} // 📱 يفتح تطبيق الاتصال بالرقم الخاص بك فوراً
+            onClick={() => phoneHref && window.open(phoneHref)} // 📱 يفتح تطبيق الاتصال بالرقم الخاص بك فوراً
             className="text-[10px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-600 hover:text-white px-4 py-2 rounded-xl border border-emerald-100/50 transition-all active:scale-95"
           >
             اتصال فوري
@@ -82,17 +88,27 @@ const HelpAccordion = () => {
             </div>
             <div>
               <h4 className="text-xs font-black text-gray-800">المراسلة الرسمية</h4>
-              <p className="text-[11px] text-gray-400 font-sans font-medium mt-0.5">support@ecocycle.com</p>
+              <p className="text-[11px] text-gray-400 font-sans font-medium mt-0.5">{companyEmail}</p>
             </div>
           </div>
           <button 
-            onClick={() => window.open('mailto:support@ecocycle.com')} // 📥 يفتح برنامج الإيميل ويكتب البريد تلقائياً في خانة المستلم
+            onClick={() => emailHref && window.open(emailHref)} // 📥 يفتح برنامج الإيميل ويكتب البريد تلقائياً في خانة المستلم
             className="text-[10px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-xl border border-blue-100/50 transition-all active:scale-95"
           >
             إرسال إيميل
           </button>
         </div>
 
+      </div>
+
+      <div className="flex justify-center">
+        <Link
+          to="/contact"
+          className="inline-flex items-center gap-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-5 py-2.5 rounded-xl shadow-sm transition-all active:scale-95"
+        >
+          <FiMessageCircle />
+          تواصل معنا
+        </Link>
       </div>
 
     </div>

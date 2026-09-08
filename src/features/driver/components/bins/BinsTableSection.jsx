@@ -1,6 +1,9 @@
-﻿import { FiSliders, FiSearch } from 'react-icons/fi';
+import { useState } from 'react';
+import { FiSliders, FiSearch } from 'react-icons/fi';
 
 const BinsTableSection = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const binsData = [
     { id: 'BIN-001', location: 'شارع الجامعة - مقابل المكتبة', fill: 95, color: 'bg-red-500', status: 'تحتاج تفريغ', statusColor: 'bg-red-50 text-red-600 border-red-100' },
     { id: 'BIN-002', location: 'حي الياسمين - شارع 8', fill: 70, color: 'bg-amber-400', status: 'متوسطة', statusColor: 'bg-amber-50 text-amber-600 border-amber-100' },
@@ -8,19 +11,43 @@ const BinsTableSection = () => {
     { id: 'BIN-004', location: 'حي الزهور - مقابل السوق', fill: 100, color: 'bg-red-600', status: 'ممتلئة', statusColor: 'bg-red-100 text-red-700 border-red-200 animate-pulse' },
     { id: 'BIN-005', location: 'شارع الاستقلال - محطة الباص', fill: 40, color: 'bg-amber-400', status: 'متوسطة', statusColor: 'bg-amber-50 text-amber-600 border-amber-100' },
   ];
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+  const filteredBins = binsData.filter((bin) => {
+    const matchesSearch = !normalizedSearch
+      || bin.id.toLowerCase().includes(normalizedSearch)
+      || bin.location.toLowerCase().includes(normalizedSearch);
+    const matchesStatus = !statusFilter || bin.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_2px_12px_rgba(0,0,0,0.01)]" dir="rtl">
       {/* أدوات البحث والتصفية للجدول */}
       <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mb-6">
-        <button className="text-xs font-bold text-gray-500 hover:text-emerald-700 flex items-center justify-center gap-1.5 bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-100/70 transition-all active:scale-95 shrink-0">
+        <label className="text-xs font-bold text-gray-500 flex items-center justify-center gap-1.5 bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-100/70 shrink-0">
           <FiSliders className="text-xs" /> تصفية
-        </button>
+          <select
+            value={statusFilter}
+            onChange={(event) => setStatusFilter(event.target.value)}
+            className="bg-transparent text-xs font-bold text-gray-600 focus:outline-none cursor-pointer"
+            aria-label="تصفية الحاويات حسب الحالة"
+          >
+            <option value="">الكل</option>
+            <option value="تحتاج تفريغ">تحتاج تفريغ</option>
+            <option value="متوسطة">متوسطة</option>
+            <option value="فارغة">فارغة</option>
+            <option value="ممتلئة">ممتلئة</option>
+          </select>
+        </label>
 
         <div className="relative flex-1 max-w-md">
-          <input 
+          <input
             type="text" 
             placeholder="بحث برقم الحاوية أو الموقع..." 
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            aria-label="البحث برقم الحاوية أو الموقع"
             className="w-full bg-gray-50 border border-gray-100 rounded-xl py-2.5 pr-10 pl-4 text-xs font-bold text-gray-700 placeholder-gray-400 focus:outline-none focus:border-emerald-500/50 focus:bg-white transition-all text-right shadow-inner"
           />
           <FiSearch className="absolute top-3.5 right-3.5 text-gray-400 text-sm" />
@@ -41,8 +68,8 @@ const BinsTableSection = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50 text-xs font-bold text-gray-700">
-            {binsData.map((bin, index) => (
-              <tr key={index} className="hover:bg-gray-50/60 transition-colors group cursor-pointer">
+            {filteredBins.map((bin) => (
+              <tr key={bin.id} className="hover:bg-gray-50/60 transition-colors group cursor-pointer">
                 <td className="py-4 px-4 font-sans text-slate-800 tracking-wide">{bin.id}</td>
                 <td className="py-4 px-4 max-w-[220px] truncate">{bin.location}</td>
                 <td className="py-4 px-4">
@@ -60,12 +87,24 @@ const BinsTableSection = () => {
                 </td>
                 <td className="py-4 px-4 font-sans text-gray-400 font-medium">10:15 AM</td>
                 <td className="py-4 px-4 text-center">
-                  <button className="text-[10px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-600 hover:text-white px-3 py-1.5 rounded-lg border border-emerald-100/50 shadow-sm transition-all active:scale-95">
+                  <button
+                    type="button"
+                    disabled
+                    title="تفاصيل الحاويات غير متاحة للسائق من Backend حاليًا"
+                    className="text-[10px] font-bold text-gray-400 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100 cursor-not-allowed"
+                  >
                     عرض التفاصيل
                   </button>
                 </td>
               </tr>
             ))}
+            {filteredBins.length === 0 && (
+              <tr>
+                <td colSpan="6" className="py-8 text-center text-xs font-bold text-gray-400">
+                  لا توجد حاويات تطابق البحث أو التصفية الحالية.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
